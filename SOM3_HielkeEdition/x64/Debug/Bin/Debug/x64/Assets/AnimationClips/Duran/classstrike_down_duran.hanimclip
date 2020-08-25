@@ -1,0 +1,35 @@
+Texture: Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png
+Clip_name: special_down
+anim_interval: 0.1
+is_looping: 0
+Using_offset: 1
+SDL_rect: 310 157 16 31
+Offset: 0 0
+SDL_rect: 310 203 16 40
+Offset: 0 0
+SDL_rect: 306 251 24 44
+Offset: 0 0
+SDL_rect: 307 307 21 31
+Offset: 0 0
+SDL_rect: 303 352 30 41
+Offset: 0 0
+SDL_rect: 302 403 32 40
+Offset: 0 0
+SDL_rect: 308 456 19 33
+Offset: 0 0
+SDL_rect: 306 508 24 30
+Offset: 0 0
+SDL_rect: 299 553 38 40
+Offset: 0 0
+SDL_rect: 298 599 40 47
+Offset: 0 0
+SDL_rect: 302 657 32 32
+Offset: 0 0
+SDL_rect: 310 704 16 37
+Offset: 0 0
+SDL_rect: 307 757 21 32
+Offset: 0 0
+SDL_rect: 305 803 26 40
+Offset: 0 0
+SDL_rect: 304 857 28 31
+Offset: 0 0

@@ -1,0 +1,11 @@
+Texture: Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png
+Clip_name: move_horizontal
+anim_interval: 0.1
+is_looping: 1
+SDL_rect: 51 357 32 32
+SDL_rect: 51 407 32 32
+SDL_rect: 51 457 32 32
+SDL_rect: 51 507 32 32
+SDL_rect: 51 557 32 32
+SDL_rect: 51 607 32 32
+

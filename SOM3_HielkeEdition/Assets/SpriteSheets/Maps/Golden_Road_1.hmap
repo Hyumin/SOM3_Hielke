@@ -1,0 +1,56 @@
+Map Golden_Road_1
+VisualFile Assets\SpriteSheets\terrain\Goldenroad.png
+MapObject
+{
+DestinationRect
+x 0
+y 0
+w 1732
+h 750
+SourceRect
+x 2244
+y 303
+w 512
+h 221
+}
+ConnectedMap Golden_Road_2
+{
+fileName Assets\SpriteSheets\Maps\Golden_Road_2.hmap
+x -100
+y 100
+w 100
+h 100
+StartPos
+x 0
+y 0
+}
+ConnectedMap Free city of maia
+{
+fileName Assets\SpriteSheets\Maps\Free_City_of_maia.hmap
+x 1749
+y 441
+w 200
+h 200
+StartPos
+x 215
+y 650
+}
+
+Enemy
+{
+type Rabite
+filename Assets\EnemyFiles\Rabite.Henemy
+x 650
+y 200
+Level 1
+}
+Enemy
+{
+type Rabite
+filename Assets\EnemyFiles\Rabite.Henemy
+x 700
+y 200
+Level 1
+}
+
+

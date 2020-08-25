@@ -1,0 +1,27 @@
+Map maia_inn
+VisualFile Assets\SpriteSheets\terrain\free city of maia.png
+MapObject
+{
+DestinationRect
+x 0
+y 0
+w 1290
+h 1000
+SourceRect
+x 293
+y 127
+w 289
+h 224
+}
+ConnectedMap Free city of maia
+{
+fileName Assets\SpriteSheets\Maps\Free_City_of_maia.hmap
+x 250
+y 900
+w 200
+h 100
+StartPos
+x 550
+y 600
+}
+

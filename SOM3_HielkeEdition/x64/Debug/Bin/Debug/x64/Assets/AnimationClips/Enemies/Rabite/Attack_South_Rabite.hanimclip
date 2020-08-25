@@ -1,0 +1,9 @@
+Texture: Assets\\SpriteSheets\\enemies\\seiken3_enemies_rabites_and_more.png
+Clip_name: attack_south_rabite
+anim_interval: 0.2
+is_looping: 0
+Using_offset: 0
+SDL_rect: 88 419 26 23
+SDL_rect: 114 419 24 23
+SDL_rect: 137 419 24 23
+Offsets: -21 -5

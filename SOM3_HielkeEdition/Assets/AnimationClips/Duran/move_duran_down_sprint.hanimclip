@@ -1,0 +1,11 @@
+Texture: Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png
+Clip_name: move_down_sprint
+anim_interval: 0.1
+is_looping: 1
+SDL_rect: 0 657 32 32
+SDL_rect: 0 707 32 32
+SDL_rect: 0 757 32 32
+SDL_rect: 0 807 32 32
+SDL_rect: 0 857 32 32
+SDL_rect: 0 907 32 32
+

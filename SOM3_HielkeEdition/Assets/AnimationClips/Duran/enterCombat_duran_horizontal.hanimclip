@@ -1,0 +1,12 @@
+Texture: Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png
+Clip_name: enterCombat_duran_horizontal
+anim_interval: 0.09
+is_looping: 0
+Using_offset: 1
+SDL_rect: 205 544 26 52
+Offset: 5 -38
+SDL_rect: 205 597 26 51
+Offset: 4 -37
+SDL_rect: 205 649 26 54
+Offset: 3 -40
+

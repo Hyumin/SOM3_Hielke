@@ -1,0 +1,7 @@
+Texture: Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png
+Clip_name: idle_combat_up
+anim_interval: 0.15
+is_looping: 1
+SDL_rect: 255 154 35 35
+SDL_rect: 255 204 35 35
+SDL_rect: 255 254 35 35

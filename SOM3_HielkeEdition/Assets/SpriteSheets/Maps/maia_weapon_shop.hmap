@@ -1,0 +1,40 @@
+Map Free city of maia
+VisualFile Assets\SpriteSheets\terrain\free city of maia.png
+ColliderFile Assets\SpriteSheets\terrain\free city of maia_collisionMask.png
+MapObject
+{
+DestinationRect
+x 0
+y 0
+w 3297
+h 2000
+SourceRect
+x 0
+y 372
+w 864
+h 524
+}
+ConnectedMap Golden_Road_1
+{
+fileName "Assets\SpriteSheets\Maps\Golden_Road_1.hmap"
+x 0
+y 0
+w 200
+h 200
+}
+ConnectedMap maia_inn
+{
+fileName "Assets\SpriteSheets\Maps\maia_inn.hmap"
+x 0
+y 0
+w 200
+h 200
+}
+ConnectedMap maia_weapon_shop
+{
+fileName "Assets\SpriteSheets\Maps\maia_weapon_shop.hmap"
+x 0
+y 0
+w 200
+h 200
+}

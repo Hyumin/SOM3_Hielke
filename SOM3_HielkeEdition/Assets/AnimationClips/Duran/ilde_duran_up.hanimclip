@@ -1,0 +1,5 @@
+Texture: Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png
+Clip_name: idle_up
+anim_interval: 0.2
+is_looping: 0
+SDL_rect: 100 307 32 32

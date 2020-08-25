@@ -1,0 +1,36 @@
+EnemyType Rabite
+
+speed 75
+health 50
+damage 5
+
+Object
+{
+	Texture	Assets\\SpriteSheets\\enemies\\seiken3_enemies_rabites_and_more.png
+	w	50
+	h	50
+}
+Animations
+{
+	IDLE
+	{
+		NORTH Assets\\AnimationClips\\Enemies\\Rabite\\Idle_Rabite.hanimclip
+		SOUTH Assets\\AnimationClips\\Enemies\\Rabite\\Idle_Rabite.hanimclip
+		EAST Assets\\AnimationClips\\Enemies\\Rabite\\Idle_Rabite.hanimclip
+		WEST Assets\\AnimationClips\\Enemies\\Rabite\\Idle_Rabite.hanimclip
+	}
+	MOVING
+	{
+		NORTH Assets\\AnimationClips\\Enemies\\Rabite\\Move_North_Rabite.hanimclip
+		SOUTH Assets\\AnimationClips\\Enemies\\Rabite\\Move_South_Rabite.hanimclip
+		EAST Assets\\AnimationClips\\Enemies\\Rabite\\Move_Horizontall_Rabite.hanimclip
+		WEST Assets\\AnimationClips\\Enemies\\Rabite\\Move_Horizontall_Rabite.hanimclip
+	}
+	ATTACKING
+	{
+		NORTH Assets\\AnimationClips\\Enemies\\Rabite\\Attack_North_Rabite.hanimclip
+		SOUTH Assets\\AnimationClips\\Enemies\\Rabite\\Attack_South_Rabite.hanimclip
+		EAST Assets\\AnimationClips\\Enemies\\Rabite\\Attack_Horizontal_Rabite.hanimclip
+		WEST Assets\\AnimationClips\\Enemies\\Rabite\\Attack_Horizontal_Rabite.hanimclip
+	}
+}

@@ -1,0 +1,13 @@
+Texture: Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png
+Clip_name: attack_horizontal
+anim_interval: 0.1
+is_looping: 0
+Using_offset: 1
+SDL_rect: 346 1100 42 42
+Offset: -10 -10
+SDL_rect: 346 1150 42 42
+Offset: -25 -21
+SDL_rect: 346 1200 42 42
+Offset: -26 -10
+SDL_rect: 346 1250 42 42
+Offset: -21 -5

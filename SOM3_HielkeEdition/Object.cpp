@@ -45,20 +45,20 @@ void Object::Update(float _dt)
 {
 }
 
-void Object::Render(SDLRenderer* _Renderer, Vector2 _WorldPos)
+void Object::Render(SDLRenderer* _Renderer, Vector2 _WorldPos = Vector2{ 0,0 },unsigned int _layer)
 {
 	//Update dest rect to latest
 	m_RenderInterface.destRect = { (int)m_Pos.x- (int)_WorldPos.x,(int)m_Pos.y-(int)_WorldPos.y,(int)m_Size.x,(int)m_Size.y};
 	
-	_Renderer->AddToRenderqueue(m_RenderInterface);
+	_Renderer->AddToRenderqueue(m_RenderInterface,_layer);
 
 
 }
 
-void Object::Render(SDLRenderer* _Renderer, Vector2 _WorldPos, Vector2 _ScaleMult)
+void Object::Render(SDLRenderer* _Renderer, Vector2 _WorldPos, Vector2 _ScaleMult, unsigned int _layer )
 {
 	m_RenderInterface.destRect = { (int)m_Pos.x - (int)_WorldPos.x,(int)m_Pos.y - (int)_WorldPos.y,(int)(m_Size.x*_ScaleMult.x),(int)(m_Size.y*_ScaleMult.y) };
 
-	_Renderer->AddToRenderqueue(m_RenderInterface);
+	_Renderer->AddToRenderqueue(m_RenderInterface,_layer);
 
 }

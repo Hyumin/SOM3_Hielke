@@ -1,6 +1,7 @@
 #include "SDLRenderer.h"
 
 #include "ResourceManager.h"
+#include "Layer.h"
 #include <iostream>
 
 using namespace std;
@@ -26,17 +27,17 @@ SDLRenderer::~SDLRenderer()
 	CleanUp();
 }
 
-void SDLRenderer::AddToRenderqueue(RenderInterface _interface)
+void SDLRenderer::AddToRenderqueue(RenderInterface _interface, unsigned int _layer )
 {
-	m_RenderQueue.push_back(_interface);
+	m_Layers[_layer].AddInterface(_interface);
 }
 
-void SDLRenderer::AddToRenderqueue(TextRenderInterface _interface)
+void SDLRenderer::AddToRenderqueue(TextRenderInterface _interface, unsigned int _layer )
 {
-	m_TextRenderQueue.push_back(_interface);
+	m_Layers[_layer].AddText(_interface);
 }
 
-void SDLRenderer::AddLine(const Vector2& _a, const Vector2& _b, const Vector2& _worldPos, SDL_Color _color)
+void SDLRenderer::AddLine(const Vector2& _a, const Vector2& _b, const Vector2& _worldPos, SDL_Color _color, unsigned int _layer )
 {
 	Line newLine;
 	newLine.start = _a;
@@ -47,7 +48,7 @@ void SDLRenderer::AddLine(const Vector2& _a, const Vector2& _b, const Vector2& _
 
 	newLine.colour = _color;
 
-	m_LineQueue.push_back(newLine);
+	m_Layers[_layer].AddLine(newLine);
 }
 
 void SDLRenderer::Render()
@@ -61,45 +62,54 @@ void SDLRenderer::Render()
 		//Clear screen
 		SDL_SetRenderDrawColor(m_Renderer, 0x0, 0x8D, 0xAD, 0xff);
 		SDL_RenderClear(m_Renderer);
-	
-		//Iterate through the render queue
-		for (int i = 0; i < m_RenderQueue.size(); ++i)
+		for (unsigned int l = 0; l < m_Layers.size(); ++l)
 		{
-			RenderInterface inter = m_RenderQueue[i];
-			//Get texture based on string identifier within the _interface
-			//Then copy it to the renderer
-			Texture* tex = m_ResMan->GetTexture(inter.textureName);
-			if (tex != nullptr)
+			std::vector<RenderInterface> renderInterfaces = m_Layers[l].GetRenderQueue();
+			//Iterate through the render queue
+			for (int i = 0; i < renderInterfaces.size(); ++i)
 			{
-				//SDL_point is only used for SDL_rotate
-				SDL_RenderCopyEx(m_Renderer, tex->GetTexture(), &inter.srcRect, &inter.destRect, 0, 0, inter.renderFlip);
+				RenderInterface inter = renderInterfaces[i];
+				//Get texture based on string identifier within the _interface
+				//Then copy it to the renderer
+				Texture* tex = m_ResMan->GetTexture(inter.textureName);
+				if (tex != nullptr)
+				{
+					//SDL_point is only used for SDL_rotate
+					SDL_RenderCopyEx(m_Renderer, tex->GetTexture(), &inter.srcRect, &inter.destRect, 0, 0, inter.renderFlip);
+				}
 			}
-		}
-		//Iterate through text renderer
-		for (int i = 0; i < m_TextRenderQueue.size(); ++i)
-		{
-			TextRenderInterface inter = m_TextRenderQueue[i];
-			//Get texture based on string identifier within the _interface
-			//Then copy it to the renderer
-			const SDL_RendererFlip flip = inter.renderFlip;
-			if (inter.texture != nullptr)
+			std::vector<TextRenderInterface> textInterfaces = m_Layers[l].GetTextRenderQueue();
+
+			//Iterate through text renderer
+			for (int i = 0; i < textInterfaces.size(); ++i)
 			{
-				SDL_RenderCopyEx(m_Renderer, inter.texture, &inter.srcRect, &inter.destRect, 0, 0, flip);
+				TextRenderInterface inter = textInterfaces[i];
+				//Get texture based on string identifier within the _interface
+				//Then copy it to the renderer
+				const SDL_RendererFlip flip = inter.renderFlip;
+				if (inter.texture != nullptr)
+				{
+					SDL_RenderCopyEx(m_Renderer, inter.texture, &inter.srcRect, &inter.destRect, 0, 0, flip);
+				}
 			}
-		}
-		for (int i = 0; i < m_LineQueue.size(); ++i)
-		{
-			Line l = m_LineQueue[i];
+			std::vector<Line> lines = m_Layers[l].GetLineQueue();
 
-			SDL_SetRenderDrawColor(m_Renderer, l.colour.r, l.colour.g, l.colour.b, l.colour.a);
-			SDL_RenderDrawLine(m_Renderer, (int)l.start.x, (int)l.start.y, (int)l.end.x, (int)l.end.y);
-		}
-		for (int i = 0; i < m_FilledBoxes.size(); ++i)
-		{
-			SDL_SetRenderDrawColor(m_Renderer, m_FilledBoxes[i].col.r, m_FilledBoxes[i].col.g, m_FilledBoxes[i].col.b, m_FilledBoxes[i].col.a);
-			SDL_RenderFillRect(m_Renderer, &m_FilledBoxes[i].box);
-		}
+			for (int i = 0; i < lines.size(); ++i)
+			{
+				Line l = lines[i];
 
+				SDL_SetRenderDrawColor(m_Renderer, l.colour.r, l.colour.g, l.colour.b, l.colour.a);
+				SDL_RenderDrawLine(m_Renderer, (int)l.start.x, (int)l.start.y, (int)l.end.x, (int)l.end.y);
+			}
+			std::vector<FilledBox> boxes = m_Layers[l].GetFilledBoxQueue();
+
+			for (int i = 0; i < boxes.size(); ++i)
+			{
+				SDL_SetRenderDrawColor(m_Renderer, boxes[i].col.r, boxes[i].col.g, boxes[i].col.b, boxes[i].col.a);
+				SDL_RenderFillRect(m_Renderer, &boxes[i].box);
+			}
+			m_Layers[l].ClearQueues();
+		}
 		//Present screen
 		SDL_RenderPresent(m_Renderer);
 	}
@@ -107,10 +117,6 @@ void SDLRenderer::Render()
 	{
 		printf("SDLRenderer: Resourcemanager was not set but the render function requires one to work \n");
 	}
-	m_RenderQueue.clear();
-	m_TextRenderQueue.clear();
-	m_LineQueue.clear();
-	m_FilledBoxes.clear();
 
 }
 
@@ -138,64 +144,63 @@ void SDLRenderer::SetResourceManager(ResourceManager* _resman)
 	m_ResMan = _resman;
 }
 
-void SDLRenderer::DrawBox(BoxCollider _box, SDL_Color _color, Vector2 _worldPos)
+void SDLRenderer::DrawBox(BoxCollider _box, SDL_Color _color, Vector2 _worldPos, unsigned int _layer )
 {
 	//Draw pos x to x+w
 	Vector2 screenPos = _box.pos  ;
 	Vector2 endPoint= screenPos;
 	Vector2 startPoint = screenPos;
 	endPoint.x += _box.w;
-	AddLine(startPoint, endPoint, _worldPos, _color);
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
 
 	//Draw x+w to y+h
 	startPoint = endPoint;
 	endPoint.y += _box.h;
 
-	AddLine(startPoint, endPoint, _worldPos, _color);
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
 	
 	//Draw xy+wh to y+h
 	startPoint = endPoint;
 	endPoint.x = screenPos.x;
-	AddLine(startPoint, endPoint, _worldPos, _color);
+	AddLine(startPoint, endPoint, _worldPos, _color,_layer);
 	//finally draw y+h to start point
 	startPoint = endPoint;
 	endPoint = screenPos;
-	AddLine(startPoint, endPoint, _worldPos,_color);
+	AddLine(startPoint, endPoint, _worldPos,_color, _layer);
 
 }
 
-void SDLRenderer::DrawBox(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos)
+void SDLRenderer::DrawBox(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos, unsigned int _layer)
 {
 	//Draw pos x to x+w
 	Vector2 screenPos = Vector2(_x,_y);
 	Vector2 endPoint = screenPos;
 	Vector2 startPoint = screenPos;
 	endPoint.x += _h;
-	AddLine(startPoint, endPoint, _worldPos, _color);
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
 
 	//Draw x+w to y+h
 	startPoint = endPoint;
 	endPoint.y += _h;
 
-	AddLine(startPoint, endPoint, _worldPos, _color);
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
 
 	//Draw xy+wh to y+h
 	startPoint = endPoint;
 	endPoint.x = screenPos.x;
-	AddLine(startPoint, endPoint, _worldPos, _color);
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
 	//finally draw y+h to start point
 	startPoint = endPoint;
 	endPoint = screenPos;
-	AddLine(startPoint, endPoint, _worldPos, _color);
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
 }
 
-void SDLRenderer::DrawFilledBox(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos)
+void SDLRenderer::DrawFilledBox(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos, unsigned int _layer )
 {
 	FilledBox b;
 	b.box = { _x-(int)_worldPos.x,_y-(int)_worldPos.y,_w,_h };
 	b.col = _color;
-	m_FilledBoxes.push_back(b);
-
+	m_Layers[_layer].AddFilledBox(b);
 }
 
 bool SDLRenderer::Init(std::string _name, unsigned int _width, unsigned int _height)
@@ -264,6 +269,10 @@ bool SDLRenderer::Init(std::string _name, unsigned int _width, unsigned int _hei
 					}
 				}
 			}
+
+			m_Layers.push_back(Layer("Default"));
+			m_Layers.push_back(Layer("Background"));
+			m_Layers.push_back(Layer("UI"));
 		}
 	}
 

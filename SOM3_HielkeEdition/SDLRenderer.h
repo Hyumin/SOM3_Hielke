@@ -36,6 +36,7 @@ struct FilledBox
 	SDL_Color col;
 };
 
+class Layer;
 class ResourceManager;
 class SDLRenderer
 {
@@ -44,9 +45,9 @@ public:
 	SDLRenderer(std::string _name, unsigned int _width, unsigned int _height);
 	~SDLRenderer();
 
-	void AddToRenderqueue(RenderInterface _interface);
-	void AddToRenderqueue(TextRenderInterface _interface);
-	void AddLine(const Vector2& _a, const Vector2& _b,const Vector2& _worldPos, SDL_Color _color = {0xff,0xff,0xff,0xff});
+	void AddToRenderqueue(RenderInterface _interface, unsigned int _layer =0);
+	void AddToRenderqueue(TextRenderInterface _interface, unsigned int _layer = 0);
+	void AddLine(const Vector2& _a, const Vector2& _b,const Vector2& _worldPos, SDL_Color _color = {0xff,0xff,0xff,0xff}, unsigned int _layer = 0);
 	
 	void Render();
 	void Update(float _dt);
@@ -59,9 +60,9 @@ public:
 
 	SDL_Renderer* GetRenderer() { return m_Renderer; }
 	void SetResourceManager(ResourceManager* _resman);
-	void DrawBox(BoxCollider _box, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = {0.0f,0.0f});
-	void DrawBox(int _x, int _y, int _w, int _h, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f });
-	void DrawFilledBox(int _x, int _y, int _w, int _h, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f });
+	void DrawBox(BoxCollider _box, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = {0.0f,0.0f}, unsigned int _layer = 0);
+	void DrawBox(int _x, int _y, int _w, int _h, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, unsigned int _layer = 0);
+	void DrawFilledBox(int _x, int _y, int _w, int _h, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, unsigned int _layer = 0);
 
 
 private:
@@ -88,7 +89,7 @@ private:
 	std::vector<TextRenderInterface> m_TextRenderQueue;
 	std::vector<Line> m_LineQueue;
 	std::vector< FilledBox> m_FilledBoxes;
-
+	std::vector<Layer> m_Layers;
 
 };
 

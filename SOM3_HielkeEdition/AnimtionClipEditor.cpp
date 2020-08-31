@@ -34,7 +34,7 @@ void AnimationClipEditor::Init()
 	m_DefaultFont = nullptr;
 
 	m_LoadObject.m_Pos = Vector2{0, 0};
-	m_LoadObject.m_Size = Vector2{ 32,32 };
+	m_LoadObject.m_Size = Vector2{ 25,25 };
 
 	LoadDefaultAssets();
 }
@@ -190,10 +190,12 @@ void AnimationClipEditor::SetResourceManager(ResourceManager* _resMan)
 void AnimationClipEditor::Render(SDLRenderer* _renderer)
 {
 	Vector2 zoomVector = {m_Zoom,m_Zoom};
-	m_SpriteSheet.Render(_renderer, m_Position,zoomVector);
+	m_SpriteSheet.Render(_renderer, m_Position,zoomVector,0);
 	//m_CurrentAnimationObject.Render(_renderer, Vector2(0, 0));
+	m_LoadObject.Render(_renderer, Vector2{ 0,0 },1);
 	_renderer->DrawBox(m_Box, { 255,255,255,255 },m_Position);
 	_renderer->DrawFilledBox(0, 0, 1280, 25, SDL_Color{ 0,122,0,255 });
+	
 	if (m_WindowTest != nullptr)
 	{
 		m_WindowTest->Render(_renderer);

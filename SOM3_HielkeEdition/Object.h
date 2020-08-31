@@ -15,8 +15,8 @@ public :
 	~Object();
 
 	void Update(float _dt);
-	void Render(SDLRenderer* _Renderer,Vector2 _WorldPos);
-	void Render(SDLRenderer* _Renderer, Vector2 _WorldPos, Vector2 _ScaleMult);
+	void Render(SDLRenderer* _Renderer,Vector2 _WorldPos,unsigned int _layer =0);
+	void Render(SDLRenderer* _Renderer, Vector2 _WorldPos, Vector2 _ScaleMult,unsigned int _layer =0);
 
 	Vector2 m_Pos;
 	Vector2 m_Size;

@@ -2,6 +2,7 @@
 
 #include "EditorWindow.h"
 
+
 AnimationClipEditor::AnimationClipEditor()
 {
 	m_ResMan = NULL;
@@ -35,6 +36,9 @@ void AnimationClipEditor::Init()
 
 	m_LoadObject.m_Pos = Vector2{0, 0};
 	m_LoadObject.m_Size = Vector2{ 25,25 };
+	m_LoadButtonCollider.pos = m_LoadObject.m_Pos;
+	m_LoadButtonCollider.w = m_LoadObject.m_Size.x;
+	m_LoadButtonCollider.h = m_LoadObject.m_Size.y;
 
 	LoadDefaultAssets();
 }
@@ -107,15 +111,42 @@ void AnimationClipEditor::MouseUp(unsigned int _key)
 	{
 		m_DragEnd = m_MousePos + m_Position;
 		m_Dragging = false;
+
+		if (m_LoadButtonCollider.BoxCollision(m_LoadButtonCollider, m_MousePos))
+		{
+			m_LoadWindowActive = true;
+			LoadWindowThingy();
+		}
 	}
 }
 
 void AnimationClipEditor::MouseMove(int _x, int _y)
 {
 	m_MousePos = Vector2(_x, _y);
+	if (m_LoadButtonCollider.BoxCollision(m_LoadButtonCollider, m_MousePos))
+	{
+		m_HoverLoadButton = true;
+	}
+	else
+	{
+		m_HoverLoadButton = false;
+	}
 	if (m_WindowTest != nullptr)
 	{
 		m_WindowTest->MouseMove(_x, _y);
+	}
+}
+
+void AnimationClipEditor::LoadWindowThingy()
+{
+	//HRESULT h = BasicFileOpen();
+	WindowOpener opener = WindowOpener();
+	std::string path = opener.PrintAndOpenStuff();
+	if (path != "CANCELED")
+	{
+		m_CurrentClip = AnimationClip();// "clear the previous animation clip then load
+		m_CurrentClip.LoadClipFromFile(path, m_ResMan);
+		m_CurrentClip.Play();
 	}
 }
 
@@ -123,13 +154,15 @@ void AnimationClipEditor::Update(float _dt)
 {
 	if (m_WindowTest != nullptr)
 	{
+		m_CurrentClip.Update(_dt);
+	
 		try
 		{
 		
-		m_CurrentAnimationObject.m_RenderInterface.srcRect = m_CurrentClip.GetRect();
-		m_CurrentAnimationObject.m_RenderInterface.textureName = m_SpriteSheet.m_RenderInterface.textureName;
+			m_CurrentAnimationObject.m_RenderInterface.srcRect = m_CurrentClip.GetRect();
+			m_CurrentAnimationObject.m_RenderInterface.textureName = m_SpriteSheet.m_RenderInterface.textureName;
 
-		m_WindowTest->SetShowingObject(m_CurrentAnimationObject);
+			m_WindowTest->SetShowingObject(m_CurrentAnimationObject);
 		}
 		catch (std::exception& e)
 		{
@@ -147,13 +180,14 @@ void AnimationClipEditor::Update(float _dt)
 			printf("yeetus deletus");
 		}
 		
+		
 	}
 	if (m_Dragging)
 	{
 		m_DragEnd = m_MousePos + m_Position;
-		m_Box.pos = m_DragStart;
-		m_Box.w = m_DragEnd.x - m_DragStart.x;
-		m_Box.h = m_DragEnd.y - m_DragStart.y;
+		m_SelectionBox.pos = m_DragStart;
+		m_SelectionBox.w = m_DragEnd.x - m_DragStart.x;
+		m_SelectionBox.h = m_DragEnd.y - m_DragStart.y;
 	}
 
 	//Figure out velocity
@@ -193,9 +227,14 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 	m_SpriteSheet.Render(_renderer, m_Position,zoomVector,0);
 	//m_CurrentAnimationObject.Render(_renderer, Vector2(0, 0));
 	m_LoadObject.Render(_renderer, Vector2{ 0,0 },1);
-	_renderer->DrawBox(m_Box, { 255,255,255,255 },m_Position);
+	_renderer->DrawBox(m_SelectionBox, { 255,255,255,255 },m_Position);
 	_renderer->DrawFilledBox(0, 0, 1280, 25, SDL_Color{ 0,122,0,255 });
 	
+	if (m_HoverLoadButton)
+	{
+		_renderer->DrawBox(m_LoadButtonCollider, { 255,255,255,255 }, Vector2(0,0),1);
+	}
+
 	if (m_WindowTest != nullptr)
 	{
 		m_WindowTest->Render(_renderer);

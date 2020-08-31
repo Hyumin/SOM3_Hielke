@@ -4,6 +4,7 @@
 #include "SDLRenderer.h"
 #include "Object.h"
 #include "HielkMath.h"
+#include "WindowOpener.h"
 
 //This class will have the following purpose:
 //Creation of new animation clips for any given sprite sheet
@@ -18,7 +19,6 @@ public:
 	AnimationClipEditor(ResourceManager* _resMan);
 	~AnimationClipEditor();
 
-	void Init();
 	void KeyDown(unsigned int _key);
 	void KeyUp(unsigned int _key);
 	void MouseDown(unsigned int _key);
@@ -29,7 +29,8 @@ public:
 	void Render(SDLRenderer* _renderer);
 
 private:
-
+	void LoadWindowThingy();
+	void Init();
 	void LoadDefaultAssets();
 
 	bool m_Up, m_Left, m_Down, m_Right=false;
@@ -48,15 +49,21 @@ private:
 	Vector2 m_Position;// "World position"
 
 	ResourceManager* m_ResMan;//Reference to the resource manager do not delete
-	BoxCollider m_Box; //Current selection box
-	BoxCollider m_LoadButton;
+	BoxCollider m_SelectionBox; //Current selection box
+
+	//Button to enable loading
+	BoxCollider m_LoadButtonCollider;
 	Object m_LoadObject;
-	Texture* m_EditorIconsTexture;
+
+	Texture* m_EditorIconsTexture; // the texture we use for all of our editor icons
 
 	EditorWindow* m_WindowTest;
 	TTF_Font* m_DefaultFont;
 	
 	float m_Zoom = 1.0f;
 	float m_Speed = 50.0f;
+
+	bool m_HoverLoadButton = false;
+	bool m_LoadWindowActive = false;
 };
 

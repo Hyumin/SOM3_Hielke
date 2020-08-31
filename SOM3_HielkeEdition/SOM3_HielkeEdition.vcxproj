@@ -75,8 +75,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(ProjectDir)..\Dep\SDL2-2.0.12\lib\x64\;$(ProjectDir)\..\Dep\SDL2_ttf-2.0.15\lib\x64\;$(ProjectDir)\..\Dep\SDL2_mixer-2.0.4\lib\x64\;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\lib\x64\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir)\..\Dep\SDL2_ttf-2.0.15\include;$(ProjectDir)\..\Dep\SDL2_mixer-2.0.4\include;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\include;$(ProjectDir)..\Dep\SDL2-2.0.12\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\Dep\SDL2-2.0.12\lib\x64\;$(ProjectDir)\..\Dep\SDL2_ttf-2.0.15\lib\x64\;$(ProjectDir)\..\Dep\SDL2_mixer-2.0.4\lib\x64\;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\lib;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\lib\x64\;$(ProjectDir)\..\Dep\nativefiledialog\lib\Debug\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\..\Dep\nativefiledialog\include;$(ProjectDir)\..\Dep\SDL2_ttf-2.0.15\include;$(ProjectDir)\..\Dep\SDL2_mixer-2.0.4\include;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\include;$(ProjectDir)..\Dep\SDL2-2.0.12\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Bin\Debug\x64\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,8 +85,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(ProjectDir)..\Dep\SDL2-2.0.12\lib\x64\;$(ProjectDir)\..\Dep\SDL2_ttf-2.0.15\lib\x64\;$(ProjectDir)\..\Dep\SDL2_mixer-2.0.4\lib\x64\;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\lib\x64\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir)\..\Dep\SDL2_ttf-2.0.15\include;$(ProjectDir)\..\Dep\SDL2_mixer-2.0.4\include;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\include;$(ProjectDir)..\Dep\SDL2-2.0.12\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\Dep\nativefiledialog\lib\Release\x64;$(ProjectDir)..\Dep\SDL2-2.0.12\lib\x64\;$(ProjectDir)\..\Dep\SDL2_ttf-2.0.15\lib\x64\;$(ProjectDir)\..\Dep\SDL2_mixer-2.0.4\lib\x64\;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\lib;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\lib\x64\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\..\Dep\nativefiledialog\include;$(ProjectDir)\..\Dep\SDL2_ttf-2.0.15\include;$(ProjectDir)\..\Dep\SDL2_mixer-2.0.4\include;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\include;$(ProjectDir)..\Dep\SDL2-2.0.12\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Bin\Release\x64\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -108,12 +108,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\Dep\SDL2_mixer-2.0.4\include;$(ProjectDir)\..\Dep\SDL2_ttf-2.0.15\include;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\include;$(ProjectDir)\..\Dep\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\Dep\nativefiledialog\include;$(ProjectDir)\..\Dep\SDL2_mixer-2.0.4\include;$(ProjectDir)\..\Dep\SDL2_ttf-2.0.15\include;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\include;$(ProjectDir)\..\Dep\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;nfd_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,14 +141,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\Dep\SDL2_mixer-2.0.4\include;$(ProjectDir)\..\Dep\SDL2_ttf-2.0.15\include;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\include;$(ProjectDir)\..\Dep\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\Dep\nativefiledialog\include;$(ProjectDir)\..\Dep\SDL2_mixer-2.0.4\include;$(ProjectDir)\..\Dep\SDL2_ttf-2.0.15\include;$(ProjectDir)\..\Dep\SDL2_image-2.0.5\include;$(ProjectDir)\..\Dep\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;nfd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -171,6 +171,7 @@
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="TextField.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="WindowOpener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationClip.h" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Text.h" />
     <ClInclude Include="TextField.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="WindowOpener.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

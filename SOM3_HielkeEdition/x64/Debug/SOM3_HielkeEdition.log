@@ -1,5 +1,5 @@
 ﻿  AnimtionClipEditor.cpp
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(115,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(115,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(134,26): warning C4101: 'e': unreferenced local variable
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(125,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(125,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(167,26): warning C4101: 'e': unreferenced local variable
   SOM3_HielkeEdition.vcxproj -> D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\x64\Debug\Bin\Debug\x64\SOM3_HielkeEdition.exe

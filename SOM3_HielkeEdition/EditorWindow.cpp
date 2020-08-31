@@ -43,6 +43,7 @@ void EditorWindow::Update(float _dt)
 	m_TextField.m_pos = m_Pos + m_BarRelativePos;
 	m_Cross.pos = m_Pos + m_CrossRelativePos;
 	m_ContentBox.pos = m_Pos + m_ContentRelativePos;
+	m_Obj.m_Pos = m_ContentBox.pos;
 
 	m_TextField.Update(_dt);
 }
@@ -102,5 +103,6 @@ void EditorWindow::Render(SDLRenderer* _renderer)
 	_renderer->DrawBox(m_Bar, { 0,100,255,255 });
 	_renderer->DrawFilledBox(m_Cross.pos.x, m_Cross.pos.y, m_Cross.w, m_Cross.h, { 255,0,0,255 });
 	_renderer->DrawBox(m_ContentBox);
+	m_Obj.Render(_renderer, Vector2{ 0, 0 });
 	m_TextField.Render(_renderer, Vector2{ 0,0 });
 }

@@ -18,6 +18,7 @@ public:
 	AnimationClipEditor(ResourceManager* _resMan);
 	~AnimationClipEditor();
 
+	void Init();
 	void KeyDown(unsigned int _key);
 	void KeyUp(unsigned int _key);
 	void MouseDown(unsigned int _key);
@@ -48,6 +49,9 @@ private:
 
 	ResourceManager* m_ResMan;//Reference to the resource manager do not delete
 	BoxCollider m_Box; //Current selection box
+	BoxCollider m_LoadButton;
+	Object m_LoadObject;
+	Texture* m_EditorIconsTexture;
 
 	EditorWindow* m_WindowTest;
 	TTF_Font* m_DefaultFont;

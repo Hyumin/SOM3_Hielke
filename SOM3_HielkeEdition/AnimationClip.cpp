@@ -50,7 +50,7 @@ SDL_Rect& AnimationClip::GetRect()
 {
 	if (m_SourceRects.size() == 0)
 	{
-		throw std::exception("Animation clip not initialized | Animationlip.cpp \n");
+		throw std::exception(("Animation clip with filename"+m_FileName+" has no clips | Animationlip.cpp \n").c_str());
 	}
 
 	return m_SourceRects[m_CurrentIndex];

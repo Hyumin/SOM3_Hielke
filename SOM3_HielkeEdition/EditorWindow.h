@@ -23,7 +23,7 @@ public:
 	void MouseUp(unsigned int _key);
 	void MouseMove(unsigned int _x, unsigned int _y);
 	bool CanDelete() { return m_ReadyForDelete; }
-	
+
 	void SetFont(TTF_Font* _font);
 	void SetShowingObject(Object& _obj);
 	void Render(SDLRenderer* _renderer);

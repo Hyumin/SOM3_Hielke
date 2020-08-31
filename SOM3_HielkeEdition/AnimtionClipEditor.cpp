@@ -5,38 +5,38 @@
 AnimationClipEditor::AnimationClipEditor()
 {
 	m_ResMan = NULL;
-	m_MousePos = Vector2(0, 0);
-	m_Position = Vector2(0, 0);
-	m_DragStart = Vector2(0, 0);
-	m_DragEnd = Vector2(0, 0);
-	m_ClipName = "newClip";
-	m_FileName = "newClip.hanimclip";
-	m_Dragging = false;
-	std::string windowName = "Testwindow";
-	m_WindowTest = new EditorWindow( Vector2{ 100,100 }, windowName);
-	m_DefaultFont = nullptr;
+	Init();
 }
 
 AnimationClipEditor::AnimationClipEditor(ResourceManager* _resMan)
 {
 	m_ResMan = _resMan;
-	m_MousePos = Vector2(0, 0);
-	m_Position = Vector2(0, 0);
-	m_DragStart = Vector2(0, 0);
-	m_DragEnd = Vector2(0, 0);
-	m_ClipName = "newClip";
-	m_FileName = "newClip.hanimclip";
-	m_Dragging = false;
-	std::string windowName = "Testwindow";
-	m_WindowTest = new EditorWindow( Vector2{ 100,100 }, windowName);
-	m_DefaultFont = nullptr;
-	LoadDefaultAssets();
+	Init();
 }
 
 AnimationClipEditor::~AnimationClipEditor()
 {
 	delete m_WindowTest;
 	m_WindowTest = nullptr;
+}
+
+void AnimationClipEditor::Init()
+{
+	m_MousePos = Vector2(0, 0);
+	m_Position = Vector2(0, 0);
+	m_DragStart = Vector2(0, 0);
+	m_DragEnd = Vector2(0, 0);
+	m_ClipName = "newClip";
+	m_FileName = "newClip.hanimclip";
+	m_Dragging = false;
+	std::string windowName = "Testwindow";
+	m_WindowTest = new EditorWindow(Vector2{ 100,100 }, windowName);
+	m_DefaultFont = nullptr;
+
+	m_LoadObject.m_Pos = Vector2{0, 0};
+	m_LoadObject.m_Size = Vector2{ 32,32 };
+
+	LoadDefaultAssets();
 }
 
 void AnimationClipEditor::KeyDown(unsigned int _key)
@@ -93,7 +93,7 @@ void AnimationClipEditor::MouseDown(unsigned int _key)
 	if (_key == SDL_BUTTON_LEFT)
 	{
 		m_Dragging = true;
-		m_DragStart = m_MousePos;
+		m_DragStart = m_MousePos+ m_Position;
 	}
 }
 
@@ -105,7 +105,7 @@ void AnimationClipEditor::MouseUp(unsigned int _key)
 	}
 	if (_key == SDL_BUTTON_LEFT)
 	{
-		m_DragEnd = m_MousePos;
+		m_DragEnd = m_MousePos + m_Position;
 		m_Dragging = false;
 	}
 }
@@ -123,6 +123,18 @@ void AnimationClipEditor::Update(float _dt)
 {
 	if (m_WindowTest != nullptr)
 	{
+		try
+		{
+		
+		m_CurrentAnimationObject.m_RenderInterface.srcRect = m_CurrentClip.GetRect();
+		m_CurrentAnimationObject.m_RenderInterface.textureName = m_SpriteSheet.m_RenderInterface.textureName;
+
+		m_WindowTest->SetShowingObject(m_CurrentAnimationObject);
+		}
+		catch (std::exception& e)
+		{
+			//std::cout << e.what() << "\n";
+		}
 		m_WindowTest->Update(_dt);
 		if (m_WindowTest->m_Dragging)
 		{
@@ -138,7 +150,7 @@ void AnimationClipEditor::Update(float _dt)
 	}
 	if (m_Dragging)
 	{
-		m_DragEnd = m_MousePos;
+		m_DragEnd = m_MousePos + m_Position;
 		m_Box.pos = m_DragStart;
 		m_Box.w = m_DragEnd.x - m_DragStart.x;
 		m_Box.h = m_DragEnd.y - m_DragStart.y;
@@ -206,6 +218,14 @@ void AnimationClipEditor::LoadDefaultAssets()
 		if (m_DefaultFont != nullptr)
 		{
 			m_WindowTest->SetFont(m_DefaultFont);
+		}
+
+		m_EditorIconsTexture = m_ResMan->LoadTexture("Assets//editor//sprite editor icons.png");
+		//Icons loaded configure src rect
+		if (m_EditorIconsTexture != nullptr)
+		{
+			m_LoadObject.m_RenderInterface.textureName = m_EditorIconsTexture->GetName();
+			m_LoadObject.m_RenderInterface.srcRect = {48,0,16,16};
 		}
 	}
 }

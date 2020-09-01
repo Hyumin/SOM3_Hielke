@@ -47,8 +47,8 @@ void ResourceManager::LoadDefaultMedia()
 	LoadTexture("Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png");
 	LoadTexture("Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png");
 	LoadTexture(DefaultTextureName);
-	LoadFont("Assets//Fonts//Jupiter.ttf");
-	LoadFont("Assets//Fonts//arial.ttf");
+	LoadFont("Assets//Fonts//Jupiter.ttf",32);
+	LoadFont("Assets//Fonts//arial.ttf",32);
 	LoadEnemy("Assets\\EnemyFiles\\Rabite.Henemy");
 
 }
@@ -115,11 +115,11 @@ TTF_Font* ResourceManager::GetFont(const std::string& _fontName)
 	else
 	{
 		//attempt to load
-		return LoadFont(_fontName);
+		return LoadFont(_fontName,32);
 	}
 }
 
-TTF_Font* ResourceManager::LoadFont(const std::string& _fontPath)
+TTF_Font* ResourceManager::LoadFont(const std::string& _fontPath,int _size)
 {
 
 	if (m_Fonts[_fontPath] != nullptr)
@@ -128,7 +128,7 @@ TTF_Font* ResourceManager::LoadFont(const std::string& _fontPath)
 	}
 	else
 	{
-		TTF_Font* font = TTF_OpenFont(_fontPath.data(), 32);
+		TTF_Font* font = TTF_OpenFont(_fontPath.data(), _size);
 
 		if (font != nullptr)
 		{

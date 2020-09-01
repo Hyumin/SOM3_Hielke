@@ -161,6 +161,7 @@ void AnimationClipEditor::LoadWindowThingy()
 		if (m_WindowTest != nullptr)
 		{
 			m_WindowTest->SetName(m_CurrentClip.m_ClipName);
+			m_WindowTest->SetClip(&m_CurrentClip);
 		}
 	}
 }
@@ -269,10 +270,8 @@ void AnimationClipEditor::LoadDefaultAssets()
 		m_SpriteSheet.m_RenderInterface.srcRect.w = m_CurrentTexture->GetWidth();
 		m_SpriteSheet.m_RenderInterface.srcRect.h = m_CurrentTexture->GetHeight();
 		
-		m_DefaultFont = m_ResMan->LoadFont("Assets//Fonts//LucidaBrightRegular.ttf");
-		m_DefaultFont =m_ResMan->GetFont("Assets//Fonts//arial.ttf");
-
-		
+		m_DefaultFont = m_ResMan->LoadFont("Assets//Fonts//LucidaBrightRegular.ttf",16);
+		//m_DefaultFont =m_ResMan->GetFont("Assets//Fonts//arial.ttf");
 
 		//Icons loaded configure src rect
 		if (m_EditorIconsTexture != nullptr)

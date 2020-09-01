@@ -24,7 +24,7 @@ public:
 	Texture* LoadTexture(std::string _path ); //Will load a texture add it to the map and return the pointer to the newly loaded texture if succesfull
 	
 	TTF_Font* GetFont(const std::string& _fontName);
-	TTF_Font* LoadFont(const std::string& _fontPath);
+	TTF_Font* LoadFont(const std::string& _fontPath, int _size);
 
 	Hielke::Map* GetMap(const std::string& _fileName);
 	Hielke::Map* LoadMap(const std::string& _fileName);

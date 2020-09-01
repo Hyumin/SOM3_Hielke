@@ -10,6 +10,7 @@
 /// e.g. one that shows the current animation, or one that has a okay or no button or something
 /// </summary>
 
+class AnimationClip;
 class Texture;
 class EditorWindow
 {
@@ -30,6 +31,8 @@ public:
 	std::string& GetName() { return m_Name; }
 	void SetShowingObject(Object& _obj);
 	void Render(SDLRenderer* _renderer);
+	void SetClip(AnimationClip* _clip);
+
 
 	bool m_Dragging;
 
@@ -40,13 +43,22 @@ private:
 	void Init(Texture* _IconsTexture);
 	void ReScaleContent();
 
-
+	AnimationClip* m_CurrentClip;
 
 	std::string m_Name;
 	BoxCollider m_Bar;
 	BoxCollider m_CrossCollider;
 	BoxCollider m_ContentScaler;
+	BoxCollider m_ContentInformation;
 
+	//Buttons 
+	BoxCollider m_PauseButton;
+	BoxCollider m_PlayButton;
+	BoxCollider m_LoopButton;
+
+	Object m_PlayObject, m_LoopObject, m_PauseObject;
+
+	bool m_Playing, m_Looping, m_Pausing;
 
 	Object m_CrossObject;
 	Object m_ContentScaleObject;
@@ -58,6 +70,8 @@ private:
 	Vector2 m_ContentRelativePos;
 	Object m_Obj;
 	TextField m_TextField;
+	TextField m_FilePathTextField;
+
 
 	Texture* m_IconTexture;
 

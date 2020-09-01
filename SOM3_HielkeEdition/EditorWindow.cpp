@@ -1,5 +1,6 @@
 #include "EditorWindow.h"
 #include "Texture.h"
+#include "AnimationClip.h"
 #include <iostream>
 
 EditorWindow::EditorWindow(Vector2 _pos, std::string& _name, Texture* _IconsTexture)
@@ -29,6 +30,18 @@ void EditorWindow::Init(Texture* _IconsTexture)
 	m_ContentBox = BoxCollider{ 100,140,300,500 };
 	m_ContentScaler = BoxCollider{ 0,0,40,40 };
 
+	//Buttons
+	m_PauseButton = BoxCollider{ 0,0,50,50 };
+	m_PlayButton = BoxCollider{ 0,0,50,50 };
+	m_LoopButton = BoxCollider{ 0,0,50,50 };
+
+	m_PlayObject = Object();
+	m_LoopObject = Object();
+	m_PauseObject = Object();
+	m_PlayObject.m_RenderInterface.srcRect = { 0,0,16,16 };
+	m_LoopObject.m_RenderInterface.srcRect = { 32,16,16,16 };
+	m_PauseObject.m_RenderInterface.srcRect = { 16,0,16,16 };
+
 	m_ContentScaler.pos = m_ContentBox.pos + Vector2{ m_ContentBox.w,m_ContentBox.h };
 
 
@@ -41,10 +54,16 @@ void EditorWindow::Init(Texture* _IconsTexture)
 
 	m_MousePos = Vector2{ 0,0 };
 	m_TextField = TextField();
+	m_FilePathTextField = TextField();
 	m_Obj = Object();
 	m_TextField.SetText(m_Name);
 	m_TextField.m_Size = Vector2{ 180,30 };
 	m_TextField.SetColour(255, 255, 255, 255);
+
+	m_FilePathTextField.m_Size = Vector2{ 300,90 };
+	m_FilePathTextField.SetColour(0, 0, 0, 255);
+	m_FilePathTextField.SetText("Filepath:");
+	
 	m_IconTexture = _IconsTexture;
 
 	m_CrossObject = Object();
@@ -57,7 +76,15 @@ void EditorWindow::Init(Texture* _IconsTexture)
 	{
 		m_CrossObject.m_RenderInterface.textureName = _IconsTexture->GetName();
 		m_ContentScaleObject.m_RenderInterface.textureName = _IconsTexture->GetName();
+		m_PlayObject.m_RenderInterface.textureName = _IconsTexture->GetName();
+		m_LoopObject.m_RenderInterface.textureName = _IconsTexture->GetName();
+		m_PauseObject.m_RenderInterface.textureName = _IconsTexture->GetName();
 	}
+	m_CurrentClip = nullptr;
+
+	m_Playing = false;
+	m_Looping = false;
+	m_Pausing = false;
 }
 
 
@@ -67,7 +94,7 @@ void EditorWindow::Update(float _dt)
 	m_TextField.m_pos = m_Pos + m_BarRelativePos;
 	m_CrossCollider.pos = m_Pos + m_CrossRelativePos;
 	m_ContentBox.pos = m_Pos + m_ContentRelativePos;
-	m_Obj.m_Pos = m_ContentBox.pos;
+	m_Obj.m_Pos = m_ContentBox.pos + Vector2{ m_ContentBox.w/2 - m_Obj.m_Size.x/2,m_ContentBox.h*0.75f - m_Obj.m_Size.y/2};
 	m_CrossObject.m_Pos = m_CrossCollider.pos;
 	m_CrossObject.m_Size = Vector2{m_CrossCollider.w,m_CrossCollider.h};
 	m_ContentScaler.pos = m_ContentBox.pos + Vector2{ m_ContentBox.w-m_ContentScaler.w,m_ContentBox.h -m_ContentScaler.h};
@@ -75,7 +102,31 @@ void EditorWindow::Update(float _dt)
 	m_ContentScaleObject.m_Pos = m_ContentScaler.pos;
 	m_ContentScaleObject.m_Size = Vector2{ m_ContentScaler.w,m_ContentScaler.h };
 
+	m_FilePathTextField.m_pos = m_ContentBox.pos;
+	m_PauseButton.pos = m_Obj.m_Pos + Vector2{0,m_PauseButton.h};
+	m_PlayButton.pos = m_Obj.m_Pos + Vector2{ m_PlayButton.w+10,m_PlayButton.h };
+	m_LoopButton.pos = m_Obj.m_Pos + Vector2{ -(m_LoopButton.w+10),m_LoopButton.h };
+
+	m_LoopObject.m_Pos = m_LoopButton.pos;
+	m_PlayObject.m_Pos = m_PlayButton.pos;
+	m_PauseObject.m_Pos = m_PauseButton.pos;
+
+	m_LoopObject.m_Size = { m_LoopButton.w,m_LoopButton.h };
+	m_PlayObject.m_Size = { m_PlayButton.w,m_PlayButton.h };
+	m_PauseObject.m_Size = { m_PauseButton.w,m_PauseButton.h};
+
 	m_TextField.Update(_dt);
+	m_FilePathTextField.Update(_dt);
+
+
+	if (m_CurrentClip != nullptr)
+	{
+		if (m_CurrentClip->m_IsFinished)
+		{
+			m_Playing = false;
+		}
+	}
+
 }
 
 void EditorWindow::MouseDown(unsigned int _key)
@@ -99,6 +150,28 @@ void EditorWindow::MouseDown(unsigned int _key)
 			m_ScalingSize = true;
 			m_ScaleStart = m_MousePos;
 			m_ScaleOnStart = Vector2{m_ContentBox.w, m_ContentBox.h};
+		}
+
+		if (m_CrossCollider.BoxCollision(m_PauseButton, m_MousePos))
+		{
+			m_Pausing = m_Pausing ?  false:  true;
+			m_CurrentClip->m_IsPlaying = false;
+			m_Playing = false;
+		}
+		if (m_CrossCollider.BoxCollision(m_PlayButton, m_MousePos))
+		{
+			m_Playing = m_Playing ? false : true;
+			if (m_Playing)
+			{
+				m_CurrentClip->Play();
+				m_Pausing = false;
+			}
+		}
+		if (m_CrossCollider.BoxCollision(m_LoopButton, m_MousePos))
+		{
+			m_Looping = m_Looping ? false : true;
+			m_CurrentClip->m_Looping = m_Looping;
+		
 		}
 	}
 }
@@ -160,6 +233,7 @@ void EditorWindow::ReScaleContent()
 void EditorWindow::SetFont(TTF_Font* _font)
 {
 	m_TextField.SetFont(_font);
+	m_FilePathTextField.SetFont(_font);
 }
 
 void EditorWindow::SetName(std::string& _name)
@@ -176,16 +250,43 @@ void EditorWindow::SetShowingObject(Object& _obj)
 void EditorWindow::Render(SDLRenderer* _renderer)
 {
 	_renderer->DrawFilledBox(m_Bar.pos.x,m_Bar.pos.y,m_Bar.w, m_Bar.h, { 0,153,15,255 });
+	_renderer->DrawFilledBox(m_ContentBox.pos.x, m_ContentBox.pos.y, m_ContentBox.w, m_ContentBox.h / 3, { 0,160,15,255 });
+
 	_renderer->DrawBox(m_CrossCollider, { 255,0,0,255 });
 	_renderer->DrawBox(m_ContentBox);
 	m_ContentScaleObject.Render(_renderer, Vector2{ 0, 0 });
 	m_Obj.Render(_renderer, Vector2{ 0, 0 });
 	m_TextField.Render(_renderer, Vector2{ 0,0 },1);
+	m_FilePathTextField.Render(_renderer, Vector2{ 0,0 }, 1);
 
+	m_PlayObject.Render(_renderer, {});
+	m_LoopObject.Render(_renderer, {});
+	m_PauseObject.Render(_renderer, {});
+
+	if (m_Pausing)
+	{
+		_renderer->DrawBox(m_PauseButton, {0,255,0});
+	}
+	if (m_Looping)
+	{
+		_renderer->DrawBox(m_LoopButton, { 0,255,0 });
+	}
+	if (m_Playing)
+	{
+		_renderer->DrawBox(m_PlayButton, { 0,255,0 });
+	}
 	//Render m_IconTexture dependant objects
 	if (m_IconTexture != nullptr)
 	{
 		m_CrossObject.Render(_renderer, Vector2{ 0,0 }, 1);
 	}
+
+}
+
+void EditorWindow::SetClip(AnimationClip* _clip)
+{
+	m_CurrentClip = _clip;
+
+	m_FilePathTextField.SetText("FilePath: "+_clip->m_FileName);
 
 }

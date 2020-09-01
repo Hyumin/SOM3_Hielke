@@ -241,7 +241,7 @@ void Game::Render(SDLRenderer* _renderer)
 
 	for (uint32_t i = 0; i < m_FloatingTexts.size(); ++i)
 	{
-		m_FloatingTexts[i].Render(_renderer, m_WorldPos);
+		m_FloatingTexts[i].Render(_renderer, m_WorldPos,0);
 	}
 
 	std::vector<BoxCollider>& mapColliders = m_CurrentMap->GetColliders();

@@ -79,7 +79,7 @@ void Hielke::Map::Render(SDLRenderer* _renderer,Vector2 _worldPos)
 	}
 	for (uint32_t i = 0; i < m_FloatingTexts.size(); ++i)
 	{
-		m_FloatingTexts[i]->Render(_renderer, _worldPos);
+		m_FloatingTexts[i]->Render(_renderer, _worldPos,0);
 	}
 	for (auto it = m_Enemies.begin(); it != m_Enemies.end(); ++it)
 	{

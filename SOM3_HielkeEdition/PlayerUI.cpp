@@ -91,9 +91,9 @@ void PlayerUI::Render(SDLRenderer* _renderer)
 {
 	if (m_Font != nullptr&&m_Character!=nullptr)
 	{
-		m_Health->Render(_renderer,Vector2());
-		m_Level->Render(_renderer, Vector2());
-		m_Mana->Render(_renderer, Vector2());
+		m_Health->Render(_renderer,Vector2(),2);
+		m_Level->Render(_renderer, Vector2(),2);
+		m_Mana->Render(_renderer, Vector2(),2);
 		m_PlayerIcon.Render(_renderer, Vector2());
 		_renderer->DrawBox(m_PlayerIcon.m_Pos.x, m_PlayerIcon.m_Pos.y, m_PlayerIcon.m_Size.x, m_PlayerIcon.m_Size.y);
 		

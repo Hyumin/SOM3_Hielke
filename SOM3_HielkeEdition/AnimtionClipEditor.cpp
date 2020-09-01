@@ -23,6 +23,9 @@ AnimationClipEditor::~AnimationClipEditor()
 
 void AnimationClipEditor::Init()
 {
+	//Load default resources
+	LoadDefaultAssets();
+
 	m_MousePos = Vector2(0, 0);
 	m_Position = Vector2(0, 0);
 	m_DragStart = Vector2(0, 0);
@@ -31,8 +34,7 @@ void AnimationClipEditor::Init()
 	m_FileName = "newClip.hanimclip";
 	m_Dragging = false;
 	std::string windowName = "Testwindow";
-	m_WindowTest = new EditorWindow(Vector2{ 100,100 }, windowName);
-	m_DefaultFont = nullptr;
+
 
 	m_LoadObject.m_Pos = Vector2{0, 0};
 	m_LoadObject.m_Size = Vector2{ 25,25 };
@@ -40,7 +42,14 @@ void AnimationClipEditor::Init()
 	m_LoadButtonCollider.w = m_LoadObject.m_Size.x;
 	m_LoadButtonCollider.h = m_LoadObject.m_Size.y;
 
-	LoadDefaultAssets();
+	
+	m_WindowTest = new EditorWindow(Vector2{ 100,100 }, windowName, m_EditorIconsTexture);
+
+	if (m_DefaultFont != nullptr)
+	{
+		m_WindowTest->SetFont(m_DefaultFont);
+	}
+
 }
 
 void AnimationClipEditor::KeyDown(unsigned int _key)
@@ -139,14 +148,20 @@ void AnimationClipEditor::MouseMove(int _x, int _y)
 
 void AnimationClipEditor::LoadWindowThingy()
 {
-	//HRESULT h = BasicFileOpen();
+
 	WindowOpener opener = WindowOpener();
 	std::string path = opener.PrintAndOpenStuff();
 	if (path != "CANCELED")
 	{
 		m_CurrentClip = AnimationClip();// "clear the previous animation clip then load
 		m_CurrentClip.LoadClipFromFile(path, m_ResMan);
+		//m_CurrentClip.m_Looping = true;
 		m_CurrentClip.Play();
+
+		if (m_WindowTest != nullptr)
+		{
+			m_WindowTest->SetName(m_CurrentClip.m_ClipName);
+		}
 	}
 }
 
@@ -179,7 +194,6 @@ void AnimationClipEditor::Update(float _dt)
 			m_WindowTest = nullptr;
 			printf("yeetus deletus");
 		}
-		
 		
 	}
 	if (m_Dragging)
@@ -246,27 +260,26 @@ void AnimationClipEditor::LoadDefaultAssets()
 	if (m_ResMan != nullptr)
 	{
 		m_ResMan->LoadDefaultMedia();
-		Texture* tex =m_ResMan->LoadTexture("Assets//SpriteSheets//Duran//seikendensetsu3_duran_sheet.png");
-		
-		
-		m_SpriteSheet.m_RenderInterface.textureName = "Assets//SpriteSheets//Duran//seikendensetsu3_duran_sheet.png";
-		m_SpriteSheet.m_Size = Vector2{ (float)tex->GetWidth(),(float)tex->GetHeight() };
-		m_SpriteSheet.m_RenderInterface.srcRect.w = tex->GetWidth();
-		m_SpriteSheet.m_RenderInterface.srcRect.h = tex->GetHeight();
-		
-		m_DefaultFont = m_ResMan->LoadFont("Assets//Fonts//LucidaBrightRegular.ttf");
-
-		if (m_DefaultFont != nullptr)
-		{
-			m_WindowTest->SetFont(m_DefaultFont);
-		}
+		 m_CurrentTexture =m_ResMan->LoadTexture("Assets//SpriteSheets//Duran//seikendensetsu3_duran_sheet.png");
 
 		m_EditorIconsTexture = m_ResMan->LoadTexture("Assets//editor//sprite editor icons.png");
+		
+		m_SpriteSheet.m_RenderInterface.textureName = "Assets//SpriteSheets//Duran//seikendensetsu3_duran_sheet.png";
+		m_SpriteSheet.m_Size = Vector2{ (float)m_CurrentTexture->GetWidth(),(float)m_CurrentTexture->GetHeight() };
+		m_SpriteSheet.m_RenderInterface.srcRect.w = m_CurrentTexture->GetWidth();
+		m_SpriteSheet.m_RenderInterface.srcRect.h = m_CurrentTexture->GetHeight();
+		
+		m_DefaultFont = m_ResMan->LoadFont("Assets//Fonts//LucidaBrightRegular.ttf");
+		m_DefaultFont =m_ResMan->GetFont("Assets//Fonts//arial.ttf");
+
+		
+
 		//Icons loaded configure src rect
 		if (m_EditorIconsTexture != nullptr)
 		{
 			m_LoadObject.m_RenderInterface.textureName = m_EditorIconsTexture->GetName();
 			m_LoadObject.m_RenderInterface.srcRect = {48,0,16,16};
 		}
+		
 	}
 }

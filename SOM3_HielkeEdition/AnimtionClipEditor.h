@@ -56,7 +56,7 @@ private:
 	Object m_LoadObject;
 
 	Texture* m_EditorIconsTexture; // the texture we use for all of our editor icons
-
+	Texture* m_CurrentTexture;
 	EditorWindow* m_WindowTest;
 	TTF_Font* m_DefaultFont;
 	

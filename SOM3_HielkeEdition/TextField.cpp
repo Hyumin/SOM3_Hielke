@@ -19,12 +19,12 @@ void TextField::Update(float _dt)
 {
 }
 
-void TextField::Render(SDLRenderer* _renderer, Vector2 _worldpos)
+void TextField::Render(SDLRenderer* _renderer, Vector2 _worldpos,int _layer)
 {
 	if (m_FontPointer != NULL)
 	{
 		UpdateInterface(_renderer);
-		_renderer->AddToRenderqueue(m_Interface);
+		_renderer->AddToRenderqueue(m_Interface,_layer);
 	}
 	else
 	{

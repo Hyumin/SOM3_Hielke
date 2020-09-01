@@ -78,20 +78,7 @@ void SDLRenderer::Render()
 					SDL_RenderCopyEx(m_Renderer, tex->GetTexture(), &inter.srcRect, &inter.destRect, 0, 0, inter.renderFlip);
 				}
 			}
-			std::vector<TextRenderInterface> textInterfaces = m_Layers[l].GetTextRenderQueue();
-
-			//Iterate through text renderer
-			for (int i = 0; i < textInterfaces.size(); ++i)
-			{
-				TextRenderInterface inter = textInterfaces[i];
-				//Get texture based on string identifier within the _interface
-				//Then copy it to the renderer
-				const SDL_RendererFlip flip = inter.renderFlip;
-				if (inter.texture != nullptr)
-				{
-					SDL_RenderCopyEx(m_Renderer, inter.texture, &inter.srcRect, &inter.destRect, 0, 0, flip);
-				}
-			}
+		
 			std::vector<Line> lines = m_Layers[l].GetLineQueue();
 
 			for (int i = 0; i < lines.size(); ++i)
@@ -108,7 +95,24 @@ void SDLRenderer::Render()
 				SDL_SetRenderDrawColor(m_Renderer, boxes[i].col.r, boxes[i].col.g, boxes[i].col.b, boxes[i].col.a);
 				SDL_RenderFillRect(m_Renderer, &boxes[i].box);
 			}
+			std::vector<TextRenderInterface> textInterfaces = m_Layers[l].GetTextRenderQueue();
+
+			//Iterate through text renderer
+			for (int i = 0; i < textInterfaces.size(); ++i)
+			{
+				TextRenderInterface inter = textInterfaces[i];
+				//Get texture based on string identifier within the _interface
+				//Then copy it to the renderer
+				const SDL_RendererFlip flip = inter.renderFlip;
+				if (inter.texture != nullptr)
+				{
+					SDL_RenderCopyEx(m_Renderer, inter.texture, &inter.srcRect, &inter.destRect, 0, 0, flip);
+				}
+			}
+
 			m_Layers[l].ClearQueues();
+
+		
 		}
 		//Present screen
 		SDL_RenderPresent(m_Renderer);

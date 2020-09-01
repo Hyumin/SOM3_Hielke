@@ -47,12 +47,12 @@ void FloatingText::Update(float _dt)
 
 }
 
-void FloatingText::Render(SDLRenderer* _renderer, Vector2 _worldpos)
+void FloatingText::Render(SDLRenderer* _renderer, Vector2 _worldpos,int _layer)
 {
 	UpdateInterface(_renderer);
 	m_Interface.destRect.x = m_pos.x - _worldpos.x;
 	m_Interface.destRect.y = m_pos.y - _worldpos.y;
-	_renderer->AddToRenderqueue(m_Interface);
+	_renderer->AddToRenderqueue(m_Interface,_layer);
 }
 
 void FloatingText::SetText(const std::string& _string)

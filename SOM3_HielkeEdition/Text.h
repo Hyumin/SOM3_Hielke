@@ -26,7 +26,8 @@ public:
 
 protected:
 	void UpdateInterface(SDLRenderer* _renderer);
-	
+	bool  WrapText(SDL_Surface* _Mainsurface, std::string _remainingText,float _sizePerCharacter,int _ypos);
+
 	Vector2 m_SrcSize;
 
 	TTF_Font* m_FontPointer;

@@ -60,7 +60,7 @@ void EditorWindow::Init(Texture* _IconsTexture)
 	m_TextField.m_Size = Vector2{ 180,30 };
 	m_TextField.SetColour(255, 255, 255, 255);
 
-	m_FilePathTextField.m_Size = Vector2{ 300,90 };
+	m_FilePathTextField.m_Size = Vector2{ 300,150 };
 	m_FilePathTextField.SetColour(0, 0, 0, 255);
 	m_FilePathTextField.SetText("Filepath:");
 	

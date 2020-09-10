@@ -106,7 +106,7 @@ bool  Text::WrapText(SDL_Surface* _Mainsurface, std::string _remainingText, floa
 
 		std::string remaining;
 		//std::copy(_remainingText.begin() + cutoffIndex, _remainingText.end(), &remaining);
-		remaining.assign(_remainingText.begin() + cutoffIndex, _remainingText.end());
+		remaining.assign(_remainingText,cutoffIndex-1, _remainingText.size());
 
 		textSurface = TTF_RenderText_Solid(m_FontPointer, buffer.data(), m_Colour);
 

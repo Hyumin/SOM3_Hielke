@@ -57,7 +57,7 @@ void EditorWindow::Init(Texture* _IconsTexture)
 	m_FilePathTextField = TextField();
 	m_Obj = Object();
 	m_TextField.SetText(m_Name);
-	m_TextField.m_Size = Vector2{ 180,30 };
+	m_TextField.m_Size = Vector2{ 250,30 };
 	m_TextField.SetColour(255, 255, 255, 255);
 
 	m_FilePathTextField.m_Size = Vector2{ 300,150 };

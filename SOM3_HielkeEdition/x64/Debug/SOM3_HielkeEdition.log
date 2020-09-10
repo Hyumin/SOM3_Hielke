@@ -5,8 +5,8 @@ D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(55,33): warning C4244:
 D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(56,33): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(57,37): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(58,37): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(65,36): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(66,36): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(91,32): warning C4244: '=': conversion from 'unsigned __int64' to 'float', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(104,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(63,36): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(64,36): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(89,32): warning C4244: '=': conversion from 'unsigned __int64' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(102,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   SOM3_HielkeEdition.vcxproj -> D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\x64\Debug\Bin\Debug\x64\SOM3_HielkeEdition.exe

@@ -5,6 +5,7 @@
 #include "Object.h"
 #include "HielkMath.h"
 #include "WindowOpener.h"
+#include "NumberedBox.h"
 
 //This class will have the following purpose:
 //Creation of new animation clips for any given sprite sheet
@@ -30,6 +31,8 @@ public:
 	void Render(SDLRenderer* _renderer);
 
 private:
+	
+	void GenerateNumberedBoxes();//fills the array m_NumbrdBoxes with boxes based on the current animationclip
 	void LoadWindowThingy();
 	void Init();
 	void LoadDefaultAssets();
@@ -61,6 +64,8 @@ private:
 	EditorWindow* m_WindowTest;
 	TTF_Font* m_DefaultFont;
 	
+	std::vector<NumberedBox> m_NumbrdBoxes;
+
 
 	float m_Zoom = 1.0f;
 	float m_Speed = 50.0f;

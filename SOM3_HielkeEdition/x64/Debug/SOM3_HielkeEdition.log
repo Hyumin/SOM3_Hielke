@@ -1,6 +1,12 @@
-﻿  NumberedBox.cpp
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\NumberedBox.cpp(33,68): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\NumberedBox.cpp(33,59): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\NumberedBox.cpp(33,50): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\NumberedBox.cpp(33,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+﻿  Text.cpp
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(48,29): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(49,29): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(65,32): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(66,32): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(67,36): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(68,36): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(73,35): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(74,35): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(100,32): warning C4244: '=': conversion from 'unsigned __int64' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Text.cpp(114,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   SOM3_HielkeEdition.vcxproj -> D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\x64\Debug\Bin\Debug\x64\SOM3_HielkeEdition.exe

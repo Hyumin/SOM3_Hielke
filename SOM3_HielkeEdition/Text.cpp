@@ -23,6 +23,7 @@ Text::~Text()
 
 void Text::UpdateInterface(SDLRenderer* _renderer)
 {
+	
 	//Delete old texture if any
 	if (m_Texture != NULL)
 	{
@@ -51,30 +52,40 @@ void Text::UpdateInterface(SDLRenderer* _renderer)
 		//Get rid of old surface
 		SDL_FreeSurface(mainSurface);
 
-		m_Interface.texture = m_Texture;
-		m_Interface.destRect.x = m_pos.x;
-		m_Interface.destRect.y = m_pos.y;
-		m_Interface.destRect.w = m_SrcSize.x;
-		m_Interface.destRect.h = m_SrcSize.y;
-	
 
-		m_Interface.srcRect.x = 0;
-		m_Interface.srcRect.y = 0;
-		m_Interface.srcRect.w = m_SrcSize.x;
-		m_Interface.srcRect.h = m_SrcSize.y;
-
-
-		m_Interface.renderFlip = SDL_RendererFlip::SDL_FLIP_NONE;
-		m_Interface.point = { 0,0 };
 
 	}
+	else
+	{
+		SDL_DestroyTexture(m_Texture);
+		m_Texture = nullptr;
+	}
 
+	m_Interface.texture = m_Texture;
+	m_Interface.destRect.x = m_pos.x;
+	m_Interface.destRect.y = m_pos.y;
+	m_Interface.destRect.w = m_SrcSize.x;
+	m_Interface.destRect.h = m_SrcSize.y;
+
+
+	m_Interface.srcRect.x = 0;
+	m_Interface.srcRect.y = 0;
+	m_Interface.srcRect.w = m_SrcSize.x;
+	m_Interface.srcRect.h = m_SrcSize.y;
+
+
+	m_Interface.renderFlip = SDL_RendererFlip::SDL_FLIP_NONE;
+	m_Interface.point = { 0,0 };
 }
 
 //this will edit the mainsurface and return true
 bool  Text::WrapText(SDL_Surface* _Mainsurface, std::string _remainingText, float _sizePerCharacter, int _ypos)
 {
 
+	if (_Mainsurface->w <= 0 && _Mainsurface->h <= 0)
+	{
+		return false;
+	}
 	float sizePerChar = _sizePerCharacter;
 
 	
@@ -95,31 +106,39 @@ bool  Text::WrapText(SDL_Surface* _Mainsurface, std::string _remainingText, floa
 	destRect.y = height * _ypos;
 
 	//does it fit in the main surface?
-	if (textSurface->w > _Mainsurface->w)
+	if (textSurface->w > _Mainsurface->w&&sizePerChar<_Mainsurface->w)
 	{
+		
 		//Get rid of old surface
 		SDL_FreeSurface(textSurface);
 		int cutoffIndex = _Mainsurface->w / sizePerChar;
 
 		std::string buffer;
-		buffer.assign(_remainingText,0,  cutoffIndex);
+		buffer.assign(_remainingText, 0, cutoffIndex);
 
-		std::string remaining;
-		//std::copy(_remainingText.begin() + cutoffIndex, _remainingText.end(), &remaining);
-		remaining.assign(_remainingText,cutoffIndex-1, _remainingText.size());
+		if (cutoffIndex > 1)
+		{
+			std::string remaining;
+			//std::copy(_remainingText.begin() + cutoffIndex, _remainingText.end(), &remaining);
+			remaining.assign(_remainingText, cutoffIndex - 1, _remainingText.size());
 
-		textSurface = TTF_RenderText_Solid(m_FontPointer, buffer.data(), m_Colour);
+			textSurface = TTF_RenderText_Solid(m_FontPointer, buffer.data(), m_Colour);
 
-		destRect = textSurface->clip_rect;
-		destRect.y = height * _ypos;
-		SDL_BlitSurface(textSurface, &textSurface->clip_rect, _Mainsurface, &destRect);
+			destRect = textSurface->clip_rect;
+			destRect.y = height * _ypos;
+			SDL_BlitSurface(textSurface, &textSurface->clip_rect, _Mainsurface, &destRect);
 
-		//Free the surface after we've applied it to the mainsurface
-		SDL_FreeSurface(textSurface);
+			//Free the surface after we've applied it to the mainsurface
+			SDL_FreeSurface(textSurface);
 
-		//Recursive untill textsurface width will no longer exceed mainsurface width aka everything should fit
-		//TODO add check for height as well, either if height exceeds don't add more or something else
-		return WrapText(_Mainsurface, remaining,sizePerChar,_ypos+1);
+			//Recursive untill textsurface width will no longer exceed mainsurface width aka everything should fit
+			//TODO add check for height as well, either if height exceeds don't add more or something else
+			return WrapText(_Mainsurface, remaining, sizePerChar, _ypos + 1);
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else
 	{

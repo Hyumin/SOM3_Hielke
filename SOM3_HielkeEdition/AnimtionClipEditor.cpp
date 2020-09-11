@@ -148,6 +148,34 @@ void AnimationClipEditor::MouseMove(int _x, int _y)
 	}
 }
 
+void AnimationClipEditor::GenerateNumberedBoxes()
+{
+
+	m_NumbrdBoxes.clear();
+	if (m_CurrentClip.m_ClipName != " ")
+	{
+		//Generate numbered boxes based on the current clips rects
+
+		for (unsigned int i = 0; i < m_CurrentClip.m_SourceRects.size(); ++i)
+		{
+			NumberedBox nb = NumberedBox(i);
+			BoxCollider box = BoxCollider{};
+
+			const SDL_Rect& rect = m_CurrentClip.m_SourceRects[i];
+			box.pos = Vector2{ (float)rect.x,(float)rect.y };
+			box.w = rect.w;
+			box.h = rect.h;
+
+			nb.SetBox(box);
+			nb.SetColour({200,200,200,255});
+			nb.SetFont(m_DefaultFont);
+			m_NumbrdBoxes.push_back(nb);
+
+		}
+
+	}
+}
+
 void AnimationClipEditor::LoadWindowThingy()
 {
 
@@ -159,7 +187,7 @@ void AnimationClipEditor::LoadWindowThingy()
 		m_CurrentClip.LoadClipFromFile(path, m_ResMan);
 		//m_CurrentClip.m_Looping = true;
 		m_CurrentClip.Play();
-
+		GenerateNumberedBoxes();
 		if (m_WindowTest != nullptr)
 		{
 			m_WindowTest->SetName(m_CurrentClip.m_ClipName);
@@ -246,7 +274,12 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 	m_LoadObject.Render(_renderer, Vector2{ 0,0 },1);
 	_renderer->DrawBox(m_SelectionBox, { 255,255,255,255 },m_Position);
 	_renderer->DrawFilledBox(0, 0, 1280, 25, SDL_Color{ 0,122,0,255 });
-	
+
+
+	for (unsigned int i = 0; i < m_NumbrdBoxes.size(); ++i)
+	{
+		m_NumbrdBoxes[i].Render(_renderer, m_Position);
+	}
 
 	if (m_HoverLoadButton)
 	{
@@ -275,6 +308,9 @@ void AnimationClipEditor::LoadDefaultAssets()
 		
 		m_DefaultFont = m_ResMan->LoadFont("Assets//Fonts//LucidaBrightRegular.ttf",16);
 		//m_DefaultFont =m_ResMan->GetFont("Assets//Fonts//arial.ttf");
+
+
+		
 
 		//Icons loaded configure src rect
 		if (m_EditorIconsTexture != nullptr)

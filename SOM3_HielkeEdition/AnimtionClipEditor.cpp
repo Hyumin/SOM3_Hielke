@@ -19,10 +19,7 @@ AnimationClipEditor::~AnimationClipEditor()
 {
 	delete m_WindowTest;
 	m_WindowTest = nullptr;
-	delete m_LongText;
-	m_LongText = nullptr;
-	delete m_ShortText;
-	m_ShortText = nullptr;
+
 }
 
 void AnimationClipEditor::Init()
@@ -52,24 +49,7 @@ void AnimationClipEditor::Init()
 	if (m_DefaultFont != nullptr)
 	{
 		m_WindowTest->SetFont(m_DefaultFont);
-		
-		//Testing out text rendering something seems to be not going gucchi
-		m_LongText = new TextField();
-		m_ShortText = new TextField();
 
-		m_LongText->SetFont(m_DefaultFont);
-		m_ShortText->SetFont(m_DefaultFont);
-
-		m_LongText->m_pos = Vector2{500,300};
-		m_ShortText->m_pos = Vector2{ 500,400 };
-
-		m_LongText->m_Size = Vector2{ 300,100 };
-		m_ShortText->m_Size = Vector2{ 16.0f*4.0f,16 };
-
-		m_LongText->SetText("This is a very long sentence to test out my text rendering for errors");
-		m_ShortText->SetText("Text");
-
-		
 	}
 
 }
@@ -267,8 +247,6 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 	_renderer->DrawBox(m_SelectionBox, { 255,255,255,255 },m_Position);
 	_renderer->DrawFilledBox(0, 0, 1280, 25, SDL_Color{ 0,122,0,255 });
 	
-	m_ShortText->Render(_renderer, { 0,0 }, 2);
-	m_LongText->Render(_renderer, { 0,0 }, 2);
 
 	if (m_HoverLoadButton)
 	{

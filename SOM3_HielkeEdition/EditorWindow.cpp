@@ -55,15 +55,22 @@ void EditorWindow::Init(Texture* _IconsTexture)
 	m_MousePos = Vector2{ 0,0 };
 	m_TextField = TextField();
 	m_FilePathTextField = TextField();
+	m_IsLoopingTextField = TextField();
 	m_Obj = Object();
 	m_TextField.SetText(m_Name);
 	m_TextField.m_Size = Vector2{ 250,30 };
 	m_TextField.SetColour(255, 255, 255, 255);
 
-	m_FilePathTextField.m_Size = Vector2{ 300,150 };
+	m_FilePathTextField.m_Size = Vector2{ 300,100 };
 	m_FilePathTextField.SetColour(0, 0, 0, 255);
 	m_FilePathTextField.SetText("Filepath:");
 	
+	m_IsLoopingTextField.SetText("Looping:");
+	m_IsLoopingTextField.m_Size = Vector2(100, 30);
+	m_IsLoopingTextField.SetColour(0, 0, 0, 255);
+
+	m_EnableLooping = BoxCollider(0, 0, 20, 20);
+
 	m_IconTexture = _IconsTexture;
 
 	m_CrossObject = Object();
@@ -85,6 +92,8 @@ void EditorWindow::Init(Texture* _IconsTexture)
 	m_Playing = false;
 	m_Looping = false;
 	m_Pausing = false;
+
+	
 }
 
 
@@ -103,6 +112,13 @@ void EditorWindow::Update(float _dt)
 	m_ContentScaleObject.m_Size = Vector2{ m_ContentScaler.w,m_ContentScaler.h };
 
 	m_FilePathTextField.m_pos = m_ContentBox.pos;
+	m_IsLoopingTextField.m_pos = m_ContentBox.pos;
+	m_IsLoopingTextField.m_pos.y += m_FilePathTextField.m_Size.y;
+
+
+	m_EnableLooping.pos = m_IsLoopingTextField.m_pos;
+	m_EnableLooping.pos.x += m_IsLoopingTextField.m_Size.x;
+
 	m_PauseButton.pos = m_Obj.m_Pos + Vector2{0,m_PauseButton.h};
 	m_PlayButton.pos = m_Obj.m_Pos + Vector2{ m_PlayButton.w+10,m_PlayButton.h };
 	m_LoopButton.pos = m_Obj.m_Pos + Vector2{ -(m_LoopButton.w+10),m_LoopButton.h };
@@ -154,24 +170,41 @@ void EditorWindow::MouseDown(unsigned int _key)
 
 		if (m_CrossCollider.BoxCollision(m_PauseButton, m_MousePos))
 		{
-			m_Pausing = m_Pausing ?  false:  true;
-			m_CurrentClip->m_IsPlaying = false;
-			m_Playing = false;
+			if (m_CurrentClip != nullptr)
+			{
+				m_Pausing = m_Pausing ? false : true;
+				m_CurrentClip->m_IsPlaying = false;
+				m_Playing = false;
+			}
 		}
 		if (m_CrossCollider.BoxCollision(m_PlayButton, m_MousePos))
 		{
-			m_Playing = m_Playing ? false : true;
-			if (m_Playing)
+			if (m_CurrentClip != nullptr)
 			{
-				m_CurrentClip->Play();
-				m_Pausing = false;
+				m_Playing = m_Playing ? false : true;
+				if (m_Playing)
+				{
+					m_CurrentClip->Play();
+					m_Pausing = false;
+				}
 			}
 		}
 		if (m_CrossCollider.BoxCollision(m_LoopButton, m_MousePos))
 		{
-			m_Looping = m_Looping ? false : true;
-			m_CurrentClip->m_Looping = m_Looping;
+			if (m_CurrentClip != nullptr)
+			{
+				m_Looping = m_Looping ? false : true;
+				m_CurrentClip->m_Looping = m_Looping;
+			}
 		
+		}
+		if (m_EnableLooping.BoxCollision(m_EnableLooping, m_MousePos))
+		{
+			if (m_CurrentClip != nullptr)
+			{
+				m_CurrentClip->m_Looping = m_CurrentClip->m_Looping ? false : true;
+				m_Looping = m_CurrentClip->m_Looping;
+			}
 		}
 	}
 }
@@ -234,6 +267,7 @@ void EditorWindow::SetFont(TTF_Font* _font)
 {
 	m_TextField.SetFont(_font);
 	m_FilePathTextField.SetFont(_font);
+	m_IsLoopingTextField.SetFont(_font);
 }
 
 void EditorWindow::SetName(std::string& _name)
@@ -258,10 +292,24 @@ void EditorWindow::Render(SDLRenderer* _renderer)
 	m_Obj.Render(_renderer, Vector2{ 0, 0 });
 	m_TextField.Render(_renderer, Vector2{ 0,0 },1);
 	m_FilePathTextField.Render(_renderer, Vector2{ 0,0 }, 1);
+	m_IsLoopingTextField.Render(_renderer, Vector2{ 0,0 }, 1);
 
 	m_PlayObject.Render(_renderer, {});
 	m_LoopObject.Render(_renderer, {});
 	m_PauseObject.Render(_renderer, {});
+
+
+	if (m_CurrentClip != nullptr)
+	{
+		if (m_CurrentClip->m_Looping)
+		{
+			_renderer->DrawFilledBox(m_EnableLooping.pos.x, m_EnableLooping.pos.y, m_EnableLooping.w, m_EnableLooping.h, { 0,0,0,255 });
+		}
+		else
+		{
+			_renderer->DrawBox(m_EnableLooping, { 0,0,0,255 }, { 0,0 },1);
+		}
+	}
 
 	if (m_Pausing)
 	{
@@ -288,5 +336,5 @@ void EditorWindow::SetClip(AnimationClip* _clip)
 	m_CurrentClip = _clip;
 
 	m_FilePathTextField.SetText("FilePath: "+_clip->m_FileName);
-
+	m_Looping = m_CurrentClip->m_Looping;
 }

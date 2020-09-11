@@ -61,8 +61,6 @@ private:
 	EditorWindow* m_WindowTest;
 	TTF_Font* m_DefaultFont;
 	
-	TextField* m_LongText;
-	TextField* m_ShortText;
 
 	float m_Zoom = 1.0f;
 	float m_Speed = 50.0f;

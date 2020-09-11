@@ -162,6 +162,7 @@
     <ClCompile Include="Layer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="NumberedBox.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="PlayerCharacter.cpp" />
     <ClCompile Include="PlayerUI.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="HielkMath.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="NumberedBox.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="PlayerCharacter.h" />
     <ClInclude Include="PlayerUI.h" />

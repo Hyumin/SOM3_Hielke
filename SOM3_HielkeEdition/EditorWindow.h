@@ -56,6 +56,9 @@ private:
 	BoxCollider m_PlayButton;
 	BoxCollider m_LoopButton;
 
+	BoxCollider m_EnableLooping;
+
+
 	Object m_PlayObject, m_LoopObject, m_PauseObject;
 
 	bool m_Playing, m_Looping, m_Pausing;
@@ -71,7 +74,7 @@ private:
 	Object m_Obj;
 	TextField m_TextField;
 	TextField m_FilePathTextField;
-
+	TextField m_IsLoopingTextField;
 
 	Texture* m_IconTexture;
 

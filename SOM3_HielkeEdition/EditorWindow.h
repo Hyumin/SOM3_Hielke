@@ -17,31 +17,29 @@ class EditorWindow
 public:
 	EditorWindow(Vector2 _pos, std::string& _name,Texture* _IconsTexture);
 	EditorWindow();
-	~EditorWindow();
+	virtual ~EditorWindow();
 
-
-	void Update(float _dt);
-	void MouseDown(unsigned int _key);
-	void MouseUp(unsigned int _key);
-	void MouseMove(unsigned int _x, unsigned int _y);
+	virtual void Update(float _dt);
+	virtual void MouseDown(unsigned int _key);
+	virtual void MouseUp(unsigned int _key);
+	virtual void MouseMove(unsigned int _x, unsigned int _y);
 	bool CanDelete() { return m_ReadyForDelete; }
 
-	void SetFont(TTF_Font* _font);
+	virtual void SetFont(TTF_Font* _font);
 	void SetName(std::string& _name);
 	std::string& GetName() { return m_Name; }
-	void SetShowingObject(Object& _obj);
-	void Render(SDLRenderer* _renderer);
-	void SetClip(AnimationClip* _clip);
-
-
+	
+	virtual void Render(SDLRenderer* _renderer);
+	virtual void SetClip(AnimationClip* _clip);
+	
 	bool m_Dragging;
 
-private:
+protected:
 
 	bool m_ScalingSize = false;
 
-	void Init(Texture* _IconsTexture);
-	void ReScaleContent();
+	virtual void Init(Texture* _IconsTexture);
+	virtual void ReScaleContent();
 
 	AnimationClip* m_CurrentClip;
 
@@ -51,18 +49,6 @@ private:
 	BoxCollider m_ContentScaler;
 	BoxCollider m_ContentInformation;
 
-	//Buttons 
-	BoxCollider m_PauseButton;
-	BoxCollider m_PlayButton;
-	BoxCollider m_LoopButton;
-
-	BoxCollider m_EnableLooping;
-
-
-	Object m_PlayObject, m_LoopObject, m_PauseObject;
-
-	bool m_Playing, m_Looping, m_Pausing;
-
 	Object m_CrossObject;
 	Object m_ContentScaleObject;
 
@@ -71,13 +57,11 @@ private:
 	Vector2 m_BarRelativePos;
 	Vector2 m_CrossRelativePos;
 	Vector2 m_ContentRelativePos;
-	Object m_Obj;
+
+	//The name of the window textfield
 	TextField m_TextField;
-	TextField m_FilePathTextField;
-	TextField m_IsLoopingTextField;
 
 	Texture* m_IconTexture;
-
 
 	Vector2 m_Pos;
 	bool m_ReadyForDelete;

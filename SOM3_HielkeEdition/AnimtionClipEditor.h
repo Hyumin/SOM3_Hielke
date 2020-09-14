@@ -37,7 +37,7 @@ private:
 	void Init();
 	void LoadDefaultAssets();
 
-	bool m_Up, m_Left, m_Down, m_Right=false;
+	bool m_Sprinting,m_Up, m_Left, m_Down, m_Right=false;
 
 	bool m_Dragging;
 	std::string m_ClipName;
@@ -69,6 +69,7 @@ private:
 
 	float m_Zoom = 1.0f;
 	float m_Speed = 50.0f;
+	float m_SprintMultiplier = 2.5f;
 
 	bool m_HoverLoadButton = false;
 	bool m_LoadWindowActive = false;

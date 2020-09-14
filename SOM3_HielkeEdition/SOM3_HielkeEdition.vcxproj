@@ -152,7 +152,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AddFrameWindow.cpp" />
     <ClCompile Include="AnimationClip.cpp" />
+    <ClCompile Include="AnimationWindow.cpp" />
     <ClCompile Include="AnimtionClipEditor.cpp" />
     <ClCompile Include="EditorWindow.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -175,7 +177,9 @@
     <ClCompile Include="WindowOpener.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AddFrameWindow.h" />
     <ClInclude Include="AnimationClip.h" />
+    <ClInclude Include="AnimationWindow.h" />
     <ClInclude Include="AnimtionClipEditor.h" />
     <ClInclude Include="EditorWindow.h" />
     <ClInclude Include="Enemy.h" />

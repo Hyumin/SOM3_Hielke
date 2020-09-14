@@ -1,4 +1,4 @@
-Texture: Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png
+Texture: Assets\SpriteSheets\Duran\seikendensetsu3_duran_sheet.png
 Clip_name: idle_exhausted_combat_horizontal
 anim_interval: 0.15
 is_looping: 1

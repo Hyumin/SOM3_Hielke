@@ -2,6 +2,7 @@
 
 #include "EditorWindow.h"
 #include "TextField.h"
+#include "AnimationWindow.h"
 
 AnimationClipEditor::AnimationClipEditor()
 {
@@ -43,8 +44,12 @@ void AnimationClipEditor::Init()
 	m_LoadButtonCollider.w = m_LoadObject.m_Size.x;
 	m_LoadButtonCollider.h = m_LoadObject.m_Size.y;
 
-	
-	m_WindowTest = new EditorWindow(Vector2{ 100,100 }, windowName, m_EditorIconsTexture);
+	AnimationWindow* animWindow = new AnimationWindow(Vector2{ 100,100 }, windowName, m_EditorIconsTexture);
+
+	Object obj = Object{};
+
+
+	m_WindowTest = animWindow;
 
 	if (m_DefaultFont != nullptr)
 	{
@@ -71,6 +76,9 @@ void AnimationClipEditor::KeyDown(unsigned int _key)
 	case SDLK_LEFT:
 		m_Left = true;
 		break;
+	case SDLK_LSHIFT:
+		m_Sprinting = true;
+		break;
 	}
 }
 
@@ -95,6 +103,9 @@ void AnimationClipEditor::KeyUp(unsigned int _key)
 		break;
 	case SDLK_MINUS:
 		m_Zoom -= 0.1f;
+		break;
+	case SDLK_LSHIFT:
+		m_Sprinting = false;
 		break;
 	}
 }
@@ -208,7 +219,7 @@ void AnimationClipEditor::Update(float _dt)
 			m_CurrentAnimationObject.m_RenderInterface.srcRect = m_CurrentClip.GetRect();
 			m_CurrentAnimationObject.m_RenderInterface.textureName = m_SpriteSheet.m_RenderInterface.textureName;
 
-			m_WindowTest->SetShowingObject(m_CurrentAnimationObject);
+			//m_WindowTest->SetShowingObject(m_CurrentAnimationObject);
 		}
 		catch (std::exception& e)
 		{
@@ -237,7 +248,7 @@ void AnimationClipEditor::Update(float _dt)
 
 	//Figure out velocity
 	Vector2 direction = Vector2{ 0,0 };
-
+	float sprintMod = m_Sprinting ? m_SprintMultiplier : 1;
 	if (m_Up)
 	{
 		direction.y -= 1;
@@ -255,7 +266,7 @@ void AnimationClipEditor::Update(float _dt)
 		direction.y += 1;
 	}
 
-	m_Position += direction * m_Speed * _dt;
+	m_Position += direction * m_Speed * _dt*m_Zoom*sprintMod;
 
 }
 
@@ -278,7 +289,7 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 
 	for (unsigned int i = 0; i < m_NumbrdBoxes.size(); ++i)
 	{
-		m_NumbrdBoxes[i].Render(_renderer, m_Position);
+		m_NumbrdBoxes[i].Render(_renderer, m_Position,zoomVector,false);
 	}
 
 	if (m_HoverLoadButton)

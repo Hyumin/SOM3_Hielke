@@ -11,6 +11,8 @@ public:
 	~NumberedBox();
 
 	void Render(SDLRenderer* _renderer, Vector2 _WorldPos = { 0,0 },bool _drawFilled = false);
+	void Render(SDLRenderer* _renderer, Vector2 _WorldPos = { 0,0 }, Vector2 _ScaleMult = {1,1}, bool _drawFilled = false);
+
 
 	void SetBox(BoxCollider _box);
 	BoxCollider GetBox() { return m_Box; }
@@ -23,9 +25,6 @@ public:
 
 	void SetNumber(int _number);
 	int GetNumber(){ return m_Number; }
-	
-
-
 
 private:
 	

@@ -5,7 +5,7 @@ class AddFrameWindow :
 {
 public:
 
-    AddFrameWindow(Vector2 _pos, std::string& _name, Texture* _IconsTexture);
+    AddFrameWindow(Vector2 _pos, const std::string& _name, Texture* _IconsTexture);
     AddFrameWindow();
     virtual ~AddFrameWindow();
 
@@ -19,7 +19,8 @@ public:
     virtual void SetClip(AnimationClip* _clip);
 
 protected:
-
+    virtual void Init(Texture* _IconsTexture);
+    virtual void ReScaleContent();
 
 };
 

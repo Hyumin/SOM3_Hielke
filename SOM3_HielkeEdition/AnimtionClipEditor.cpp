@@ -3,6 +3,7 @@
 #include "EditorWindow.h"
 #include "TextField.h"
 #include "AnimationWindow.h"
+#include "AddFrameWindow.h"
 
 AnimationClipEditor::AnimationClipEditor()
 {
@@ -20,6 +21,8 @@ AnimationClipEditor::~AnimationClipEditor()
 {
 	delete m_WindowTest;
 	m_WindowTest = nullptr;
+	delete m_AddFrameWindow;
+	m_AddFrameWindow = nullptr;
 
 }
 
@@ -45,6 +48,8 @@ void AnimationClipEditor::Init()
 	m_LoadButtonCollider.h = m_LoadObject.m_Size.y;
 
 	AnimationWindow* animWindow = new AnimationWindow(Vector2{ 100,100 }, windowName, m_EditorIconsTexture);
+	AddFrameWindow* frameWin = new AddFrameWindow(Vector2{ 300,300 },std::string( "AddFrame window"), m_EditorIconsTexture);
+	m_AddFrameWindow = frameWin;
 
 	Object obj = Object{};
 
@@ -54,7 +59,7 @@ void AnimationClipEditor::Init()
 	if (m_DefaultFont != nullptr)
 	{
 		m_WindowTest->SetFont(m_DefaultFont);
-
+		m_AddFrameWindow->SetFont(m_DefaultFont);
 	}
 
 }
@@ -116,6 +121,11 @@ void AnimationClipEditor::MouseDown(unsigned int _key)
 	{
 		m_WindowTest->MouseDown(_key);
 	}
+	if (m_AddFrameWindow != nullptr)
+	{
+		m_AddFrameWindow->MouseDown(_key);
+	}
+
 	if (_key == SDL_BUTTON_LEFT)
 	{
 		m_Dragging = true;
@@ -128,6 +138,10 @@ void AnimationClipEditor::MouseUp(unsigned int _key)
 	if (m_WindowTest != nullptr)
 	{
 		m_WindowTest->MouseUp(_key);
+	}
+	if (m_AddFrameWindow != nullptr)
+	{
+		m_AddFrameWindow->MouseUp(_key);
 	}
 	if (_key == SDL_BUTTON_LEFT)
 	{
@@ -157,6 +171,11 @@ void AnimationClipEditor::MouseMove(int _x, int _y)
 	{
 		m_WindowTest->MouseMove(_x, _y);
 	}
+	if (m_AddFrameWindow != nullptr)
+	{
+		m_AddFrameWindow->MouseMove(_x,_y);
+	}
+
 }
 
 void AnimationClipEditor::GenerateNumberedBoxes()
@@ -234,9 +253,22 @@ void AnimationClipEditor::Update(float _dt)
 		{
 			delete m_WindowTest;
 			m_WindowTest = nullptr;
-			printf("yeetus deletus");
 		}
 		
+	}
+
+	if (m_AddFrameWindow != nullptr)
+	{
+		m_AddFrameWindow->Update(_dt);
+		if (m_AddFrameWindow->m_Dragging)
+		{
+			m_Dragging = false;
+		}
+		if (m_AddFrameWindow->CanDelete())
+		{
+			delete m_AddFrameWindow;
+			m_AddFrameWindow = nullptr;
+		}
 	}
 	if (m_Dragging)
 	{
@@ -300,6 +332,10 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 	if (m_WindowTest != nullptr)
 	{
 		m_WindowTest->Render(_renderer);
+	}
+	if (m_AddFrameWindow != nullptr)
+	{
+		m_AddFrameWindow->Render(_renderer);
 	}
 }
 

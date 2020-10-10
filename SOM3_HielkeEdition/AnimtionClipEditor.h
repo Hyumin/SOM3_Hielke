@@ -6,6 +6,7 @@
 #include "HielkMath.h"
 #include "WindowOpener.h"
 #include "NumberedBox.h"
+#include "Button.h"
 
 //This class will have the following purpose:
 //Creation of new animation clips for any given sprite sheet
@@ -64,7 +65,8 @@ private:
 	EditorWindow* m_WindowTest;
 	EditorWindow* m_AddFrameWindow;
 	TTF_Font* m_DefaultFont;
-	
+
+
 	std::vector<NumberedBox> m_NumbrdBoxes;
 
 

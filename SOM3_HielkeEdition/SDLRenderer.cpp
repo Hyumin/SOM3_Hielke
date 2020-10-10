@@ -207,6 +207,14 @@ void SDLRenderer::DrawFilledBox(int _x, int _y, int _w, int _h, SDL_Color _color
 	m_Layers[_layer].AddFilledBox(b);
 }
 
+void SDLRenderer::DrawFilledBox(BoxCollider _box, SDL_Color _color, Vector2 _worldPos, unsigned int _layer)
+{
+	FilledBox b;
+	b.box = {(int) _box.pos.x - (int)_worldPos.x,(int)_box.pos.y - (int)_worldPos.y,(int)_box.w,(int)_box.h };
+	b.col = _color;
+	m_Layers[_layer].AddFilledBox(b);
+}
+
 bool SDLRenderer::Init(std::string _name, unsigned int _width, unsigned int _height)
 {
 	bool succes = true;

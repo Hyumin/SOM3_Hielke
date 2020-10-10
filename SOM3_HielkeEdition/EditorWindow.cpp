@@ -3,11 +3,14 @@
 #include "AnimationClip.h"
 #include <iostream>
 
+EditorWindow* currentSelfIGuessMaybe;
+
 EditorWindow::EditorWindow(Vector2 _pos, std::string& _name, Texture* _IconsTexture)
 {
 	m_Pos = _pos;
 	m_Name = _name;
 	Init(_IconsTexture);
+	currentSelfIGuessMaybe = this;
 
 }
 
@@ -16,11 +19,17 @@ EditorWindow::EditorWindow()
 	m_Pos = Vector2{ 0,0 };
 	m_Name = "empty window";
 	Init(nullptr);
+	currentSelfIGuessMaybe = this;
 }
 
 EditorWindow::~EditorWindow()
 {
 	
+}
+
+void Exit()
+{
+	currentSelfIGuessMaybe->ExitPressed();
 }
 
 void EditorWindow::Init(Texture* _IconsTexture)
@@ -62,7 +71,10 @@ void EditorWindow::Init(Texture* _IconsTexture)
 	}
 	m_CurrentClip = nullptr;
 
-
+	m_ExitButton = Button{};
+	m_ExitButton.SetCallbackFunction(&Exit);
+	m_ExitButton.SetSize({ 16,16 });
+	m_ExitButton.SetLayer(1);
 	
 }
 
@@ -75,12 +87,17 @@ void EditorWindow::Update(float _dt)
 	m_ContentBox.pos = m_Pos + m_ContentRelativePos;
 	m_CrossObject.m_Pos = m_CrossCollider.pos;
 	m_CrossObject.m_Size = Vector2{m_CrossCollider.w,m_CrossCollider.h};
+	m_ExitButton.SetPosition(m_Pos+m_CrossRelativePos);
+	m_ExitButton.SetSize({ m_CrossCollider.w,m_CrossCollider.h });
+
+
 	m_ContentScaler.pos = m_ContentBox.pos + Vector2{ m_ContentBox.w-m_ContentScaler.w,m_ContentBox.h -m_ContentScaler.h};
 	
 	m_ContentScaleObject.m_Pos = m_ContentScaler.pos;
 	m_ContentScaleObject.m_Size = Vector2{ m_ContentScaler.w,m_ContentScaler.h };
 
 	m_TextField.Update(_dt);
+	m_ExitButton.Update(_dt);
 }
 
 void EditorWindow::MouseDown(unsigned int _key)
@@ -97,7 +114,7 @@ void EditorWindow::MouseDown(unsigned int _key)
 		if (m_CrossCollider.BoxCollision(m_CrossCollider, m_MousePos))
 		{
 			//Close the window
-			m_ReadyForDelete = true;
+			//m_ReadyForDelete = true;
 		}
 		if (m_ContentScaler.BoxCollision(m_ContentScaler, m_MousePos))
 		{
@@ -106,6 +123,7 @@ void EditorWindow::MouseDown(unsigned int _key)
 			m_ScaleOnStart = Vector2{m_ContentBox.w, m_ContentBox.h};
 		}
 	}
+	m_ExitButton.MouseDown(_key);
 }
 
 void EditorWindow::MouseUp( unsigned int _key)
@@ -116,6 +134,7 @@ void EditorWindow::MouseUp( unsigned int _key)
 		m_Dragging = false;
 		m_ScalingSize = false;
 	}
+	m_ExitButton.MouseUp(_key);
 }
 
 void EditorWindow::MouseMove(unsigned int _x, unsigned int _y)
@@ -137,6 +156,7 @@ void EditorWindow::MouseMove(unsigned int _x, unsigned int _y)
 	{
 		ReScaleContent();
 	}
+	m_ExitButton.MouseMove(_x, _y);
 }
 
 void EditorWindow::ReScaleContent()
@@ -183,6 +203,8 @@ void EditorWindow::Render(SDLRenderer* _renderer)
 	m_ContentScaleObject.Render(_renderer, Vector2{ 0, 0 });
 	m_TextField.Render(_renderer, Vector2{ 0,0 },1);
 
+	m_ExitButton.Render(_renderer);
+
 	//Render m_IconTexture dependant objects
 	if (m_IconTexture != nullptr)
 	{
@@ -194,4 +216,9 @@ void EditorWindow::Render(SDLRenderer* _renderer)
 void EditorWindow::SetClip(AnimationClip* _clip)
 {
 	m_CurrentClip = _clip;
+}
+
+void EditorWindow::ExitPressed()
+{
+	m_ReadyForDelete = true;
 }

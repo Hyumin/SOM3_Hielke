@@ -4,6 +4,7 @@
 #include "HielkMath.h"
 #include "TextField.h"
 #include "Object.h"
+#include "Button.h"
 
 /// <summary>
 ///  we want an editor window to be a draggable object that contains some kind of data
@@ -32,6 +33,8 @@ public:
 	virtual void Render(SDLRenderer* _renderer);
 	virtual void SetClip(AnimationClip* _clip);
 	
+	void ExitPressed();
+
 	bool m_Dragging;
 
 protected:
@@ -74,5 +77,7 @@ protected:
 
 	//For dragging the window with the mouse
 	Vector2 m_StartDragPos;
+
+	Button m_ExitButton;
 };
 

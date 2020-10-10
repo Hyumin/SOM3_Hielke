@@ -18,9 +18,13 @@ public:
     virtual void Render(SDLRenderer* _renderer);
     virtual void SetClip(AnimationClip* _clip);
 
+
 protected:
     virtual void Init(Texture* _IconsTexture);
     virtual void ReScaleContent();
+
+
+    TextField m_XY;
 
 };
 

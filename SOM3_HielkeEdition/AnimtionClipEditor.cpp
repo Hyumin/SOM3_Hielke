@@ -26,6 +26,8 @@ AnimationClipEditor::~AnimationClipEditor()
 
 }
 
+
+
 void AnimationClipEditor::Init()
 {
 	//Load default resources
@@ -61,7 +63,6 @@ void AnimationClipEditor::Init()
 		m_WindowTest->SetFont(m_DefaultFont);
 		m_AddFrameWindow->SetFont(m_DefaultFont);
 	}
-
 }
 
 void AnimationClipEditor::KeyDown(unsigned int _key)
@@ -185,7 +186,6 @@ void AnimationClipEditor::GenerateNumberedBoxes()
 	if (m_CurrentClip.m_ClipName != " ")
 	{
 		//Generate numbered boxes based on the current clips rects
-
 		for (unsigned int i = 0; i < m_CurrentClip.m_SourceRects.size(); ++i)
 		{
 			NumberedBox nb = NumberedBox(i);
@@ -231,10 +231,8 @@ void AnimationClipEditor::Update(float _dt)
 	if (m_WindowTest != nullptr)
 	{
 		m_CurrentClip.Update(_dt);
-	
 		try
-		{
-		
+		{	
 			m_CurrentAnimationObject.m_RenderInterface.srcRect = m_CurrentClip.GetRect();
 			m_CurrentAnimationObject.m_RenderInterface.textureName = m_SpriteSheet.m_RenderInterface.textureName;
 
@@ -337,6 +335,7 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 	{
 		m_AddFrameWindow->Render(_renderer);
 	}
+
 }
 
 void AnimationClipEditor::LoadDefaultAssets()
@@ -355,7 +354,6 @@ void AnimationClipEditor::LoadDefaultAssets()
 		
 		m_DefaultFont = m_ResMan->LoadFont("Assets//Fonts//LucidaBrightRegular.ttf",16);
 		//m_DefaultFont =m_ResMan->GetFont("Assets//Fonts//arial.ttf");
-
 
 		
 

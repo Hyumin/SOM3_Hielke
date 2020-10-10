@@ -63,6 +63,7 @@ public:
 	void DrawBox(BoxCollider _box, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = {0.0f,0.0f}, unsigned int _layer = 0);
 	void DrawBox(int _x, int _y, int _w, int _h, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, unsigned int _layer = 0);
 	void DrawFilledBox(int _x, int _y, int _w, int _h, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, unsigned int _layer = 0);
+	void DrawFilledBox(BoxCollider _box, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, unsigned int _layer = 0);
 
 
 private:

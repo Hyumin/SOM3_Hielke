@@ -14,9 +14,7 @@ void AddFrameWindow::Init(Texture* _IconsTexture)
 
 void AddFrameWindow::ReScaleContent()
 {
-	m_Pos = Vector2{ 0,0 };
-	m_Name = "empty window";
-	Init(nullptr);
+	EditorWindow::ReScaleContent();
 }
 
 AddFrameWindow::AddFrameWindow(Vector2 _pos, const std::string& _name, Texture* _IconsTexture)
@@ -60,6 +58,11 @@ void AddFrameWindow::MouseMove(unsigned int _x, unsigned int _y)
 void AddFrameWindow::SetFont(TTF_Font* _font)
 {
 	EditorWindow::SetFont(_font);
+
+	if (m_TextField.GetFont() == nullptr)
+	{
+		printf("Wtf went wrong?");
+	}
 }
 
 void AddFrameWindow::Render(SDLRenderer* _renderer)

@@ -52,10 +52,7 @@ void Button::MouseUp(unsigned int _key)
 			m_Clicked = false;
 			//Fire event
 			//std::cout << " A click has happened datebayo \n";
-			if (callback != NULL)
-			{
-				callback();
-			}
+			m_Callback();
 		}	
 	}
 }
@@ -131,9 +128,9 @@ void Button::SetPosition(Vector2 _pos)
 
 }
 
-void Button::SetCallbackFunction(void(*funcpntr)())
+void Button::SetCallbackFunction(std::function<void()> fnc)
 {
-	callback = funcpntr;
+	m_Callback = fnc;
 }
 
 void Button::Init()
@@ -148,7 +145,7 @@ void Button::Init()
 	m_Object = Object{};
 	m_Pos = Vector2{ 0,0 };
 	m_Collider = BoxCollider(0, 0, 100, 100);
-	callback = NULL;
+	m_Callback = NULL;
 	SetFilledRectMode({ 125,125,125,255 }, { 255,255,255,255 }, { 0,0,0,255 });
 
 }

@@ -2,6 +2,8 @@
 #include "Texture.h"
 #include "AnimationClip.h"
 #include <iostream>
+#include <functional>
+#include <utility>
 
 EditorWindow* currentSelfIGuessMaybe;
 
@@ -72,7 +74,8 @@ void EditorWindow::Init(Texture* _IconsTexture)
 	m_CurrentClip = nullptr;
 
 	m_ExitButton = Button{};
-	m_ExitButton.SetCallbackFunction(&Exit);
+	m_ExitButton.SetCallbackFunction(std::bind(&EditorWindow::ExitPressed,this));
+
 	m_ExitButton.SetSize({ 16,16 });
 	m_ExitButton.SetLayer(1);
 	

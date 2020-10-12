@@ -1,12 +1,28 @@
-﻿  EditorWindow.cpp
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(144,17): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(145,17): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(199,65): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(199,56): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(199,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(199,36): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(200,98): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(200,79): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(200,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(200,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+﻿  AddFrameWindow.cpp
+  AnimationWindow.cpp
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(141,109): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(141,90): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(141,71): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(141,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  AnimtionClipEditor.cpp
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(162,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(162,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(196,16): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(197,16): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(241,26): warning C4101: 'e': unreferenced local variable
+  Button.cpp
+  EditorWindow.cpp
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(146,17): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(147,17): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(201,65): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(201,56): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(201,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(201,36): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(202,98): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(202,79): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(202,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\EditorWindow.cpp(202,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Main.cpp
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Main.cpp(52,23): warning C4244: '=': conversion from 'Uint32' to 'float', possible loss of data
+  Generating Code...
   SOM3_HielkeEdition.vcxproj -> D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\x64\Debug\Bin\Debug\x64\SOM3_HielkeEdition.exe

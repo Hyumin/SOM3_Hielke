@@ -37,3 +37,6 @@
 #Binary folders
 SOM3_HielkeEdition/x64
 SOM3_HielkeEdition/Bin
+
+#visual studio folder
+SOM3_HielkeEdition/.vs

@@ -65,7 +65,7 @@ void AnimationWindow::MouseDown(unsigned int _key)
 	EditorWindow::MouseDown(_key);
 	if (_key == (SDL_BUTTON_LEFT))
 	{
-		if (m_CrossCollider.BoxCollision(m_PauseButton, m_MousePos))
+		if (m_EnableLooping.BoxCollision(m_PauseButton, m_MousePos))
 		{
 			if (m_CurrentClip != nullptr)
 			{
@@ -74,7 +74,7 @@ void AnimationWindow::MouseDown(unsigned int _key)
 				m_Playing = false;
 			}
 		}
-		if (m_CrossCollider.BoxCollision(m_PlayButton, m_MousePos))
+		if (m_EnableLooping.BoxCollision(m_PlayButton, m_MousePos))
 		{
 			if (m_CurrentClip != nullptr)
 			{
@@ -86,7 +86,7 @@ void AnimationWindow::MouseDown(unsigned int _key)
 				}
 			}
 		}
-		if (m_CrossCollider.BoxCollision(m_LoopButton, m_MousePos))
+		if (m_EnableLooping.BoxCollision(m_LoopButton, m_MousePos))
 		{
 			if (m_CurrentClip != nullptr)
 			{
@@ -181,11 +181,7 @@ void AnimationWindow::SetFont(TTF_Font* _font)
 
 void AnimationWindow::Init(Texture* _IconsTexture)
 {
-	m_Bar = BoxCollider{ 100, 100, 300, 40 };
-	m_CrossCollider = BoxCollider{ 350,100,50,40 };
-	m_ContentBox = BoxCollider{ 100,140,300,500 };
-	m_ContentScaler = BoxCollider{ 0,0,40,40 };
-
+	EditorWindow::Init(_IconsTexture);
 	//Buttons
 	m_PauseButton = BoxCollider{ 0,0,50,50 };
 	m_PlayButton = BoxCollider{ 0,0,50,50 };
@@ -198,24 +194,10 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_LoopObject.m_RenderInterface.srcRect = { 32,16,16,16 };
 	m_PauseObject.m_RenderInterface.srcRect = { 16,0,16,16 };
 
-	m_ContentScaler.pos = m_ContentBox.pos + Vector2{ m_ContentBox.w,m_ContentBox.h };
 
-
-	m_BarRelativePos = Vector2{ 0,0 };
-	m_CrossRelativePos = Vector2{ 250,0 };
-	m_ContentRelativePos = Vector2{ 0,40 };
-
-	m_Dragging = false;
-	m_ReadyForDelete = false;
-
-	m_MousePos = Vector2{ 0,0 };
-	m_TextField = TextField();
 	m_FilePathTextField = TextField();
 	m_IsLoopingTextField = TextField();
 	m_Obj = Object();
-	m_TextField.SetText(m_Name);
-	m_TextField.m_Size = Vector2{ 250,30 };
-	m_TextField.SetColour(255, 255, 255, 255);
 
 	m_FilePathTextField.m_Size = Vector2{ 300,100 };
 	m_FilePathTextField.SetColour(0, 0, 0, 255);
@@ -227,24 +209,12 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 
 	m_EnableLooping = BoxCollider(0, 0, 20, 20);
 
-	m_IconTexture = _IconsTexture;
-
-	m_CrossObject = Object();
-	m_CrossObject.m_RenderInterface.srcRect = { 48,16,16,16 };
-
-	m_ContentScaleObject = Object();
-	m_ContentScaleObject.m_RenderInterface.srcRect = { 16,16,16,16 };
-
 	if (m_IconTexture != nullptr)
 	{
-		m_CrossObject.m_RenderInterface.textureName = _IconsTexture->GetName();
-		m_ContentScaleObject.m_RenderInterface.textureName = _IconsTexture->GetName();
 		m_PlayObject.m_RenderInterface.textureName = _IconsTexture->GetName();
 		m_LoopObject.m_RenderInterface.textureName = _IconsTexture->GetName();
 		m_PauseObject.m_RenderInterface.textureName = _IconsTexture->GetName();
 	}
-	m_CurrentClip = nullptr;
-
 	m_Playing = false;
 	m_Looping = false;
 	m_Pausing = false;
@@ -268,5 +238,5 @@ void AnimationWindow::ReScaleContent()
 	m_ContentBox.h = newHeight;
 
 	m_Bar.w = m_ContentBox.w;
-	m_CrossRelativePos.x = m_Bar.w - m_CrossCollider.w;
+	m_CrossRelativePos.x = m_Bar.w - m_ExitButton.GetSize().x;
 }

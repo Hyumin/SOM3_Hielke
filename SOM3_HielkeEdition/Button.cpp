@@ -82,13 +82,28 @@ void Button::Render(SDLRenderer* _renderer)
 		break;
 	case TEXTURE:
 
+
+		m_Object.m_RenderInterface = m_TextureNorm;
+		if (m_Hovered)
+		{
+			m_Object.m_RenderInterface = m_TexHovered;
+		}
+		if (m_Clicked)
+		{
+			m_Object.m_RenderInterface = m_TexClicked;
+		}
+		m_Object.Render(_renderer, { 0,0 }, m_Layer);
+
 		break;
 	}
 }
 
-void Button::SetTextureDrawMode()
+void Button::SetTextureDrawMode(RenderInterface _norm, RenderInterface _clicked, RenderInterface _hovered)
 {
-
+	m_TextureNorm = _norm;
+	m_TexClicked = _clicked;
+	m_TexHovered = _hovered;
+	m_DrawMode = TEXTURE;
 }
 
 void Button::SetFilledRectMode(SDL_Colour _normal, SDL_Colour _hovered, SDL_Colour _clicked)
@@ -139,8 +154,9 @@ void Button::Init()
 	m_Clicked = false;
 	m_Layer = 1;
 	m_MousePos = { 0,0 };
-	m_TexHovered = " ";
-	m_TextureName = " ";
+	m_TexHovered = {};
+	m_TextureNorm = { };
+	m_TexClicked = {};
 	m_Font = nullptr;
 	m_Object = Object{};
 	m_Pos = Vector2{ 0,0 };

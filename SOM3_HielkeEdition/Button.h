@@ -30,7 +30,7 @@ class Button
 			TEXTURE =2
 		};
 
-		void SetTextureDrawMode();
+		void SetTextureDrawMode(RenderInterface _norm, RenderInterface _clicked, RenderInterface _hovered);
 		void SetFilledRectMode(SDL_Colour _normal,SDL_Colour _hovered, SDL_Colour _clicked);//
 		void SetWireFrameMode(SDL_Colour _normal, SDL_Colour _hovered, SDL_Colour _clicked);
 		void SetLayer(int _layer);
@@ -51,9 +51,9 @@ class Button
 		Vector2 m_Size;
 		Vector2 m_MousePos;
 		Vector2 m_Pos;
-		std::string m_TexHovered;
-		std::string m_TexClicked;//Texture for clicked should be render interface actually
-		std::string m_TextureName;
+		RenderInterface m_TexHovered;
+		RenderInterface m_TexClicked;
+		RenderInterface m_TextureNorm;
 		Object m_Object;
 		DrawMode m_DrawMode;
 		BoxCollider m_Collider;

@@ -29,15 +29,10 @@ EditorWindow::~EditorWindow()
 	
 }
 
-void Exit()
-{
-	currentSelfIGuessMaybe->ExitPressed();
-}
 
 void EditorWindow::Init(Texture* _IconsTexture)
 {
 	m_Bar = BoxCollider{ 100, 100, 300, 40 };
-	m_CrossCollider = BoxCollider{ 350,100,50,40 };
 	m_ContentBox = BoxCollider{ 100,140,300,500 };
 	m_ContentScaler = BoxCollider{ 0,0,40,40 };
 
@@ -60,23 +55,32 @@ void EditorWindow::Init(Texture* _IconsTexture)
 
 	m_IconTexture = _IconsTexture;
 
-	m_CrossObject = Object();
-	m_CrossObject.m_RenderInterface.srcRect = { 48,16,16,16 };
 
 	m_ContentScaleObject = Object();
 	m_ContentScaleObject.m_RenderInterface.srcRect = { 16,16,16,16 };
 
 	if (m_IconTexture != nullptr)
 	{
-		m_CrossObject.m_RenderInterface.textureName = _IconsTexture->GetName();
 		m_ContentScaleObject.m_RenderInterface.textureName = _IconsTexture->GetName();
 	}
 	m_CurrentClip = nullptr;
 
 	m_ExitButton = Button{};
+	if (m_IconTexture != nullptr)
+	{
+		RenderInterface norm, clicked, hovered;
+		norm.textureName = _IconsTexture->GetName();
+		norm.srcRect = { 48,16,16,16 };
+		norm.renderFlip = SDL_RendererFlip::SDL_FLIP_NONE;
+		clicked = norm;
+		hovered = norm;
+		clicked.srcRect.x = 80;
+		hovered.srcRect.x = 64;
+		m_ExitButton.SetTextureDrawMode(norm, clicked, hovered);
+	}
 	m_ExitButton.SetCallbackFunction(std::bind(&EditorWindow::ExitPressed,this));
 
-	m_ExitButton.SetSize({ 16,16 });
+	m_ExitButton.SetSize({ 48,m_Bar.h });
 	m_ExitButton.SetLayer(1);
 	
 }
@@ -86,13 +90,8 @@ void EditorWindow::Update(float _dt)
 {
 	m_Bar.pos = m_Pos + m_BarRelativePos;
 	m_TextField.m_pos = m_Pos + m_BarRelativePos;
-	m_CrossCollider.pos = m_Pos + m_CrossRelativePos;
 	m_ContentBox.pos = m_Pos + m_ContentRelativePos;
-	m_CrossObject.m_Pos = m_CrossCollider.pos;
-	m_CrossObject.m_Size = Vector2{m_CrossCollider.w,m_CrossCollider.h};
 	m_ExitButton.SetPosition(m_Pos+m_CrossRelativePos);
-	m_ExitButton.SetSize({ m_CrossCollider.w,m_CrossCollider.h });
-
 
 	m_ContentScaler.pos = m_ContentBox.pos + Vector2{ m_ContentBox.w-m_ContentScaler.w,m_ContentBox.h -m_ContentScaler.h};
 	
@@ -113,11 +112,6 @@ void EditorWindow::MouseDown(unsigned int _key)
 			m_Dragging = true;
 			m_StartDragPos = m_Bar.pos -m_MousePos;
 
-		}
-		if (m_CrossCollider.BoxCollision(m_CrossCollider, m_MousePos))
-		{
-			//Close the window
-			//m_ReadyForDelete = true;
 		}
 		if (m_ContentScaler.BoxCollision(m_ContentScaler, m_MousePos))
 		{
@@ -180,7 +174,7 @@ void EditorWindow::ReScaleContent()
 	m_ContentBox.h = newHeight;
 
 	m_Bar.w = m_ContentBox.w;
-	m_CrossRelativePos.x = m_Bar.w - m_CrossCollider.w;
+	m_CrossRelativePos.x = m_Bar.w - m_ExitButton.GetSize().x;
 
 }
 
@@ -201,18 +195,11 @@ void EditorWindow::Render(SDLRenderer* _renderer)
 	_renderer->DrawFilledBox(m_Bar.pos.x,m_Bar.pos.y,m_Bar.w, m_Bar.h, { 0,153,15,255 });
 	_renderer->DrawFilledBox(m_ContentBox.pos.x, m_ContentBox.pos.y, m_ContentBox.w, m_ContentBox.h / 3, { 0,160,15,255 });
 
-	_renderer->DrawBox(m_CrossCollider, { 255,0,0,255 });
 	_renderer->DrawBox(m_ContentBox);
 	m_ContentScaleObject.Render(_renderer, Vector2{ 0, 0 });
 	m_TextField.Render(_renderer, Vector2{ 0,0 },1);
 
 	m_ExitButton.Render(_renderer);
-
-	//Render m_IconTexture dependant objects
-	if (m_IconTexture != nullptr)
-	{
-		m_CrossObject.Render(_renderer, Vector2{ 0,0 }, 1);
-	}
 
 }
 

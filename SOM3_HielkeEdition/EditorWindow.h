@@ -48,11 +48,9 @@ protected:
 
 	std::string m_Name;
 	BoxCollider m_Bar;
-	BoxCollider m_CrossCollider;
 	BoxCollider m_ContentScaler;
 	BoxCollider m_ContentInformation;
 
-	Object m_CrossObject;
 	Object m_ContentScaleObject;
 
 

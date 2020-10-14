@@ -49,7 +49,7 @@ void AnimationClipEditor::Init()
 	m_LoadButtonCollider.w = m_LoadObject.m_Size.x;
 	m_LoadButtonCollider.h = m_LoadObject.m_Size.y;
 
-	AnimationWindow* animWindow = new AnimationWindow(Vector2{ 100,100 }, windowName, m_EditorIconsTexture);
+	AnimationWindow* animWindow = new AnimationWindow(Vector2{ 700,100 }, windowName, m_EditorIconsTexture);
 	AddFrameWindow* frameWin = new AddFrameWindow(Vector2{ 300,300 },std::string( "AddFrame window"), m_EditorIconsTexture);
 	m_AddFrameWindow = frameWin;
 
@@ -189,7 +189,7 @@ void AnimationClipEditor::GenerateNumberedBoxes()
 		for (unsigned int i = 0; i < m_CurrentClip.m_SourceRects.size(); ++i)
 		{
 			NumberedBox nb = NumberedBox(i);
-			BoxCollider box = BoxCollider{};
+			Box box = Box{};
 
 			const SDL_Rect& rect = m_CurrentClip.m_SourceRects[i];
 			box.pos = Vector2{ (float)rect.x,(float)rect.y };

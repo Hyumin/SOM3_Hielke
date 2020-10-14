@@ -59,7 +59,7 @@ namespace Hielke
 		void ClassStrike(float _dt);
 
 
-		BoxCollider& GetAttackCollider();
+		Box& GetAttackCollider();
 
 		void SetMap(Map* _map);
 		void HandleMovementInput(float _dt);
@@ -92,8 +92,8 @@ namespace Hielke
 
 		Object* m_Object; //Object is the rendered part of the player character
 		std::map<Direction, bool> m_BlockedDir;
-		BoxCollider m_Collider;
-		BoxCollider m_AttackCollider;
+		Box m_Collider;
+		Box m_AttackCollider;
 		PlayerStats m_Stats;
 		Map* m_CurrentMap;
 

@@ -148,7 +148,7 @@ void SDLRenderer::SetResourceManager(ResourceManager* _resman)
 	m_ResMan = _resman;
 }
 
-void SDLRenderer::DrawBox(BoxCollider _box, SDL_Color _color, Vector2 _worldPos, unsigned int _layer )
+void SDLRenderer::DrawBox(Box _box, SDL_Color _color, Vector2 _worldPos, unsigned int _layer )
 {
 	//Draw pos x to x+w
 	Vector2 screenPos = _box.pos  ;
@@ -207,7 +207,7 @@ void SDLRenderer::DrawFilledBox(int _x, int _y, int _w, int _h, SDL_Color _color
 	m_Layers[_layer].AddFilledBox(b);
 }
 
-void SDLRenderer::DrawFilledBox(BoxCollider _box, SDL_Color _color, Vector2 _worldPos, unsigned int _layer)
+void SDLRenderer::DrawFilledBox(Box _box, SDL_Color _color, Vector2 _worldPos, unsigned int _layer)
 {
 	FilledBox b;
 	b.box = {(int) _box.pos.x - (int)_worldPos.x,(int)_box.pos.y - (int)_worldPos.y,(int)_box.w,(int)_box.h };

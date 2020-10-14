@@ -26,13 +26,16 @@ protected:
        void LoopClip();
        void PauseClip();
 
-       BoxCollider m_EnableLooping;
+       //Could be a button, 
+       Box m_EnableLooping;
+       Box m_BottomContentBox;
+       Box m_TopContentBox;
+
 
        //Rename to normal once colliders have been refactored out
        Button m_PlayButton;
        Button m_PauseButton;
        Button m_LoopButton;
-
 
        bool m_Playing, m_Looping, m_Pausing;
    
@@ -40,5 +43,7 @@ protected:
        TextField m_IsLoopingTextField;
        Object m_Obj;
 
+
+       Vector2 m_ButtonsOffset;
 };
 

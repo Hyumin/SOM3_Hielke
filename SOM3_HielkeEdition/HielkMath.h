@@ -102,32 +102,32 @@ private:
 };
 
 
-class BoxCollider
+class Box
 {
 public:
-	BoxCollider()
+	Box()
 	{
 		pos.x = 0.0f;
 		pos.y = 0.0f;
 		w = 1.0f;
 		h = 1.0f;
 	}
-	BoxCollider(const Vector2& _pos, float _w,float _h)
+	Box(const Vector2& _pos, float _w,float _h)
 	{
 		pos = _pos;
 		w = _w;
 		h = _h;
 	}
-	BoxCollider(float _x, float _y, float _w, float _h) 
+	Box(float _x, float _y, float _w, float _h) 
 	{
 		pos.x = _x;
 		pos.y = _y;
 		w = _w;
 		h = _h;
 	}
-	~BoxCollider(){}
+	~Box(){}
 
-	bool BoxCollision(const BoxCollider& _b1, const BoxCollider& _b2)
+	bool BoxCollision(const Box& _b1, const Box& _b2)
 	{
 
 		if (_b1.pos.x + _b1.w >= _b2.pos.x &&
@@ -140,7 +140,7 @@ public:
 
 		return false;
 	}
-	bool BoxCollision(const BoxCollider& _b1, const Vector2 _p1)
+	bool BoxCollision(const Box& _b1, const Vector2 _p1)
 	{
 		if (_b1.pos.x + _b1.w >= _p1.x &&
 			_b1.pos.y + _b1.h >= _p1.y &&

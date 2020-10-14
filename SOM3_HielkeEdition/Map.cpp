@@ -163,7 +163,7 @@ void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
 			file >> word;
 			file >> word >> newMap.fileName;;
 
-			BoxCollider b;
+			Box b;
 			file >> word;
 			file>>b.pos.x;
 			file >> word;
@@ -319,7 +319,7 @@ void Hielke::Map::LoadCollidersFromFile(const std::string& _filePath, const Obje
 						//Use our length instead srcRect.w+srcRect.x
 						w = std::abs(xStart - (srcRect.w + srcRect.x)) + 1;
 					}
-					BoxCollider box = BoxCollider{ ((float)xStart - (float)srcRect.x) * aspectRatio.x,((float)yStart - srcRect.y) * aspectRatio.y,aspectRatio.x * (float)w,aspectRatio.y * (float)h };
+					Box box = Box{ ((float)xStart - (float)srcRect.x) * aspectRatio.x,((float)yStart - srcRect.y) * aspectRatio.y,aspectRatio.x * (float)w,aspectRatio.y * (float)h };
 
 					m_Walls.push_back(box);
 					xStart = -1;
@@ -341,7 +341,7 @@ Object* Hielke::Map::GetBackground()
 
 
 
-ConnectedMap& Hielke::Map::GetConnectedMap(BoxCollider& _playerCollider)
+ConnectedMap& Hielke::Map::GetConnectedMap(Box& _playerCollider)
 {
 	for (uint32_t i = 0; i < m_ConnectedMaps.size(); ++i)
 	{
@@ -357,7 +357,7 @@ ConnectedMap& Hielke::Map::GetConnectedMap(BoxCollider& _playerCollider)
 }
 
 //Returns the colliders input collider has hit 
-HitResult Hielke::Map::CheckMapCollision(BoxCollider& _collider)
+HitResult Hielke::Map::CheckMapCollision(Box& _collider)
 {
 
 	HitResult result;

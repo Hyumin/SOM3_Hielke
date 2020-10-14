@@ -14,8 +14,8 @@ public:
 	void Render(SDLRenderer* _renderer, Vector2 _WorldPos = { 0,0 }, Vector2 _ScaleMult = {1,1}, bool _drawFilled = false);
 
 
-	void SetBox(BoxCollider _box);
-	BoxCollider GetBox() { return m_Box; }
+	void SetBox(Box _box);
+	Box GetBox() { return m_Box; }
 	void SetPos(Vector2 _pos);
 	Vector2 GetPos() { return m_Box.pos; }
 	void SetColour(SDL_Color _col);
@@ -31,7 +31,7 @@ private:
 	void UpdateTextField();
 	void Init();
 
-	BoxCollider m_Box;
+	Box m_Box;
 	SDL_Color m_Colour;
 	TextField m_Text;
 	int m_Number;

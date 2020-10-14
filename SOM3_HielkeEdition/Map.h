@@ -21,7 +21,7 @@ namespace Hielke
 	{
 		std::string mapName;
 		std::string fileName;
-		BoxCollider collider;
+		Box collider;
 		Vector2 startPos;
 	};
 
@@ -43,8 +43,8 @@ namespace Hielke
 		void LoadMap(const std::string& _filePath, ResourceManager* _res);
 		void LoadCollidersFromFile(const std::string& _filePath, const Object* _obj);
 		Object* GetBackground();
-		ConnectedMap& GetConnectedMap(BoxCollider& _playerCollider);
-		HitResult CheckMapCollision(BoxCollider& _collider);
+		ConnectedMap& GetConnectedMap(Box& _playerCollider);
+		HitResult CheckMapCollision(Box& _collider);
 
 		void SetBackGround(Object* _background);
 		void AssignPlayer(PlayerCharacter* _player);
@@ -56,7 +56,7 @@ namespace Hielke
 		{
 			return m_MapName;
 		}
-		std::vector<BoxCollider>& GetColliders()
+		std::vector<Box>& GetColliders()
 		{
 			return m_Walls;
 		}
@@ -65,7 +65,7 @@ namespace Hielke
 		std::string m_MapName, m_VisalName, m_ColliderMapName;
 
 		Object* m_BackGround;
-		std::vector<BoxCollider> m_Walls;//The typical collider that just blocks movement
+		std::vector<Box> m_Walls;//The typical collider that just blocks movement
 		std::vector<ConnectedMap> m_ConnectedMaps;
 		std::vector<PlayerCharacter*> m_Players;
 		std::vector<Enemy*> m_Enemies;

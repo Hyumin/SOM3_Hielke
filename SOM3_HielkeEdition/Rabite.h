@@ -39,7 +39,7 @@ protected:
     std::map<Direction, AnimationClip> m_IdleAnimation;
     std::map<Direction, AnimationClip> m_MoveAnimation;
     std::map<Direction, AnimationClip> m_AttackAnimation;
-    BoxCollider m_AttackCollider;
+    Box m_AttackCollider;
 
 };
 

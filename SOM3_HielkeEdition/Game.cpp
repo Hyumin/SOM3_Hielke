@@ -244,7 +244,7 @@ void Game::Render(SDLRenderer* _renderer)
 		m_FloatingTexts[i].Render(_renderer, m_WorldPos,0);
 	}
 
-	std::vector<BoxCollider>& mapColliders = m_CurrentMap->GetColliders();
+	std::vector<Box>& mapColliders = m_CurrentMap->GetColliders();
 	SDL_Color col = { 0x00,0x00,0xff,0xff };
 	for (uint32_t i = 0; i < mapColliders.size(); ++i)
 	{

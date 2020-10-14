@@ -33,7 +33,12 @@ class Button
 		void SetTextureDrawMode(RenderInterface _norm, RenderInterface _clicked, RenderInterface _hovered);
 		void SetTextureDrawModeWithSheet(const std::string& _texName, SDL_Rect _norm,SDL_Rect _clicked, SDL_Rect _hovered);//Initialzing one button whose texture is shared across all three states
 		void SetFilledRectMode(SDL_Colour _normal,SDL_Colour _hovered, SDL_Colour _clicked);//
+		void SetFilledRectMode();
 		void SetWireFrameMode(SDL_Colour _normal, SDL_Colour _hovered, SDL_Colour _clicked);
+		void SetWireFrameMode();
+		void SetText(const std::string& _text);
+
+
 		void SetLayer(int _layer);
 		int GetLayer() { return m_Layer; }
 
@@ -44,7 +49,9 @@ class Button
 		void SetCallbackFunction(std::function<void()>fnc);// to pass in a function call back use std::bind
 														   // Example: std::bind(&Class::Function,this); (for a function with no arguments second parameter must be the object of the class
 														   // https://stackoverflow.com/questions/22422147/why-is-stdbind-not-working-without-placeholders-in-this-example-member-functi
-		BoxCollider GetCollider() { return m_Collider; }// in case some external function wants to use the collider to render or smth
+		Box GetCollider() { return m_Collider; }// in case some external function wants to use the collider to render or smth
+
+		void SetFont(TTF_Font* _Font);
 
 
 	private:
@@ -59,7 +66,7 @@ class Button
 		RenderInterface m_TextureNorm;
 		Object m_Object;
 		DrawMode m_DrawMode;
-		BoxCollider m_Collider;
+		Box m_Collider;
 
 
 		TextField m_TextField;

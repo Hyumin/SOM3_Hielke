@@ -41,7 +41,7 @@ Hielke::PlayerCharacter::PlayerCharacter()
 	m_InitialSize.y = 30;
 
 	m_CurrentAnimationClip = nullptr;
-	m_Collider = BoxCollider(m_Pos, m_InitialSize.x, m_InitialSize.y);
+	m_Collider = Box(m_Pos, m_InitialSize.x, m_InitialSize.y);
 	m_CurrentMap = nullptr;
 	m_DamageThisAttack = false;
 
@@ -65,7 +65,7 @@ void Hielke::PlayerCharacter::SetSize(float _w, float _h)
 	m_BaseSrcSize = { 30,30 };
 
 	//change collider size
-	m_Collider = BoxCollider(m_Pos, m_InitialSize.x,m_InitialSize.y);
+	m_Collider = Box(m_Pos, m_InitialSize.x,m_InitialSize.y);
 
 }
 
@@ -78,10 +78,10 @@ void Hielke::PlayerCharacter::Update(float _dt)
 	if (m_CurrentMap != nullptr)
 	{
 		//Check collision with map coliders
-		std::vector<BoxCollider>& mapColliders = m_CurrentMap->GetColliders();
+		std::vector<Box>& mapColliders = m_CurrentMap->GetColliders();
 		for (uint32_t i = 0; i < mapColliders.size(); ++i)
 		{
-			BoxCollider& a = mapColliders[i];
+			Box& a = mapColliders[i];
 			if (a.BoxCollision(a, m_Collider))
 			{
 				//Figure out which velocities to block
@@ -365,7 +365,7 @@ void Hielke::PlayerCharacter::SetObject(Object* _obj)
 	m_InitialSize.x = m_Object->m_Size.x;
 	m_InitialSize.y = m_Object->m_Size.y;
 
-	m_Collider = BoxCollider(m_Pos, m_InitialSize.x, m_InitialSize.y);
+	m_Collider = Box(m_Pos, m_InitialSize.x, m_InitialSize.y);
 	m_Pos = _obj->m_Pos;
 	m_BaseSrcSize = { (float)_obj->m_RenderInterface.srcRect.w,(float)_obj->m_RenderInterface.srcRect.h };
 
@@ -452,7 +452,7 @@ void Hielke::PlayerCharacter::ClassStrike(float _dt)
 	}
 }
 
-BoxCollider& Hielke::PlayerCharacter::GetAttackCollider()
+Box& Hielke::PlayerCharacter::GetAttackCollider()
 {
 	// TODO: insert return statement here
 	if (m_Attack)
@@ -460,7 +460,7 @@ BoxCollider& Hielke::PlayerCharacter::GetAttackCollider()
 		return m_AttackCollider;
 	}
 	//Return empty boxcollider if we're not attackning
-	BoxCollider b = BoxCollider{};
+	Box b = Box{};
 
 	return b;
 

@@ -51,7 +51,6 @@ void Button::MouseUp(unsigned int _key)
 		{
 			m_Clicked = false;
 			//Fire event
-			//std::cout << " A click has happened datebayo \n";
 			m_Callback();
 		}	
 	}
@@ -60,29 +59,40 @@ void Button::MouseUp(unsigned int _key)
 void Button::Render(SDLRenderer* _renderer)
 {
 	
-	SDL_Colour col = m_ColNorm;
-	if (m_Hovered)
+	SDL_Colour col;
+	//If we don't use texture drawing mode use colours to define how 
+	// the button will be rendered
+	if (m_DrawMode != TEXTURE)
 	{
-		col = m_ColHov;
+		col = m_ColNorm;
+		if (m_Hovered)
+		{
+			col = m_ColHov;
+		}
+		if (m_Clicked)
+		{
+			col = m_ColClicked;
+		}
 	}
-	if (m_Clicked)
-	{
-		col = m_ColClicked;
-	}
-
+	//Draw based on whatever draw mode
 	switch (m_DrawMode)
 	{
 	case WIREFRAME:
-		_renderer->DrawBox(m_Collider, col, { 0,0 },m_Layer);
-		//m_TextField.Render(_renderer, { 0,0 }, m_Layer + 1);
+		_renderer->DrawBox(m_Collider, col, { 0,0 }, m_Layer);
+		if (m_TextField.GetText().size() > 0)
+		{
+			m_TextField.Render(_renderer, { 0,0 }, m_Layer + 1);
+		}
 		break;
 	case FILLEDRECT:
 		_renderer->DrawFilledBox(m_Collider, col, { 0,0 }, m_Layer);
-
+		if (m_TextField.GetText().size() > 0)
+		{
+			m_TextField.Render(_renderer, { 0,0 }, m_Layer + 1);
+		}
 		break;
 	case TEXTURE:
-
-
+		//Assign render interface to the object based on the current state of the button
 		m_Object.m_RenderInterface = m_TextureNorm;
 		if (m_Hovered)
 		{
@@ -93,7 +103,9 @@ void Button::Render(SDLRenderer* _renderer)
 			m_Object.m_RenderInterface = m_TexClicked;
 		}
 		m_Object.Render(_renderer, { 0,0 }, m_Layer);
-
+		break;
+	default:
+		printf("Unspecified button draw mode in button.cpp \n");
 		break;
 	}
 }
@@ -127,6 +139,13 @@ void Button::SetFilledRectMode(SDL_Colour _normal, SDL_Colour _hovered, SDL_Colo
 	m_ColHov = _hovered;
 	m_ColClicked = _clicked;
 	m_DrawMode = FILLEDRECT;
+	m_TextField.SetColour(_clicked);
+}
+
+//In case you want to re-use the same colours as wireframe mode
+void Button::SetFilledRectMode()
+{
+	m_DrawMode = FILLEDRECT;
 }
 
 void Button::SetWireFrameMode(SDL_Colour _normal, SDL_Colour _hovered, SDL_Colour _clicked)
@@ -135,6 +154,18 @@ void Button::SetWireFrameMode(SDL_Colour _normal, SDL_Colour _hovered, SDL_Colou
 	m_ColHov = _hovered;
 	m_ColClicked = _clicked;
 	m_DrawMode = WIREFRAME;
+	m_TextField.SetColour(_clicked);
+}
+
+//In case you just want to re-use the same colours as filled rect mode
+void Button::SetWireFrameMode()
+{
+	m_DrawMode = WIREFRAME;
+}
+
+void Button::SetText(const std::string& _text)
+{
+	m_TextField.SetText(_text);
 }
 
 void Button::SetLayer(int _layer)
@@ -148,6 +179,7 @@ void Button::SetSize(Vector2 _size)
 	m_Object.m_Size = _size;
 	m_Collider.w = _size.x;
 	m_Collider.h = _size.y;
+	m_TextField.m_Size = _size;
 }
 
 void Button::SetPosition(Vector2 _pos)
@@ -155,12 +187,19 @@ void Button::SetPosition(Vector2 _pos)
 	m_Pos = _pos;
 	m_Object.m_Pos = m_Pos;
 	m_Collider.pos = m_Pos;
+	m_TextField.m_pos = m_Pos;
 
 }
 
 void Button::SetCallbackFunction(std::function<void()> fnc)
 {
 	m_Callback = fnc;
+}
+
+void Button::SetFont(TTF_Font* _Font)
+{
+	m_Font = _Font;
+	m_TextField.SetFont(m_Font);
 }
 
 void Button::Init()
@@ -175,8 +214,11 @@ void Button::Init()
 	m_Font = nullptr;
 	m_Object = Object{};
 	m_Pos = Vector2{ 0,0 };
-	m_Collider = BoxCollider(0, 0, 100, 100);
+	m_Collider = Box(0, 0, 100, 100);
 	m_Callback = NULL;
+	m_TextField = TextField{};
+	m_TextField.SetText("");//Set text to nothing so it won't render it 
 	SetFilledRectMode({ 125,125,125,255 }, { 255,255,255,255 }, { 0,0,0,255 });
+
 
 }

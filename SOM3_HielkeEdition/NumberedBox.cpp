@@ -14,7 +14,7 @@ NumberedBox::~NumberedBox()
 
 void NumberedBox::Init()
 {
-	m_Box = BoxCollider();
+	m_Box = Box();
 	m_Colour = { 255,255,255,255 };
 	m_Text = TextField();
 }
@@ -58,7 +58,7 @@ void NumberedBox::Render(SDLRenderer* _renderer, Vector2 _WorldPos, Vector2 _Sca
 	}
 	else
 	{
-		BoxCollider b = m_Box;
+		Box b = m_Box;
 		b.pos *= zF.x;
 		b.w *= zF.x;
 		b.h *= zF.y;
@@ -77,7 +77,7 @@ void NumberedBox::Render(SDLRenderer* _renderer, Vector2 _WorldPos, Vector2 _Sca
 	}
 }
 
-void NumberedBox::SetBox(BoxCollider _box)
+void NumberedBox::SetBox(Box _box)
 {
 	m_Box = _box;
 	UpdateTextField();

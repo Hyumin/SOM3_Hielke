@@ -47,14 +47,16 @@ protected:
 	AnimationClip* m_CurrentClip;
 
 	std::string m_Name;
-	BoxCollider m_Bar;
-	BoxCollider m_ContentScaler;
-	BoxCollider m_ContentInformation;
+	Box m_Bar;
+	Box m_ContentScaler;
+	Box m_ContentInformation;
 
 	Object m_ContentScaleObject;
 
+	//This box defines everything below the Title bar
+	Box m_ContentBox;
 
-	BoxCollider m_ContentBox;
+
 	Vector2 m_BarRelativePos;
 	Vector2 m_CrossRelativePos;
 	Vector2 m_ContentRelativePos;
@@ -77,5 +79,10 @@ protected:
 	Vector2 m_StartDragPos;
 
 	Button m_ExitButton;
+
+	//Colours to be rendered for the window, Re-use this for other stuff for consistency
+	SDL_Color m_LightColor;
+	SDL_Color m_Color;
+	SDL_Color m_DarkColor;
 };
 

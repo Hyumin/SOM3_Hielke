@@ -50,7 +50,7 @@ private:
 	float m_AnimTimer = 0.0f;
 	float m_AnimTimeLimit = 0.3f;
 
-	BoxCollider b;
+	Box b;
 
 };
 

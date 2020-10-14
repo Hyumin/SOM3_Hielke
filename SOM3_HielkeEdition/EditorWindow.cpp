@@ -32,9 +32,9 @@ EditorWindow::~EditorWindow()
 
 void EditorWindow::Init(Texture* _IconsTexture)
 {
-	m_Bar = BoxCollider{ 100, 100, 300, 40 };
-	m_ContentBox = BoxCollider{ 100,140,300,500 };
-	m_ContentScaler = BoxCollider{ 0,0,40,40 };
+	m_Bar = Box{ 100, 100, 300, 40 };
+	m_ContentBox = Box{ 100,140,300,500 };
+	m_ContentScaler = Box{ 0,0,40,40 };
 
 	m_ContentScaler.pos = m_ContentBox.pos + Vector2{ m_ContentBox.w,m_ContentBox.h };
 
@@ -82,6 +82,10 @@ void EditorWindow::Init(Texture* _IconsTexture)
 
 	m_ExitButton.SetSize({ 48,m_Bar.h });
 	m_ExitButton.SetLayer(1);
+
+	m_Color = { 0,160,15,255 };
+	m_LightColor = {0,235,15,255};
+	m_DarkColor = { 0,140,15,255 };
 	
 }
 
@@ -192,11 +196,11 @@ void EditorWindow::SetName(std::string& _name)
 
 void EditorWindow::Render(SDLRenderer* _renderer)
 {
-	_renderer->DrawFilledBox(m_Bar.pos.x,m_Bar.pos.y,m_Bar.w, m_Bar.h, { 0,153,15,255 });
-	_renderer->DrawFilledBox(m_ContentBox.pos.x, m_ContentBox.pos.y, m_ContentBox.w, m_ContentBox.h / 3, { 0,160,15,255 });
+	_renderer->DrawFilledBox(m_Bar.pos.x,m_Bar.pos.y,m_Bar.w, m_Bar.h, m_DarkColor);
+//	_renderer->DrawFilledBox(m_ContentBox.pos.x, m_ContentBox.pos.y, m_ContentBox.w, m_ContentBox.h , m_Color);
 
-	_renderer->DrawBox(m_ContentBox);
-	m_ContentScaleObject.Render(_renderer, Vector2{ 0, 0 });
+	_renderer->DrawBox(m_ContentBox, { 255,255,255,255 }, { 0,0 },2);
+	m_ContentScaleObject.Render(_renderer, Vector2{ 0, 0 },1);
 	m_TextField.Render(_renderer, Vector2{ 0,0 },1);
 
 	m_ExitButton.Render(_renderer);

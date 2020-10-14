@@ -40,7 +40,7 @@ public:
 	virtual void HitReaction(Hielke::PlayerStats _stats) = 0;
 	virtual void SetMap(Hielke::Map* _map) =0;
 
-	BoxCollider m_Collider;
+	Box m_Collider;
 	EnemyStats m_Stats;
 	Object m_Object;
 	State m_State;

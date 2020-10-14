@@ -24,7 +24,7 @@ void AnimationWindow::Update(float _dt)
 {
 	EditorWindow::Update(_dt);
 
-	m_Obj.m_Pos = m_ContentBox.pos + Vector2{ m_ContentBox.w / 2 - m_Obj.m_Size.x / 2,m_ContentBox.h * 0.75f - m_Obj.m_Size.y / 2 };
+	m_Obj.m_Pos = m_ContentBox.pos + Vector2{ m_ContentBox.w / 2 - m_Obj.m_Size.x / 2,m_ContentBox.h * 0.5f - m_Obj.m_Size.y / 2 };
 	
 	m_FilePathTextField.m_pos = m_ContentBox.pos;
 	m_IsLoopingTextField.m_pos = m_ContentBox.pos;
@@ -34,10 +34,16 @@ void AnimationWindow::Update(float _dt)
 	m_EnableLooping.pos = m_IsLoopingTextField.m_pos;
 	m_EnableLooping.pos.x += m_IsLoopingTextField.m_Size.x;
 
+	
+	m_BottomContentBox.pos.x = m_ContentBox.pos.x;
+	m_BottomContentBox.pos.y = m_ContentBox.pos.y + m_ContentBox.h - m_BottomContentBox.h;
+
+	m_TopContentBox.pos = m_ContentBox.pos;
+
 	//Todo clean this messy shit lmao
-	m_PauseButton.SetPosition(m_Obj.m_Pos + Vector2{0,m_PauseButton.GetSize().y});
-	m_PlayButton.SetPosition(m_Obj.m_Pos + Vector2{ m_PlayButton.GetSize().x + 10,m_PlayButton.GetSize().y });
-	m_LoopButton.SetPosition(m_Obj.m_Pos + Vector2{ -(m_LoopButton.GetSize().x + 10),m_LoopButton.GetSize().y });
+	m_PauseButton.SetPosition(m_BottomContentBox.pos + m_ButtonsOffset + Vector2{m_LoopButton.GetSize().x,0});
+	m_PlayButton.SetPosition(m_BottomContentBox.pos + m_ButtonsOffset + Vector2{m_PauseButton.GetSize().x*2,0});
+	m_LoopButton.SetPosition(m_BottomContentBox.pos  + m_ButtonsOffset);
 
 
 	m_FilePathTextField.Update(_dt);
@@ -103,6 +109,8 @@ void AnimationWindow::Render(SDLRenderer* _renderer)
 	m_LoopButton.Render(_renderer);
 	m_PauseButton.Render(_renderer);
 
+	_renderer->DrawFilledBox(m_BottomContentBox, m_Color, { 0,0 }, 0);
+	_renderer->DrawFilledBox(m_TopContentBox, m_Color, { 0,0 }, 0);
 	if (m_CurrentClip != nullptr)
 	{
 		if (m_CurrentClip->m_Looping)
@@ -117,15 +125,15 @@ void AnimationWindow::Render(SDLRenderer* _renderer)
 
 	if (m_Pausing)
 	{
-		_renderer->DrawBox(m_PauseButton.GetCollider(), { 0,255,0 });
+		_renderer->DrawBox(m_PauseButton.GetCollider(), m_LightColor, { 0,0 }, 1);
 	}
 	if (m_Looping)
 	{
-		_renderer->DrawBox(m_LoopButton.GetCollider(), { 0,255,0 });
+		_renderer->DrawBox(m_LoopButton.GetCollider(), m_LightColor, { 0,0 },1);
 	}
 	if (m_Playing)
 	{
-		_renderer->DrawBox(m_PlayButton.GetCollider(), { 0,255,0 });
+		_renderer->DrawBox(m_PlayButton.GetCollider(), m_LightColor, { 0,0 }, 1);
 	}
 }
 
@@ -151,24 +159,8 @@ void AnimationWindow::SetFont(TTF_Font* _font)
 void AnimationWindow::Init(Texture* _IconsTexture)
 {
 	EditorWindow::Init(_IconsTexture);
-
-	m_PlayButton = Button{};
-	m_PauseButton = Button{};
-	m_LoopButton = Button{};
-
-	m_PlayButton.SetSize(Vector2{ 50,50 });
-	m_LoopButton.SetSize(Vector2{ 50,50 });
-	m_PauseButton.SetSize(Vector2{ 50,50 });
-
-	m_PlayButton.SetLayer(1);
-	m_LoopButton.SetLayer(1);
-	m_PauseButton.SetLayer(1);
-
-
-	m_PlayButton.SetCallbackFunction(std::bind(&AnimationWindow::PlayClip, this));
-	m_LoopButton.SetCallbackFunction(std::bind(&AnimationWindow::LoopClip, this));
-	m_PauseButton.SetCallbackFunction(std::bind(&AnimationWindow::PauseClip, this));
-
+	
+	//Initialize textfields
 
 	m_FilePathTextField = TextField();
 	m_IsLoopingTextField = TextField();
@@ -182,8 +174,34 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_IsLoopingTextField.m_Size = Vector2(100, 30);
 	m_IsLoopingTextField.SetColour(0, 0, 0, 255);
 
-	m_EnableLooping = BoxCollider(0, 0, 20, 20);
 
+	
+	m_BottomContentBox = Box{ 0,m_ContentBox.pos.y+m_ContentScaleObject.m_Size.y- m_Bar.h,m_ContentBox.w,m_ContentBox.h/5 };
+	m_TopContentBox = Box{m_ContentBox.pos.x,m_ContentBox.pos.y,m_ContentBox.w,m_ContentBox.h/3};
+
+
+	//Initialize buttons,
+	m_EnableLooping = Box(0, 0, 20, 20);
+
+	m_PlayButton = Button{};
+	m_PauseButton = Button{};
+	m_LoopButton = Button{};
+
+
+	m_PlayButton.SetSize(Vector2{ 50,50 });
+	m_LoopButton.SetSize(Vector2{ 50,50 });
+	m_PauseButton.SetSize(Vector2{ 50,50 });
+
+	m_ButtonsOffset = Vector2{ m_TopContentBox.w / 2 -(m_PlayButton.GetSize().x*1.5f),20 };
+
+	m_PlayButton.SetLayer(1);
+	m_LoopButton.SetLayer(1);
+	m_PauseButton.SetLayer(1);
+
+
+	m_PlayButton.SetCallbackFunction(std::bind(&AnimationWindow::PlayClip, this));
+	m_LoopButton.SetCallbackFunction(std::bind(&AnimationWindow::LoopClip, this));
+	m_PauseButton.SetCallbackFunction(std::bind(&AnimationWindow::PauseClip, this));
 	if (m_IconTexture != nullptr)
 	{
 		//std::string& tex = _IconsTexture->GetName();
@@ -229,6 +247,11 @@ void AnimationWindow::ReScaleContent()
 
 	m_Bar.w = m_ContentBox.w;
 	m_CrossRelativePos.x = m_Bar.w - m_ExitButton.GetSize().x;
+
+	m_TopContentBox.w = newWidth;
+	m_BottomContentBox.w = newWidth;
+
+	m_ButtonsOffset = Vector2{ m_TopContentBox.w / 2 - (m_PlayButton.GetSize().x * 1.5f),20 };
 }
 
 void AnimationWindow::PlayClip()

@@ -23,6 +23,17 @@ protected:
     virtual void Init(Texture* _IconsTexture);
     virtual void ReScaleContent();
 
+    void AddFrame();
+    void PrevFrame();
+    void NextFrame();
+
+
+    Button m_AddFrameButton;
+    Button m_PrevFrameButton;
+    Button m_NextFrameButton;
+
+    Vector2 m_AfOffset,m_PrevOffset,m_NextOffset;
+
 
     TextField m_XY;
 

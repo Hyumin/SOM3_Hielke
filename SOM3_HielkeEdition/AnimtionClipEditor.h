@@ -54,10 +54,10 @@ private:
 	Vector2 m_Position;// "World position"
 
 	ResourceManager* m_ResMan;//Reference to the resource manager do not delete
-	BoxCollider m_SelectionBox; //Current selection box
+	Box m_SelectionBox; //Current selection box
 
 	//Button to enable loading
-	BoxCollider m_LoadButtonCollider;
+	Box m_LoadButtonCollider;
 	Object m_LoadObject;
 
 	Texture* m_EditorIconsTexture; // the texture we use for all of our editor icons

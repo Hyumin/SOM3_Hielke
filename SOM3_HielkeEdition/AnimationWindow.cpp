@@ -34,20 +34,13 @@ void AnimationWindow::Update(float _dt)
 	m_EnableLooping.pos = m_IsLoopingTextField.m_pos;
 	m_EnableLooping.pos.x += m_IsLoopingTextField.m_Size.x;
 
-	m_PauseButton.pos = m_Obj.m_Pos + Vector2{ 0,m_PauseButton.h };
-	m_PlayButton.pos = m_Obj.m_Pos + Vector2{ m_PlayButton.w + 10,m_PlayButton.h };
-	m_LoopButton.pos = m_Obj.m_Pos + Vector2{ -(m_LoopButton.w + 10),m_LoopButton.h };
+	//Todo clean this messy shit lmao
+	m_PauseButton.SetPosition(m_Obj.m_Pos + Vector2{0,m_PauseButton.GetSize().y});
+	m_PlayButton.SetPosition(m_Obj.m_Pos + Vector2{ m_PlayButton.GetSize().x + 10,m_PlayButton.GetSize().y });
+	m_LoopButton.SetPosition(m_Obj.m_Pos + Vector2{ -(m_LoopButton.GetSize().x + 10),m_LoopButton.GetSize().y });
 
-	m_LoopObject.m_Pos = m_LoopButton.pos;
-	m_PlayObject.m_Pos = m_PlayButton.pos;
-	m_PauseObject.m_Pos = m_PauseButton.pos;
-
-	m_LoopObject.m_Size = { m_LoopButton.w,m_LoopButton.h };
-	m_PlayObject.m_Size = { m_PlayButton.w,m_PlayButton.h };
-	m_PauseObject.m_Size = { m_PauseButton.w,m_PauseButton.h };
 
 	m_FilePathTextField.Update(_dt);
-
 
 	if (m_CurrentClip != nullptr)
 	{
@@ -63,45 +56,16 @@ void AnimationWindow::Update(float _dt)
 void AnimationWindow::MouseDown(unsigned int _key)
 {
 	EditorWindow::MouseDown(_key);
+
+	m_PlayButton.MouseDown(_key);
+	m_LoopButton.MouseDown(_key);
+	m_PauseButton.MouseDown(_key);
+
 	if (_key == (SDL_BUTTON_LEFT))
 	{
-		if (m_EnableLooping.BoxCollision(m_PauseButton, m_MousePos))
-		{
-			if (m_CurrentClip != nullptr)
-			{
-				m_Pausing = m_Pausing ? false : true;
-				m_CurrentClip->m_IsPlaying = false;
-				m_Playing = false;
-			}
-		}
-		if (m_EnableLooping.BoxCollision(m_PlayButton, m_MousePos))
-		{
-			if (m_CurrentClip != nullptr)
-			{
-				m_Playing = m_Playing ? false : true;
-				if (m_Playing)
-				{
-					m_CurrentClip->Play();
-					m_Pausing = false;
-				}
-			}
-		}
-		if (m_EnableLooping.BoxCollision(m_LoopButton, m_MousePos))
-		{
-			if (m_CurrentClip != nullptr)
-			{
-				m_Looping = m_Looping ? false : true;
-				m_CurrentClip->m_Looping = m_Looping;
-			}
-
-		}
 		if (m_EnableLooping.BoxCollision(m_EnableLooping, m_MousePos))
 		{
-			if (m_CurrentClip != nullptr)
-			{
-				m_CurrentClip->m_Looping = m_CurrentClip->m_Looping ? false : true;
-				m_Looping = m_CurrentClip->m_Looping;
-			}
+			LoopClip();
 		}
 	}
 }
@@ -109,11 +73,17 @@ void AnimationWindow::MouseDown(unsigned int _key)
 void AnimationWindow::MouseUp(unsigned int _key)
 {
 	EditorWindow::MouseUp(_key);
+	m_PlayButton.MouseUp(_key);
+	m_LoopButton.MouseUp(_key);
+	m_PauseButton.MouseUp(_key);
 }
 
 void AnimationWindow::MouseMove(unsigned int _x, unsigned int _y)
 {
 	EditorWindow::MouseMove(_x, _y);
+	m_PlayButton.MouseMove(_x,_y);
+	m_LoopButton.MouseMove(_x, _y);
+	m_PauseButton.MouseMove(_x, _y);
 	if (m_ScalingSize)
 	{
 		ReScaleContent();
@@ -129,10 +99,9 @@ void AnimationWindow::Render(SDLRenderer* _renderer)
 	m_FilePathTextField.Render(_renderer, Vector2{ 0,0 }, 1);
 	m_IsLoopingTextField.Render(_renderer, Vector2{ 0,0 }, 1);
 
-	m_PlayObject.Render(_renderer, {});
-	m_LoopObject.Render(_renderer, {});
-	m_PauseObject.Render(_renderer, {});
-
+	m_PlayButton.Render(_renderer);
+	m_LoopButton.Render(_renderer);
+	m_PauseButton.Render(_renderer);
 
 	if (m_CurrentClip != nullptr)
 	{
@@ -148,15 +117,15 @@ void AnimationWindow::Render(SDLRenderer* _renderer)
 
 	if (m_Pausing)
 	{
-		_renderer->DrawBox(m_PauseButton, { 0,255,0 });
+		_renderer->DrawBox(m_PauseButton.GetCollider(), { 0,255,0 });
 	}
 	if (m_Looping)
 	{
-		_renderer->DrawBox(m_LoopButton, { 0,255,0 });
+		_renderer->DrawBox(m_LoopButton.GetCollider(), { 0,255,0 });
 	}
 	if (m_Playing)
 	{
-		_renderer->DrawBox(m_PlayButton, { 0,255,0 });
+		_renderer->DrawBox(m_PlayButton.GetCollider(), { 0,255,0 });
 	}
 }
 
@@ -182,17 +151,23 @@ void AnimationWindow::SetFont(TTF_Font* _font)
 void AnimationWindow::Init(Texture* _IconsTexture)
 {
 	EditorWindow::Init(_IconsTexture);
-	//Buttons
-	m_PauseButton = BoxCollider{ 0,0,50,50 };
-	m_PlayButton = BoxCollider{ 0,0,50,50 };
-	m_LoopButton = BoxCollider{ 0,0,50,50 };
 
-	m_PlayObject = Object();
-	m_LoopObject = Object();
-	m_PauseObject = Object();
-	m_PlayObject.m_RenderInterface.srcRect = { 0,0,16,16 };
-	m_LoopObject.m_RenderInterface.srcRect = { 32,16,16,16 };
-	m_PauseObject.m_RenderInterface.srcRect = { 16,0,16,16 };
+	m_PlayButton = Button{};
+	m_PauseButton = Button{};
+	m_LoopButton = Button{};
+
+	m_PlayButton.SetSize(Vector2{ 50,50 });
+	m_LoopButton.SetSize(Vector2{ 50,50 });
+	m_PauseButton.SetSize(Vector2{ 50,50 });
+
+	m_PlayButton.SetLayer(1);
+	m_LoopButton.SetLayer(1);
+	m_PauseButton.SetLayer(1);
+
+
+	m_PlayButton.SetCallbackFunction(std::bind(&AnimationWindow::PlayClip, this));
+	m_LoopButton.SetCallbackFunction(std::bind(&AnimationWindow::LoopClip, this));
+	m_PauseButton.SetCallbackFunction(std::bind(&AnimationWindow::PauseClip, this));
 
 
 	m_FilePathTextField = TextField();
@@ -211,9 +186,24 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 
 	if (m_IconTexture != nullptr)
 	{
-		m_PlayObject.m_RenderInterface.textureName = _IconsTexture->GetName();
-		m_LoopObject.m_RenderInterface.textureName = _IconsTexture->GetName();
-		m_PauseObject.m_RenderInterface.textureName = _IconsTexture->GetName();
+		//std::string& tex = _IconsTexture->GetName();
+		SDL_Rect norm, hovered, clicked;
+
+		norm= { 0,0,16,16 };
+		hovered = { 64,0,16,16 };
+		clicked = {112,0,16,16};
+
+		m_PlayButton.SetTextureDrawModeWithSheet(_IconsTexture->GetName(), norm, clicked, hovered);
+		norm= { 32,16,16,16 };
+		hovered = { 96,0,16,16 };
+		clicked= { 144,0,16,16 };
+		m_LoopButton.SetTextureDrawModeWithSheet(_IconsTexture->GetName(), norm, clicked, hovered);
+
+		norm = { 16,0,16,16 };
+		hovered = { 80,0,16,16 };
+		clicked= { 128,0,16,16 };
+		m_PauseButton.SetTextureDrawModeWithSheet(_IconsTexture->GetName(), norm, clicked, hovered);
+
 	}
 	m_Playing = false;
 	m_Looping = false;
@@ -239,4 +229,36 @@ void AnimationWindow::ReScaleContent()
 
 	m_Bar.w = m_ContentBox.w;
 	m_CrossRelativePos.x = m_Bar.w - m_ExitButton.GetSize().x;
+}
+
+void AnimationWindow::PlayClip()
+{
+	if (m_CurrentClip != nullptr)
+	{
+		m_Playing = m_Playing ? false : true;
+		if (m_Playing)
+		{
+			m_CurrentClip->Play();
+			m_Pausing = false;
+		}
+	}
+}
+
+void AnimationWindow::LoopClip()
+{
+	if (m_CurrentClip != nullptr)
+	{
+		m_Looping = m_Looping ? false : true;
+		m_CurrentClip->m_Looping = m_Looping;
+	}
+}
+
+void AnimationWindow::PauseClip()
+{
+	if (m_CurrentClip != nullptr)
+	{
+		m_Pausing = m_Pausing ? false : true;
+		m_CurrentClip->m_IsPlaying = false;
+		m_Playing = false;
+	}
 }

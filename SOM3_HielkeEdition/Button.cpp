@@ -106,6 +106,21 @@ void Button::SetTextureDrawMode(RenderInterface _norm, RenderInterface _clicked,
 	m_DrawMode = TEXTURE;
 }
 
+void Button::SetTextureDrawModeWithSheet(const std::string& _texName, SDL_Rect _norm, SDL_Rect _clicked, SDL_Rect _hovered)
+{
+	RenderInterface n, c, h;
+	n = { _norm,{0,0,0,0},_texName, SDL_RendererFlip::SDL_FLIP_NONE,{0,0} };
+	c = n;
+	h = n;
+
+	c.srcRect = _clicked;
+	h.srcRect = _hovered;
+	m_TextureNorm = n;
+	m_TexClicked = c;
+	m_TexHovered = h;
+	m_DrawMode = TEXTURE;
+}
+
 void Button::SetFilledRectMode(SDL_Colour _normal, SDL_Colour _hovered, SDL_Colour _clicked)
 {
 	m_ColNorm = _normal;

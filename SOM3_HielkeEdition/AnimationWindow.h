@@ -22,14 +22,16 @@ protected:
        virtual void Init(Texture* _IconsTexture);
        virtual void ReScaleContent();
 
-       //Buttons 
-       BoxCollider m_PauseButton;
-       BoxCollider m_PlayButton;
-       BoxCollider m_LoopButton;
+       void PlayClip();
+       void LoopClip();
+       void PauseClip();
 
        BoxCollider m_EnableLooping;
 
-       Object m_PlayObject, m_LoopObject, m_PauseObject;
+       //Rename to normal once colliders have been refactored out
+       Button m_PlayButton;
+       Button m_PauseButton;
+       Button m_LoopButton;
 
 
        bool m_Playing, m_Looping, m_Pausing;

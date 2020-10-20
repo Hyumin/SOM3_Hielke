@@ -96,6 +96,14 @@ void AnimationWindow::MouseMove(unsigned int _x, unsigned int _y)
 	}
 }
 
+void AnimationWindow::KeyDown(unsigned int _key)
+{
+}
+
+void AnimationWindow::KeyUp(unsigned int _key)
+{
+}
+
 
 void AnimationWindow::Render(SDLRenderer* _renderer)
 {

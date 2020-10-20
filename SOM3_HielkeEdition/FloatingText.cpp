@@ -49,6 +49,12 @@ void FloatingText::Update(float _dt)
 
 void FloatingText::Render(SDLRenderer* _renderer, Vector2 _worldpos,int _layer)
 {
+	//If we're dealing with text that has nothing in it  just return
+	if (m_Text.length() == 0)
+	{
+		return;
+	}
+
 	UpdateInterface(_renderer);
 	m_Interface.destRect.x = m_pos.x - _worldpos.x;
 	m_Interface.destRect.y = m_pos.y - _worldpos.y;

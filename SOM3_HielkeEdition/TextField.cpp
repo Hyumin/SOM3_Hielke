@@ -21,6 +21,12 @@ void TextField::Update(float _dt)
 
 void TextField::Render(SDLRenderer* _renderer, Vector2 _worldpos,int _layer)
 {
+	//If we're dealing with text that has nothing in it  just return
+	if (m_Text.length() == 0)
+	{
+		return;
+	}
+
 	if (m_FontPointer != NULL)
 	{
 		UpdateInterface(_renderer);
@@ -30,7 +36,7 @@ void TextField::Render(SDLRenderer* _renderer, Vector2 _worldpos,int _layer)
 	}
 	else
 	{
-		printf("No font assigned to text can't reasonably do shit now :( \n");
+		throw std::exception("No font assigned to text can't reasonably do shit now :( \n");
 	}
 }
 

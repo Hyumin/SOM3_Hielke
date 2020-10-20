@@ -202,6 +202,11 @@ void Button::SetFont(TTF_Font* _Font)
 	m_TextField.SetFont(m_Font);
 }
 
+void Button::SetTextColor(SDL_Color _col)
+{
+	m_TextField.SetColour(_col);
+}
+
 void Button::Init()
 {
 	m_Hovered = false;

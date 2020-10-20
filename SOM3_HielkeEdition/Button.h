@@ -52,6 +52,7 @@ class Button
 		Box GetCollider() { return m_Collider; }// in case some external function wants to use the collider to render or smth
 
 		void SetFont(TTF_Font* _Font);
+		void SetTextColor(SDL_Color _col);
 
 
 	private:

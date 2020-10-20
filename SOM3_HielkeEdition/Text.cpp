@@ -23,16 +23,22 @@ Text::~Text()
 
 void Text::UpdateInterface(SDLRenderer* _renderer)
 {
-	
+	//If we're dealing with text that has nothing in it  just return
+	if (m_Text.length() == 0)
+	{
+		return;
+	}
 	//Delete old texture if any
 	if (m_Texture != NULL)
 	{
 		SDL_DestroyTexture(m_Texture);
 		m_Texture = NULL;
 	}
+	
+
 	//Do stuff to update the surface
 	SDL_Surface* mainSurface= SDL_CreateRGBSurface(0, (int)m_Size.x, (int)m_Size.y, 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
-
+	
 
 	if(WrapText(mainSurface,m_Text,0,0))
 	{
@@ -92,7 +98,7 @@ bool  Text::WrapText(SDL_Surface* _Mainsurface, std::string _remainingText, floa
 	SDL_Surface* textSurface = TTF_RenderText_Solid(m_FontPointer, _remainingText.data(), m_Colour);
 	if (textSurface == NULL)
 	{
-		printf("Unable to render text surface! SDL_ttf Error: %s \n", TTF_GetError());
+		//printf("Unable to render text surface! SDL_ttf Error: %s \n", TTF_GetError());
 		return false;
 	}
 	if (sizePerChar == 0)

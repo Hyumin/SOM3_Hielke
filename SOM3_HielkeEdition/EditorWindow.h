@@ -24,6 +24,8 @@ public:
 	virtual void MouseDown(unsigned int _key);
 	virtual void MouseUp(unsigned int _key);
 	virtual void MouseMove(unsigned int _x, unsigned int _y);
+	virtual void KeyDown(unsigned int _key)= 0;
+	virtual void KeyUp(unsigned int _key) =0;
 	bool CanDelete() { return m_ReadyForDelete; }
 
 	virtual void SetFont(TTF_Font* _font);

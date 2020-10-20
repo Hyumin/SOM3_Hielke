@@ -12,7 +12,8 @@ public:
       virtual void MouseDown(unsigned int _key);
       virtual void MouseUp(unsigned int _key);
       virtual void MouseMove(unsigned int _x, unsigned int _y);
-
+      virtual void KeyDown(unsigned int _key);
+      virtual void KeyUp(unsigned int _key);
 
       virtual void Render(SDLRenderer* _renderer);
       virtual void SetClip(AnimationClip* _clip);
@@ -26,16 +27,19 @@ protected:
        void LoopClip();
        void PauseClip();
 
-       //Could be a button, 
-       Box m_EnableLooping;
+       Box m_EnableLooping; //Could be a button, 
        Box m_BottomContentBox;
        Box m_TopContentBox;
 
 
-       //Rename to normal once colliders have been refactored out
        Button m_PlayButton;
        Button m_PauseButton;
        Button m_LoopButton;
+    
+       //Fast forward button
+       Button m_FastForward;
+       Button m_SlowDown;
+
 
        bool m_Playing, m_Looping, m_Pausing;
    

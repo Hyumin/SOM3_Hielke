@@ -23,7 +23,6 @@ AnimationClipEditor::~AnimationClipEditor()
 	m_WindowTest = nullptr;
 	delete m_AddFrameWindow;
 	m_AddFrameWindow = nullptr;
-
 }
 
 
@@ -86,6 +85,10 @@ void AnimationClipEditor::KeyDown(unsigned int _key)
 		m_Sprinting = true;
 		break;
 	}
+	if (m_AddFrameWindow != nullptr)
+	{
+		m_AddFrameWindow->KeyDown(_key);
+	}
 }
 
 void AnimationClipEditor::KeyUp(unsigned int _key)
@@ -113,6 +116,10 @@ void AnimationClipEditor::KeyUp(unsigned int _key)
 	case SDLK_LSHIFT:
 		m_Sprinting = false;
 		break;
+	}
+	if (m_AddFrameWindow != nullptr)
+	{
+		m_AddFrameWindow->KeyUp(_key);
 	}
 }
 
@@ -222,6 +229,7 @@ void AnimationClipEditor::LoadWindowThingy()
 		{
 			m_WindowTest->SetName(m_CurrentClip.m_ClipName);
 			m_WindowTest->SetClip(&m_CurrentClip);
+			m_AddFrameWindow->SetClip(&m_CurrentClip);
 		}
 	}
 }
@@ -343,7 +351,7 @@ void AnimationClipEditor::LoadDefaultAssets()
 	if (m_ResMan != nullptr)
 	{
 		m_ResMan->LoadDefaultMedia();
-		 m_CurrentTexture =m_ResMan->LoadTexture("Assets//SpriteSheets//Duran//seikendensetsu3_duran_sheet.png");
+		m_CurrentTexture =m_ResMan->LoadTexture("Assets//SpriteSheets//Duran//seikendensetsu3_duran_sheet.png");
 
 		m_EditorIconsTexture = m_ResMan->LoadTexture("Assets//editor//sprite editor icons.png");
 		

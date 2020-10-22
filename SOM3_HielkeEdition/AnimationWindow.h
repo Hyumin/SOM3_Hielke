@@ -67,10 +67,17 @@ protected:
 
        //Input TextFields
        InputTextField* m_IntervalInputField;
+       InputTextField* m_FrameX;
+       InputTextField* m_FrameY;
+       InputTextField* m_FrameW;
+       InputTextField* m_FrameH;
+       InputTextField* m_OffsetX;
+       InputTextField* m_OffsetY;
+
        //Use this to call generic functions like Render
        std::vector<TextField*> m_TextFields;
        std::vector<Button*> m_Buttons;
-       std::vector<InputTextField*> m_InputTextField;
+       std::vector<InputTextField*> m_InputTextFields;
 
        Object m_Obj;
        Object m_InGame;

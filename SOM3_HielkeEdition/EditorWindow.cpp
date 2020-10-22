@@ -5,14 +5,12 @@
 #include <functional>
 #include <utility>
 
-EditorWindow* currentSelfIGuessMaybe;
 
 EditorWindow::EditorWindow(Vector2 _pos, std::string& _name, Texture* _IconsTexture)
 {
 	m_Pos = _pos;
 	m_Name = _name;
 	Init(_IconsTexture);
-	currentSelfIGuessMaybe = this;
 
 }
 
@@ -21,7 +19,6 @@ EditorWindow::EditorWindow()
 	m_Pos = Vector2{ 0,0 };
 	m_Name = "empty window";
 	Init(nullptr);
-	currentSelfIGuessMaybe = this;
 }
 
 EditorWindow::~EditorWindow()

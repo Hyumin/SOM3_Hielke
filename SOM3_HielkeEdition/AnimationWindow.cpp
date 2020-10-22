@@ -20,6 +20,20 @@ AnimationWindow::AnimationWindow()
 
 AnimationWindow::~AnimationWindow()
 {
+	delete m_IntervalInputField;
+	m_IntervalInputField = nullptr;
+	delete m_FrameX;
+	m_FrameX = nullptr;
+	delete m_FrameY;
+	m_FrameY = nullptr;
+	delete m_FrameW;
+	m_FrameW = nullptr;
+	delete m_FrameH;
+	m_FrameH = nullptr;
+	delete m_OffsetX;
+	m_OffsetX = nullptr;
+	delete m_OffsetY;
+	m_OffsetY = nullptr;
 }
 
 void AnimationWindow::Update(float _dt)
@@ -31,7 +45,19 @@ void AnimationWindow::Update(float _dt)
 		m_CurrentClip->Update(_dt * m_PlayBackSpeed);
 		m_FrameCounterTextField.SetText("Frame:" + std::to_string(m_CurrentClip->m_CurrentIndex));
 		m_CurrentSpeedTextField.SetText("Speed:" + std::to_string(m_PlayBackSpeed));
-		
+
+		//This is gonna be laggy if we don't check whether the frame has actually updated
+		//TODO look for a better way to improve
+		const SDL_Rect& rect = m_CurrentClip->GetRect();
+		m_FrameX->SetText(std::to_string(rect.x));
+		m_FrameY->SetText(std::to_string(rect.y));
+		m_FrameW->SetText(std::to_string(rect.w));
+		m_FrameH->SetText(std::to_string(rect.h));
+
+		Vector2 offset = m_CurrentClip->GetOffset();
+		m_OffsetX->SetText(std::to_string((int)offset.x));
+		m_OffsetY->SetText(std::to_string((int)offset.y));
+
 		if (m_CurrentClip->m_IsFinished)
 		{
 			m_Playing = false;
@@ -63,8 +89,10 @@ void AnimationWindow::MouseDown(unsigned int _key)
 	{
 		m_Buttons[i]->MouseDown(_key);
 	}
-
-	m_IntervalInputField->MouseDown(_key);
+	for (unsigned int i = 0; i < m_InputTextFields.size(); ++i)
+	{
+		m_InputTextFields[i]->MouseDown(_key);
+	}
 	if (_key == (SDL_BUTTON_LEFT))
 	{
 		if (m_EnableLooping.BoxCollision(m_EnableLooping, m_MousePos))
@@ -81,7 +109,10 @@ void AnimationWindow::MouseUp(unsigned int _key)
 	{
 		m_Buttons[i]->MouseUp(_key);
 	}
-	m_IntervalInputField->MouseUp(_key);
+	for (unsigned int i = 0; i < m_InputTextFields.size(); ++i)
+	{
+		m_InputTextFields[i]->MouseUp(_key);
+	}
 }
 
 void AnimationWindow::MouseMove(unsigned int _x, unsigned int _y)
@@ -91,8 +122,10 @@ void AnimationWindow::MouseMove(unsigned int _x, unsigned int _y)
 	{
 		m_Buttons[i]->MouseMove(_x, _y);
 	}
-
-	m_IntervalInputField->MouseMove(_x, _y);
+	for (unsigned int i = 0; i < m_InputTextFields.size(); ++i)
+	{
+		m_InputTextFields[i]->MouseMove(_x, _y);
+	}
 	if (m_ScalingSize)
 	{
 		ReScaleContent();
@@ -133,7 +166,11 @@ void AnimationWindow::Render(SDLRenderer* _renderer)
 	_renderer->DrawFilledBox(m_InGamePreviewBox, { 0x0, 0x8D, 0xAD, 0xff }, { 0,0 }, 0);
 	_renderer->DrawFilledBox(m_TopContentBox, m_Color, { 0,0 }, 0);
 	_renderer->DrawFilledBox(m_EditFrameBox, m_Color);
-	m_IntervalInputField->Render(_renderer);
+
+	for (unsigned int i = 0; i < m_InputTextFields.size(); ++i)
+	{
+		m_InputTextFields[i]->Render(_renderer);
+	}
 	if (m_CurrentClip != nullptr)
 	{
 		if (m_CurrentClip->m_Looping)
@@ -169,6 +206,12 @@ void AnimationWindow::SetClip(AnimationClip* _clip)
 
 	m_Obj.m_RenderInterface.textureName = m_CurrentClip->m_SourceTexture->GetName();
 	m_IntervalInputField->SetText(std::to_string(m_CurrentClip->m_AnimInterval));
+	const SDL_Rect& rect =m_CurrentClip->GetRect();
+	m_FrameX->SetText(std::to_string(rect.x));
+	m_FrameY->SetText(std::to_string(rect.y));
+	m_FrameW->SetText(std::to_string(rect.w));
+	m_FrameH->SetText(std::to_string(rect.h));
+
 }
 
 void AnimationWindow::SetFont(TTF_Font* _font)
@@ -178,7 +221,10 @@ void AnimationWindow::SetFont(TTF_Font* _font)
 	{
 		m_TextFields[i]->SetFont(_font);
 	}
-	m_IntervalInputField->SetFont(_font);
+	for (int i = 0; i < m_InputTextFields.size(); ++i)
+	{
+		m_InputTextFields[i]->SetFont(_font);
+	}
 }
 
 void AnimationWindow::Init(Texture* _IconsTexture)
@@ -188,7 +234,7 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_PlayBackSpeed = 1.0f;
 	m_Obj = Object();
 	//Initialize textfields
-	m_FilePathTextField= TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Filepath:", nullptr, { 0,0 }, { 300,90 });
+	m_FilePathTextField= TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Filepath:", nullptr, { 0,0 }, { 300,70 });
 	m_IsLoopingTextField = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Looping:", nullptr, { 0,0 }, { 100,30 });
 	m_FrameCounterTextField = TextFieldBuilder::BuildTextField({ 255,255,255,255 }, "Frame:", nullptr, { 0,0 }, { 80,20 });
 	m_CurrentSpeedTextField = TextFieldBuilder::BuildTextField({ 255,255,255,255 }, "Speed:", nullptr, { 0,0 }, { 80,20 });
@@ -270,10 +316,42 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 
 	m_IntervalInputField->m_NameOffset = Vector2{ -60,0 };
 
+	//What a fricking mess :eyes:
+	m_FrameX = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "X", nullptr,
+		{ 0,0 }, { 50,20 }, 9, { 0,0,0,255 }, { 0,0,0,255 }, { 75,75,75,255 }, { 255,255,255,255 });
+	m_FrameY = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "Y", nullptr,
+		{ 0,0 }, { 50,20 }, 9, { 0,0,0,255 }, { 0,0,0,255 }, { 75,75,75,255 }, { 255,255,255,255 });
+	m_FrameW = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "W", nullptr,
+		{ 0,0 }, { 50,20 }, 9, { 0,0,0,255 }, { 0,0,0,255 }, { 75,75,75,255 }, { 255,255,255,255 });
+	m_FrameH = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "H", nullptr,
+		{ 0,0 }, { 50,20 }, 9, { 0,0,0,255 }, { 0,0,0,255 }, { 75,75,75,255 }, { 255,255,255,255 });
+	m_OffsetX = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "X", nullptr,
+		{ 0,0 }, { 50,20 }, 9, { 0,0,0,255 }, { 0,0,0,255 }, { 75,75,75,255 }, { 255,255,255,255 });
+	m_OffsetY = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "Y", nullptr,
+		{ 0,0 }, { 50,20 }, 9, { 0,0,0,255 }, { 0,0,0,255 }, { 75,75,75,255 }, { 255,255,255,255 });
+
+
+	m_InputTextFields.push_back(m_FrameX);
+	m_InputTextFields.push_back(m_FrameY);
+	m_InputTextFields.push_back(m_FrameW);
+	m_InputTextFields.push_back(m_FrameH);
+	m_InputTextFields.push_back(m_OffsetX);
+	m_InputTextFields.push_back(m_OffsetY);
+
+	m_InputTextFields.push_back(m_IntervalInputField);
+
 	m_RawPreviewBox.w = m_ContentBox.w / 2;
-	m_RawPreviewBox.h = m_ContentBox.h / 2;
+	m_RawPreviewBox.h = m_ContentBox.h / 4;
 	m_InGamePreviewBox.w = m_ContentBox.w / 2;
-	m_InGamePreviewBox.h = m_ContentBox.h / 2;
+	m_InGamePreviewBox.h = m_ContentBox.h / 4;
+
+	m_TopContentBox.w = m_ContentBox.w;
+	m_TopContentBox.h = m_ContentBox.h / 4;
+	m_EditFrameBox.w = m_ContentBox.w;
+	m_EditFrameBox.h = m_ContentBox.h / 4;
+
+	m_BottomContentBox.w = m_ContentBox.w;
+	m_BottomContentBox.h = m_ContentBox.h - m_TopContentBox.h - m_InGamePreviewBox.h - m_EditFrameBox.h;
 
 	Reposition();
 
@@ -302,20 +380,20 @@ void AnimationWindow::ReScaleContent()
 	m_Bar.w = m_ContentBox.w;
 	m_CrossRelativePos.x = m_Bar.w - m_ExitButton.GetSize().x;
 
-	m_RawPreviewBox.w = newWidth / 2;
-	m_RawPreviewBox.h = newHeight / 4;
-	m_InGamePreviewBox.w = newWidth / 2;
-	m_InGamePreviewBox.h = newHeight / 4;
+	m_RawPreviewBox.w = m_ContentBox.w / 2;
+	m_RawPreviewBox.h = m_ContentBox.h / 4;
+	m_InGamePreviewBox.w = m_ContentBox.w / 2;
+	m_InGamePreviewBox.h = m_ContentBox.h / 4;
 
 	//Todo fix this so that when we rescale the width will be adjusted yo
 	//m_FilePathTextField.m_Size.x= newWidth;
 
-	m_TopContentBox.w = newWidth;
-	m_TopContentBox.h = newHeight / 4;
-	m_EditFrameBox.w = newWidth;
-	m_EditFrameBox.h = newHeight / 4;
+	m_TopContentBox.w = m_ContentBox.w;
+	m_TopContentBox.h = m_ContentBox.h / 4;
+	m_EditFrameBox.w = m_ContentBox.w;
+	m_EditFrameBox.h = m_ContentBox.h / 4;
 
-	m_BottomContentBox.w = newWidth;
+	m_BottomContentBox.w = m_ContentBox.w;
 	m_BottomContentBox.h = m_ContentBox.h - m_TopContentBox.h - m_InGamePreviewBox.h- m_EditFrameBox.h;
 
 	m_ButtonsOffset = Vector2{ m_TopContentBox.w / 2 - (m_PlayButton.GetSize().x * 1.5f),20 };
@@ -327,8 +405,8 @@ void AnimationWindow::Reposition()
 
 	//Top part
 	m_TopContentBox.pos = m_ContentBox.pos;
-	m_FilePathTextField.m_pos = m_ContentBox.pos;
-	m_IsLoopingTextField.m_pos = m_ContentBox.pos;
+	m_FilePathTextField.m_pos = m_TopContentBox.pos;
+	m_IsLoopingTextField.m_pos = m_TopContentBox.pos;
 	m_IsLoopingTextField.m_pos.y += m_FilePathTextField.m_Size.y;
 
 	m_EnableLooping.pos = m_IsLoopingTextField.m_pos;
@@ -337,6 +415,17 @@ void AnimationWindow::Reposition()
 
 	//The edit framebox position
 	m_EditFrameBox.pos = m_TopContentBox.pos + Vector2{0,m_TopContentBox.h};
+	//God please forgive me 
+	m_FrameX->SetPosition(m_EditFrameBox.pos + m_FrameX->m_NameOffset*-1);
+	m_FrameY->SetPosition(m_FrameX->GetPosition() + Vector2{ m_FrameX->GetSize().x * 2,0 });
+	
+	m_FrameW->SetPosition(m_EditFrameBox.pos + Vector2{ 0,m_FrameX->GetSize().y } + m_FrameX->m_NameOffset * -1);
+	m_FrameH->SetPosition(m_FrameW->GetPosition() + Vector2{ m_FrameW->GetSize().x * 2,0 });
+
+	m_OffsetX->SetPosition(m_FrameY->GetPosition() + Vector2{ m_FrameW->GetSize().x*2,0 });
+	m_OffsetY->SetPosition(m_FrameY->GetPosition() + Vector2{ m_FrameH->GetSize().x*4,0 });
+
+
 
 	//The two preview panels part
 	m_InGamePreviewBox.pos = m_EditFrameBox.pos + Vector2{ 0,m_EditFrameBox.h };

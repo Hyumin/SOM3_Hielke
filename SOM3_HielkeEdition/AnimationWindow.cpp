@@ -119,6 +119,15 @@ void AnimationWindow::Update(float _dt)
 		m_InGame.m_RenderInterface.srcRect = m_CurrentClip->GetRect();
 		m_InGame.m_Pos = m_InGamePos +m_CurrentClip->GetOffset();
 
+
+		//Calculate aspect ratio
+		Vector2 m_Aspectratio;
+		m_Aspectratio.x = (float)m_InGame.m_RenderInterface.srcRect.w / 32.0f;
+		m_Aspectratio.y = (float)m_InGame.m_RenderInterface.srcRect.h / 32.0f;
+
+		m_InGame.m_Size = { 75.0f * m_Aspectratio.x ,75.0f * m_Aspectratio.y };
+
+
 		m_PrevFrameIndex = m_CurrentClip->m_CurrentIndex;
 	}
 

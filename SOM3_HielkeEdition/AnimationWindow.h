@@ -87,6 +87,7 @@ protected:
 
 
        Vector2 m_ButtonsOffset;
+       Vector2 m_InGamePos;
 
        int m_PrevFrameIndex;
 };

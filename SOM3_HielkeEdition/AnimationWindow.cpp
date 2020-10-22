@@ -60,32 +60,42 @@ void AnimationWindow::Update(float _dt)
 			m_OffsetX->SetText(std::to_string((int)offset.x));
 			m_OffsetY->SetText(std::to_string((int)offset.y));
 		}
+		try
+		{
+			if (m_FrameX->m_Changed)
+			{
 
-		if (m_FrameX->m_Changed)
-		{
-			m_CurrentClip->m_SourceRects[currIndex].x = std::stoi(m_FrameX->GetText());
+				m_CurrentClip->m_SourceRects[currIndex].x = std::stoi(m_FrameX->GetText());
+			}
+			if (m_FrameY->m_Changed)
+			{
+				m_CurrentClip->m_SourceRects[currIndex].y = std::stoi(m_FrameY->GetText());
+			}
+			if (m_FrameW->m_Changed)
+			{
+				m_CurrentClip->m_SourceRects[currIndex].w = std::stoi(m_FrameW->GetText());
+			}
+			if (m_FrameH->m_Changed)
+			{
+				m_CurrentClip->m_SourceRects[currIndex].h = std::stoi(m_FrameH->GetText());
+			}
+			if (m_OffsetX->m_Changed)
+			{
+				m_CurrentClip->m_Offsets[currIndex].x = std::stoi(m_OffsetX->GetText());
+			}
+			if (m_OffsetY->m_Changed)
+			{
+				m_CurrentClip->m_Offsets[currIndex].y = std::stoi(m_OffsetY->GetText());
+			}
 		}
-		if (m_FrameY->m_Changed)
+		catch (std::out_of_range &e)
 		{
-			m_CurrentClip->m_SourceRects[currIndex].y = std::stoi(m_FrameY->GetText());
-		}
-		if (m_FrameW->m_Changed)
-		{
-			m_CurrentClip->m_SourceRects[currIndex].w = std::stoi(m_FrameW->GetText());
-		}
-		if (m_FrameH->m_Changed)
-		{
-			m_CurrentClip->m_SourceRects[currIndex].h = std::stoi(m_FrameH->GetText());
-		}
-		if (m_OffsetX->m_Changed)
-		{
-			m_CurrentClip->m_Offsets[currIndex].x = std::stoi(m_OffsetX->GetText());
-		}
-		if (m_OffsetY->m_Changed)
-		{
-			m_CurrentClip->m_Offsets[currIndex].y = std::stoi(m_OffsetY->GetText());
-		}
 
+		}
+		catch (std::invalid_argument& a)
+		{
+
+		}
 		if (m_CurrentClip->m_IsFinished)
 		{
 			m_Playing = false;
@@ -105,6 +115,9 @@ void AnimationWindow::Update(float _dt)
 		m_Obj.m_RenderInterface.srcRect = m_CurrentClip->GetRect();
 		m_Obj.m_Size = Vector2{ (float)m_CurrentClip->GetRect().w,(float)m_CurrentClip->GetRect().h };
 		m_Obj.m_Size *= 2;
+
+		m_InGame.m_RenderInterface.srcRect = m_CurrentClip->GetRect();
+		m_InGame.m_Pos = m_InGamePos +m_CurrentClip->GetOffset();
 
 		m_PrevFrameIndex = m_CurrentClip->m_CurrentIndex;
 	}
@@ -184,6 +197,7 @@ void AnimationWindow::Render(SDLRenderer* _renderer)
 	EditorWindow::Render(_renderer);
 
 	m_Obj.Render(_renderer, Vector2{ 0, 0 },1);
+	m_InGame.Render(_renderer, Vector2{ 0,0 },1);
 
 	for (int i = 0; i < m_TextFields.size(); ++i)
 	{
@@ -246,6 +260,7 @@ void AnimationWindow::SetClip(AnimationClip* _clip)
 
 
 	m_Obj.m_RenderInterface.textureName = m_CurrentClip->m_SourceTexture->GetName();
+	m_InGame.m_RenderInterface.textureName = m_Obj.m_RenderInterface.textureName;
 	m_IntervalInputField->SetText(std::to_string(m_CurrentClip->m_AnimInterval));
 	const SDL_Rect& rect =m_CurrentClip->GetRect();
 	m_FrameX->SetText(std::to_string(rect.x));
@@ -253,8 +268,8 @@ void AnimationWindow::SetClip(AnimationClip* _clip)
 	m_FrameW->SetText(std::to_string(rect.w));
 	m_FrameH->SetText(std::to_string(rect.h));
 	Vector2 offset = m_CurrentClip->m_Offsets[m_CurrentClip->m_CurrentIndex];
-	m_OffsetX->SetText(std::to_string(offset.x));
-	m_OffsetY->SetText(std::to_string(offset.y));
+	m_OffsetX->SetText(std::to_string((int)offset.x));
+	m_OffsetY->SetText(std::to_string((int)offset.y));
 
 	printf("how many times does this happen exactly? \n");
 
@@ -279,6 +294,10 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	
 	m_PlayBackSpeed = 1.0f;
 	m_Obj = Object();
+	m_InGame = Object();
+
+	m_InGame.m_Size = { 75,75 };
+
 	//Initialize textfields
 	m_FilePathTextField= TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Filepath:", nullptr, { 0,0 }, { 300,70 });
 	m_IsLoopingTextField = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Looping:", nullptr, { 0,0 }, { 100,30 });
@@ -488,8 +507,8 @@ void AnimationWindow::Reposition()
 	m_InGameText.m_pos = m_InGamePreviewBox.pos;
 	m_RawText.m_pos = m_RawPreviewBox.pos;
 
-	m_Obj.m_Pos = m_RawPreviewBox.pos + Vector2{m_RawPreviewBox.w/2,m_RawPreviewBox.h/2} - m_Obj.m_Size;
-
+	m_Obj.m_Pos = m_RawPreviewBox.pos + Vector2{m_RawPreviewBox.w/4,m_RawPreviewBox.h/4};
+	m_InGamePos = m_InGamePreviewBox.pos + Vector2{ m_InGamePreviewBox.w / 4,m_InGamePreviewBox.h / 4 };
 	//Bottom part
 	m_BottomContentBox.pos.x = m_ContentBox.pos.x;
 	m_BottomContentBox.pos.y = m_InGamePreviewBox.pos.y + m_InGamePreviewBox.h;

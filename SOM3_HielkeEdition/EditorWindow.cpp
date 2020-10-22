@@ -92,16 +92,11 @@ void EditorWindow::Init(Texture* _IconsTexture)
 
 void EditorWindow::Update(float _dt)
 {
-	m_Bar.pos = m_Pos + m_BarRelativePos;
-	m_TextField.m_pos = m_Pos + m_BarRelativePos;
-	m_ContentBox.pos = m_Pos + m_ContentRelativePos;
-	m_ExitButton.SetPosition(m_Pos+m_CrossRelativePos);
 
-	m_ContentScaler.pos = m_ContentBox.pos + Vector2{ m_ContentBox.w-m_ContentScaler.w,m_ContentBox.h -m_ContentScaler.h};
-	
-	m_ContentScaleObject.m_Pos = m_ContentScaler.pos;
-	m_ContentScaleObject.m_Size = Vector2{ m_ContentScaler.w,m_ContentScaler.h };
-
+	if (m_Dragging)
+	{
+		Reposition();
+	}
 	m_TextField.Update(_dt);
 	m_ExitButton.Update(_dt);
 }
@@ -179,7 +174,20 @@ void EditorWindow::ReScaleContent()
 
 	m_Bar.w = m_ContentBox.w;
 	m_CrossRelativePos.x = m_Bar.w - m_ExitButton.GetSize().x;
+	Reposition();
+}
 
+void EditorWindow::Reposition()
+{
+	m_Bar.pos = m_Pos + m_BarRelativePos;
+	m_TextField.m_pos = m_Pos + m_BarRelativePos;
+	m_ContentBox.pos = m_Pos + m_ContentRelativePos;
+	m_ExitButton.SetPosition(m_Pos + m_CrossRelativePos);
+
+	m_ContentScaler.pos = m_ContentBox.pos + Vector2{ m_ContentBox.w - m_ContentScaler.w,m_ContentBox.h - m_ContentScaler.h };
+
+	m_ContentScaleObject.m_Pos = m_ContentScaler.pos;
+	m_ContentScaleObject.m_Size = Vector2{ m_ContentScaler.w,m_ContentScaler.h };
 }
 
 void EditorWindow::SetFont(TTF_Font* _font)

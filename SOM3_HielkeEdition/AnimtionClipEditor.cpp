@@ -238,7 +238,6 @@ void AnimationClipEditor::Update(float _dt)
 {
 	if (m_WindowTest != nullptr)
 	{
-		m_CurrentClip.Update(_dt);
 		try
 		{	
 			m_CurrentAnimationObject.m_RenderInterface.srcRect = m_CurrentClip.GetRect();

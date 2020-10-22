@@ -19,6 +19,8 @@ public:
 	Vector2 GetOffset();
 	void LoadClipFromFile(const std::string& _path,ResourceManager* _manager);
 	void Play();
+	void NextFrame();
+	void PrevFrame();
 
 	std::vector<SDL_Rect> m_SourceRects;
 	std::vector<Vector2> m_Offsets;

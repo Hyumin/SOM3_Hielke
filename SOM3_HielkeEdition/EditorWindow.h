@@ -45,6 +45,7 @@ protected:
 
 	virtual void Init(Texture* _IconsTexture);
 	virtual void ReScaleContent();
+	virtual void Reposition();//Makes it so the positions of the objects only change when dragging 
 
 	AnimationClip* m_CurrentClip;
 

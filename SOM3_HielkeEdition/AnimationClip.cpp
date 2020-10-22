@@ -135,5 +135,28 @@ void AnimationClip::Play()
 	m_IsFinished = false;
 }
 
+void AnimationClip::NextFrame()
+{
+	if (m_CurrentIndex < m_SourceRects.size()-1)
+	{
+		m_CurrentIndex++;
+	}
+	else
+	{
+		m_CurrentIndex = 0;
+	}
+}
+void AnimationClip::PrevFrame()
+{
+	if (m_CurrentIndex > 0)
+	{
+		m_CurrentIndex--;
+	}
+	else
+	{
+		m_CurrentIndex = m_SourceRects.size()-1;
+	}
+}
+
 
 

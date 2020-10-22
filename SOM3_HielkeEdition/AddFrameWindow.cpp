@@ -1,6 +1,7 @@
 #include "AddFrameWindow.h"
 #include "Texture.h"
 #include "AnimationClip.h"
+#include "TextFieldBuilder.h"
 
 
 void AddFrameWindow::Init(Texture* _IconsTexture)
@@ -43,10 +44,10 @@ void AddFrameWindow::Init(Texture* _IconsTexture)
 	m_WInput = new InputTextField{ InputTextField::InputTextMode::Numbers,"W:" };
 	m_HInput = new InputTextField{ InputTextField::InputTextMode::Numbers,"H:" };
 
-	m_XInput->m_MaxSize = 5;
-	m_YInput->m_MaxSize = 5;
-	m_WInput->m_MaxSize = 5;
-	m_HInput->m_MaxSize = 5;
+	m_XInput->m_CharLimit = 5;
+	m_YInput->m_CharLimit = 5;
+	m_WInput->m_CharLimit = 5;
+	m_HInput->m_CharLimit = 5;
 
 	m_XInputOffset = Vector2{ 30,5 };
 	m_YInputOffset = Vector2{ 175,5 };
@@ -69,12 +70,38 @@ void AddFrameWindow::Init(Texture* _IconsTexture)
 	m_CurrentFrameField.m_Size = Vector2{240, 30};
 	m_CurrentFrameField.SetText("Current frame:");
 	m_CurrentFrameField.SetColour({0,0,0,255});
+	Reposition();
 
 }
 
 void AddFrameWindow::ReScaleContent()
 {
 	EditorWindow::ReScaleContent();
+}
+
+void AddFrameWindow::Reposition()
+{
+	EditorWindow::Reposition();
+	m_AfOffset.y = m_ContentBox.pos.y + m_ContentBox.h - m_PrevFrameButton.GetSize().y;
+
+	m_PrevOffset.x = m_ContentBox.pos.x + m_PrevFrameButton.GetSize().x;
+	m_PrevOffset.y = m_ContentBox.pos.y + m_ContentBox.h - m_PrevFrameButton.GetSize().y;
+
+	m_NextOffset.x = m_ContentBox.pos.x + m_ContentBox.w - m_NextFrameButton.GetSize().x * 2;
+	m_NextOffset.y = m_ContentBox.pos.y + m_ContentBox.h - m_NextFrameButton.GetSize().y;
+
+	m_AfOffset.x = m_PrevOffset.x + m_AddFrameButton.GetSize().x;
+	m_CurrentFrameField.m_pos = m_AfOffset + Vector2{ 0,-30 };
+
+	m_AddFrameButton.SetPosition(m_AfOffset);
+	m_NextFrameButton.SetPosition(m_NextOffset);
+	m_PrevFrameButton.SetPosition(m_PrevOffset);
+
+
+	m_XInput->SetPosition(m_ContentBox.pos + m_XInputOffset);
+	m_YInput->SetPosition(m_ContentBox.pos + m_YInputOffset);
+	m_WInput->SetPosition(m_ContentBox.pos + m_WInputOffset);
+	m_HInput->SetPosition(m_ContentBox.pos + m_HInputOffset);
 }
 
 AddFrameWindow::AddFrameWindow(Vector2 _pos, const std::string& _name, Texture* _IconsTexture)
@@ -128,26 +155,7 @@ void AddFrameWindow::Update(float _dt)
 		m_InputFields[i]->Update(_dt);
 	}
 
-	m_AfOffset.y = m_ContentBox.pos.y + m_ContentBox.h - m_PrevFrameButton.GetSize().y;
 
-	m_PrevOffset.x = m_ContentBox.pos.x + m_PrevFrameButton.GetSize().x ;
-	m_PrevOffset.y = m_ContentBox.pos.y + m_ContentBox.h - m_PrevFrameButton.GetSize().y;
-
-	m_NextOffset.x = m_ContentBox.pos.x + m_ContentBox.w - m_NextFrameButton.GetSize().x*2;
-	m_NextOffset.y = m_ContentBox.pos.y + m_ContentBox.h - m_NextFrameButton.GetSize().y;
-	
-	m_AfOffset.x = m_PrevOffset.x + m_AddFrameButton.GetSize().x;
-	m_CurrentFrameField.m_pos = m_AfOffset + Vector2{0,-30};
-
-	m_AddFrameButton.SetPosition(m_AfOffset);
-	m_NextFrameButton.SetPosition(m_NextOffset);
-	m_PrevFrameButton.SetPosition(m_PrevOffset);
-
-
-	m_XInput->SetPosition(m_ContentBox.pos + m_XInputOffset);
-	m_YInput->SetPosition(m_ContentBox.pos + m_YInputOffset);
-	m_WInput->SetPosition(m_ContentBox.pos + m_WInputOffset);
-	m_HInput->SetPosition(m_ContentBox.pos + m_HInputOffset);
 	if (m_CurrentClip != nullptr)
 	{
 		m_CurrentFrameField.SetText((m_ConstFrameText + std::to_string(m_CurrentClip->m_CurrentIndex).data()));

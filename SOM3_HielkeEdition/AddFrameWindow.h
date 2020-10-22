@@ -28,7 +28,7 @@ public:
 protected:
     virtual void Init(Texture* _IconsTexture);
     virtual void ReScaleContent();
-
+    virtual  void Reposition();
     void AddFrame();
     void PrevFrame();
     void NextFrame();

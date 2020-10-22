@@ -31,7 +31,7 @@ class Button
 		};
 
 		void SetTextureDrawMode(RenderInterface _norm, RenderInterface _clicked, RenderInterface _hovered);
-		void SetTextureDrawModeWithSheet(const std::string& _texName, SDL_Rect _norm,SDL_Rect _clicked, SDL_Rect _hovered);//Initialzing one button whose texture is shared across all three states
+		void SetTextureDrawModeWithSheet(const std::string& _texName, SDL_Rect _norm,SDL_Rect _clicked, SDL_Rect _hovered,SDL_RendererFlip _renderFlip = SDL_FLIP_NONE);//Initialzing one button whose texture is shared across all three states
 		void SetFilledRectMode(SDL_Colour _normal,SDL_Colour _hovered, SDL_Colour _clicked);//
 		void SetFilledRectMode();
 		void SetWireFrameMode(SDL_Colour _normal, SDL_Colour _hovered, SDL_Colour _clicked);

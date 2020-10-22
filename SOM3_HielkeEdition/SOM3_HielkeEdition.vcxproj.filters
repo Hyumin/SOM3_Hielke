@@ -96,6 +96,12 @@
     <ClCompile Include="InputTextField.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TextFieldBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -171,6 +177,12 @@
       <Filter>Header Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="InputTextField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextFieldBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

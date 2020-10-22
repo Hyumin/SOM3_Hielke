@@ -126,7 +126,7 @@ void AnimationClip::LoadClipFromFile(const std::string& _path, ResourceManager* 
 		}
 
 	}
-
+	GenerateOffsetsArray();
 }
 
 void AnimationClip::Play()
@@ -156,6 +156,18 @@ void AnimationClip::PrevFrame()
 	{
 		m_CurrentIndex = m_SourceRects.size()-1;
 	}
+}
+
+void AnimationClip::GenerateOffsetsArray()
+{
+	if (m_SourceRects.size() != 0)
+	{
+		for (int i = m_Offsets.size(); i < m_SourceRects.size(); ++i)
+		{
+			m_Offsets.push_back({});
+		}
+	}
+
 }
 
 

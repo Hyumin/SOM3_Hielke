@@ -42,21 +42,49 @@ void AnimationWindow::Update(float _dt)
 
 	if (m_CurrentClip != nullptr)
 	{
+		int currIndex = m_CurrentClip->m_CurrentIndex;
 		m_CurrentClip->Update(_dt * m_PlayBackSpeed);
 		m_FrameCounterTextField.SetText("Frame:" + std::to_string(m_CurrentClip->m_CurrentIndex));
 		m_CurrentSpeedTextField.SetText("Speed:" + std::to_string(m_PlayBackSpeed));
 
-		//This is gonna be laggy if we don't check whether the frame has actually updated
-		//TODO look for a better way to improve
-		const SDL_Rect& rect = m_CurrentClip->GetRect();
-		m_FrameX->SetText(std::to_string(rect.x));
-		m_FrameY->SetText(std::to_string(rect.y));
-		m_FrameW->SetText(std::to_string(rect.w));
-		m_FrameH->SetText(std::to_string(rect.h));
+		//update this the moment a new frame has been loaded else when paused can be used to edit certain things OwO
+		if (currIndex != m_PrevFrameIndex)
+		{
+			const SDL_Rect& rect = m_CurrentClip->GetRect();
+			m_FrameX->SetText(std::to_string(rect.x));
+			m_FrameY->SetText(std::to_string(rect.y));
+			m_FrameW->SetText(std::to_string(rect.w));
+			m_FrameH->SetText(std::to_string(rect.h));
 
-		Vector2 offset = m_CurrentClip->GetOffset();
-		m_OffsetX->SetText(std::to_string((int)offset.x));
-		m_OffsetY->SetText(std::to_string((int)offset.y));
+			Vector2 offset = m_CurrentClip->GetOffset();
+			m_OffsetX->SetText(std::to_string((int)offset.x));
+			m_OffsetY->SetText(std::to_string((int)offset.y));
+		}
+
+		if (m_FrameX->m_Changed)
+		{
+			m_CurrentClip->m_SourceRects[currIndex].x = std::stoi(m_FrameX->GetText());
+		}
+		if (m_FrameY->m_Changed)
+		{
+			m_CurrentClip->m_SourceRects[currIndex].y = std::stoi(m_FrameY->GetText());
+		}
+		if (m_FrameW->m_Changed)
+		{
+			m_CurrentClip->m_SourceRects[currIndex].w = std::stoi(m_FrameW->GetText());
+		}
+		if (m_FrameH->m_Changed)
+		{
+			m_CurrentClip->m_SourceRects[currIndex].h = std::stoi(m_FrameH->GetText());
+		}
+		if (m_OffsetX->m_Changed)
+		{
+			m_CurrentClip->m_Offsets[currIndex].x = std::stoi(m_OffsetX->GetText());
+		}
+		if (m_OffsetY->m_Changed)
+		{
+			m_CurrentClip->m_Offsets[currIndex].y = std::stoi(m_OffsetY->GetText());
+		}
 
 		if (m_CurrentClip->m_IsFinished)
 		{
@@ -77,6 +105,8 @@ void AnimationWindow::Update(float _dt)
 		m_Obj.m_RenderInterface.srcRect = m_CurrentClip->GetRect();
 		m_Obj.m_Size = Vector2{ (float)m_CurrentClip->GetRect().w,(float)m_CurrentClip->GetRect().h };
 		m_Obj.m_Size *= 2;
+
+		m_PrevFrameIndex = m_CurrentClip->m_CurrentIndex;
 	}
 
 }
@@ -134,12 +164,18 @@ void AnimationWindow::MouseMove(unsigned int _x, unsigned int _y)
 
 void AnimationWindow::KeyDown(unsigned int _key)
 {
-	m_IntervalInputField->KeyDown(_key);
+	for (unsigned int i = 0; i < m_InputTextFields.size(); ++i)
+	{
+		m_InputTextFields[i]->KeyDown(_key);
+	}
 }
 
 void AnimationWindow::KeyUp(unsigned int _key)
 {
-	m_IntervalInputField->KeyUp(_key);
+	for (unsigned int i = 0; i < m_InputTextFields.size(); ++i)
+	{
+		m_InputTextFields[i]->KeyUp(_key);
+	}
 }
 
 
@@ -216,6 +252,11 @@ void AnimationWindow::SetClip(AnimationClip* _clip)
 	m_FrameY->SetText(std::to_string(rect.y));
 	m_FrameW->SetText(std::to_string(rect.w));
 	m_FrameH->SetText(std::to_string(rect.h));
+	Vector2 offset = m_CurrentClip->m_Offsets[m_CurrentClip->m_CurrentIndex];
+	m_OffsetX->SetText(std::to_string(offset.x));
+	m_OffsetY->SetText(std::to_string(offset.y));
+
+	printf("how many times does this happen exactly? \n");
 
 }
 
@@ -364,7 +405,7 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_BottomContentBox.h = m_ContentBox.h - m_TopContentBox.h - m_InGamePreviewBox.h - m_EditFrameBox.h;
 
 	Reposition();
-
+	m_PrevFrameIndex = -1;
 	
 }
 

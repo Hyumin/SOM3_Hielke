@@ -87,5 +87,7 @@ protected:
 
 
        Vector2 m_ButtonsOffset;
+
+       int m_PrevFrameIndex;
 };
 

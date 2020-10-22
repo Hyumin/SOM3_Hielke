@@ -21,6 +21,7 @@ public:
 	void Play();
 	void NextFrame();
 	void PrevFrame();
+	void GenerateOffsetsArray();//Generate vector2.zero offsets to fill the array
 
 	std::vector<SDL_Rect> m_SourceRects;
 	std::vector<Vector2> m_Offsets;

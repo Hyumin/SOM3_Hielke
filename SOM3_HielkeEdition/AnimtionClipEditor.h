@@ -62,7 +62,7 @@ private:
 
 	Texture* m_EditorIconsTexture; // the texture we use for all of our editor icons
 	Texture* m_CurrentTexture;
-	EditorWindow* m_WindowTest;
+	EditorWindow* m_AnimationWindow;
 	EditorWindow* m_AddFrameWindow;
 	TTF_Font* m_DefaultFont;
 

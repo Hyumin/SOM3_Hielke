@@ -65,7 +65,7 @@ protected:
        TextField m_RawText;
 
        //Input TextFields
-       InputTextField m_IntervalInputField;
+       InputTextField* m_IntervalInputField;
        //Use this to call generic functions like Render
        std::vector<TextField*> m_TextFields;
        std::vector<Button*> m_Buttons;

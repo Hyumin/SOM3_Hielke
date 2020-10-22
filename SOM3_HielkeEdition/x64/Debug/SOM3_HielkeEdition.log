@@ -1,2 +1,6 @@
-﻿  InputTextField.cpp
+﻿  AnimationWindow.cpp
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(138,109): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(138,90): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(138,71): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(138,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   SOM3_HielkeEdition.vcxproj -> D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\x64\Debug\Bin\Debug\x64\SOM3_HielkeEdition.exe

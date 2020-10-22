@@ -19,8 +19,8 @@ AnimationClipEditor::AnimationClipEditor(ResourceManager* _resMan)
 
 AnimationClipEditor::~AnimationClipEditor()
 {
-	delete m_WindowTest;
-	m_WindowTest = nullptr;
+	delete m_AnimationWindow;
+	m_AnimationWindow = nullptr;
 	delete m_AddFrameWindow;
 	m_AddFrameWindow = nullptr;
 }
@@ -55,11 +55,11 @@ void AnimationClipEditor::Init()
 	Object obj = Object{};
 
 
-	m_WindowTest = animWindow;
+	m_AnimationWindow = animWindow;
 
 	if (m_DefaultFont != nullptr)
 	{
-		m_WindowTest->SetFont(m_DefaultFont);
+		m_AnimationWindow->SetFont(m_DefaultFont);
 		m_AddFrameWindow->SetFont(m_DefaultFont);
 	}
 }
@@ -88,6 +88,10 @@ void AnimationClipEditor::KeyDown(unsigned int _key)
 	if (m_AddFrameWindow != nullptr)
 	{
 		m_AddFrameWindow->KeyDown(_key);
+	}
+	if (m_AnimationWindow != nullptr)
+	{
+		m_AnimationWindow->KeyDown(_key);
 	}
 }
 
@@ -121,13 +125,17 @@ void AnimationClipEditor::KeyUp(unsigned int _key)
 	{
 		m_AddFrameWindow->KeyUp(_key);
 	}
+	if (m_AnimationWindow != nullptr)
+	{
+		m_AnimationWindow->KeyUp(_key);
+	}
 }
 
 void AnimationClipEditor::MouseDown(unsigned int _key)
 {
-	if (m_WindowTest != nullptr)
+	if (m_AnimationWindow != nullptr)
 	{
-		m_WindowTest->MouseDown(_key);
+		m_AnimationWindow->MouseDown(_key);
 	}
 	if (m_AddFrameWindow != nullptr)
 	{
@@ -143,9 +151,9 @@ void AnimationClipEditor::MouseDown(unsigned int _key)
 
 void AnimationClipEditor::MouseUp(unsigned int _key)
 {
-	if (m_WindowTest != nullptr)
+	if (m_AnimationWindow != nullptr)
 	{
-		m_WindowTest->MouseUp(_key);
+		m_AnimationWindow->MouseUp(_key);
 	}
 	if (m_AddFrameWindow != nullptr)
 	{
@@ -175,9 +183,9 @@ void AnimationClipEditor::MouseMove(int _x, int _y)
 	{
 		m_HoverLoadButton = false;
 	}
-	if (m_WindowTest != nullptr)
+	if (m_AnimationWindow != nullptr)
 	{
-		m_WindowTest->MouseMove(_x, _y);
+		m_AnimationWindow->MouseMove(_x, _y);
 	}
 	if (m_AddFrameWindow != nullptr)
 	{
@@ -188,7 +196,6 @@ void AnimationClipEditor::MouseMove(int _x, int _y)
 
 void AnimationClipEditor::GenerateNumberedBoxes()
 {
-
 	m_NumbrdBoxes.clear();
 	if (m_CurrentClip.m_ClipName != " ")
 	{
@@ -215,7 +222,6 @@ void AnimationClipEditor::GenerateNumberedBoxes()
 
 void AnimationClipEditor::LoadWindowThingy()
 {
-
 	WindowOpener opener = WindowOpener();
 	std::string path = opener.PrintAndOpenStuff();
 	if (path != "CANCELED")
@@ -225,10 +231,10 @@ void AnimationClipEditor::LoadWindowThingy()
 		//m_CurrentClip.m_Looping = true;
 		m_CurrentClip.Play();
 		GenerateNumberedBoxes();
-		if (m_WindowTest != nullptr)
+		if (m_AnimationWindow != nullptr)
 		{
-			m_WindowTest->SetName(m_CurrentClip.m_ClipName);
-			m_WindowTest->SetClip(&m_CurrentClip);
+			m_AnimationWindow->SetName(m_CurrentClip.m_ClipName);
+			m_AnimationWindow->SetClip(&m_CurrentClip);
 			m_AddFrameWindow->SetClip(&m_CurrentClip);
 		}
 	}
@@ -236,7 +242,7 @@ void AnimationClipEditor::LoadWindowThingy()
 
 void AnimationClipEditor::Update(float _dt)
 {
-	if (m_WindowTest != nullptr)
+	if (m_AnimationWindow != nullptr)
 	{
 		try
 		{	
@@ -249,15 +255,15 @@ void AnimationClipEditor::Update(float _dt)
 		{
 			//std::cout << e.what() << "\n";
 		}
-		m_WindowTest->Update(_dt);
-		if (m_WindowTest->m_Dragging)
+		m_AnimationWindow->Update(_dt);
+		if (m_AnimationWindow->m_Dragging)
 		{
 			m_Dragging = false;
 		}
-		if (m_WindowTest->CanDelete())
+		if (m_AnimationWindow->CanDelete())
 		{
-			delete m_WindowTest;
-			m_WindowTest = nullptr;
+			delete m_AnimationWindow;
+			m_AnimationWindow = nullptr;
 		}
 		
 	}
@@ -334,9 +340,9 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 		_renderer->DrawBox(m_LoadButtonCollider, { 255,255,255,255 }, Vector2(0,0),1);
 	}
 
-	if (m_WindowTest != nullptr)
+	if (m_AnimationWindow != nullptr)
 	{
-		m_WindowTest->Render(_renderer);
+		m_AnimationWindow->Render(_renderer);
 	}
 	if (m_AddFrameWindow != nullptr)
 	{

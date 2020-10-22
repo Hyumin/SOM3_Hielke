@@ -36,6 +36,18 @@ void AnimationWindow::Update(float _dt)
 		{
 			m_Playing = false;
 		}
+		//Vooodooo magic
+		const std::string& interval = m_IntervalInputField->GetText();
+		try
+		{
+			float i =std::stof(interval);
+			m_CurrentClip->m_AnimInterval = i;
+		}
+		catch (std::invalid_argument& e)
+		{
+			printf(e.what());
+		}
+		
 		m_Obj.m_RenderInterface.srcRect = m_CurrentClip->GetRect();
 	}
 
@@ -49,10 +61,8 @@ void AnimationWindow::MouseDown(unsigned int _key)
 	{
 		m_Buttons[i]->MouseDown(_key);
 	}
-	m_PlayButton.MouseDown(_key);
-	m_LoopButton.MouseDown(_key);
-	m_PauseButton.MouseDown(_key);
 
+	m_IntervalInputField->MouseDown(_key);
 	if (_key == (SDL_BUTTON_LEFT))
 	{
 		if (m_EnableLooping.BoxCollision(m_EnableLooping, m_MousePos))
@@ -69,9 +79,7 @@ void AnimationWindow::MouseUp(unsigned int _key)
 	{
 		m_Buttons[i]->MouseUp(_key);
 	}
-	m_PlayButton.MouseUp(_key);
-	m_LoopButton.MouseUp(_key);
-	m_PauseButton.MouseUp(_key);
+	m_IntervalInputField->MouseUp(_key);
 }
 
 void AnimationWindow::MouseMove(unsigned int _x, unsigned int _y)
@@ -81,9 +89,8 @@ void AnimationWindow::MouseMove(unsigned int _x, unsigned int _y)
 	{
 		m_Buttons[i]->MouseMove(_x, _y);
 	}
-	m_PlayButton.MouseMove(_x,_y);
-	m_LoopButton.MouseMove(_x, _y);
-	m_PauseButton.MouseMove(_x, _y);
+
+	m_IntervalInputField->MouseMove(_x, _y);
 	if (m_ScalingSize)
 	{
 		ReScaleContent();
@@ -92,10 +99,12 @@ void AnimationWindow::MouseMove(unsigned int _x, unsigned int _y)
 
 void AnimationWindow::KeyDown(unsigned int _key)
 {
+	m_IntervalInputField->KeyDown(_key);
 }
 
 void AnimationWindow::KeyUp(unsigned int _key)
 {
+	m_IntervalInputField->KeyUp(_key);
 }
 
 
@@ -121,6 +130,7 @@ void AnimationWindow::Render(SDLRenderer* _renderer)
 	_renderer->DrawFilledBox(m_RawPreviewBox, { 0x0, 0x8D, 0xAD, 0xff }, { 0,0 }, 0);
 	_renderer->DrawFilledBox(m_InGamePreviewBox, { 0x0, 0x8D, 0xAD, 0xff }, { 0,0 }, 0);
 	_renderer->DrawFilledBox(m_TopContentBox, m_Color, { 0,0 }, 0);
+	m_IntervalInputField->Render(_renderer);
 	if (m_CurrentClip != nullptr)
 	{
 		if (m_CurrentClip->m_Looping)
@@ -155,7 +165,7 @@ void AnimationWindow::SetClip(AnimationClip* _clip)
 
 
 	m_Obj.m_RenderInterface.textureName = m_CurrentClip->m_SourceTexture->GetName();
-
+	m_IntervalInputField->SetText(std::to_string(m_CurrentClip->m_AnimInterval));
 }
 
 void AnimationWindow::SetFont(TTF_Font* _font)
@@ -165,6 +175,7 @@ void AnimationWindow::SetFont(TTF_Font* _font)
 	{
 		m_TextFields[i]->SetFont(_font);
 	}
+	m_IntervalInputField->SetFont(_font);
 }
 
 void AnimationWindow::Init(Texture* _IconsTexture)
@@ -250,11 +261,17 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_Buttons.push_back(&m_NextFrame);
 	m_Buttons.push_back(&m_PrevFrame);
 
+	//Initialize input text field
+		m_IntervalInputField = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "Interval", nullptr,
+			{ 0,0 }, { 70,20 }, 9, { 0,0,0,255 }, { 0,0,0,255 }, { 75,75,75,255 }, { 255,255,255,255 });
+
+	m_IntervalInputField->m_NameOffset = Vector2{ -60,0 };
 
 	m_RawPreviewBox.w = m_ContentBox.w / 2;
 	m_RawPreviewBox.h = m_ContentBox.h / 2;
 	m_InGamePreviewBox.w = m_ContentBox.w / 2;
 	m_InGamePreviewBox.h = m_ContentBox.h / 2;
+
 	Reposition();
 
 	
@@ -310,6 +327,7 @@ void AnimationWindow::Reposition()
 
 	m_EnableLooping.pos = m_IsLoopingTextField.m_pos;
 	m_EnableLooping.pos.x += m_IsLoopingTextField.m_Size.x;
+	m_IntervalInputField->SetPosition(m_IsLoopingTextField.m_pos + Vector2{ m_IntervalInputField->m_NameOffset.x*-1,m_IsLoopingTextField.m_Size.y });
 
 	//The two preview panels part
 	m_InGamePreviewBox.pos = m_TopContentBox.pos + Vector2{ 0,m_TopContentBox.h };
@@ -327,7 +345,7 @@ void AnimationWindow::Reposition()
 	m_FrameCounterTextField.m_pos = m_BottomContentBox.pos + Vector2{ m_BottomContentBox.w/4,m_BottomContentBox.h/2 };
 	m_CurrentSpeedTextField.m_pos = m_FrameCounterTextField.m_pos + Vector2{m_FrameCounterTextField.m_Size.x,0};
 
-	//Reposition buttons
+	//Reposition bottom buttons
 	m_PauseButton.SetPosition(m_BottomContentBox.pos + m_ButtonsOffset + Vector2{ m_LoopButton.GetSize().x,0 });
 	m_PlayButton.SetPosition(m_BottomContentBox.pos + m_ButtonsOffset + Vector2{ m_PauseButton.GetSize().x * 2,0 });
 	m_LoopButton.SetPosition(m_BottomContentBox.pos + m_ButtonsOffset);

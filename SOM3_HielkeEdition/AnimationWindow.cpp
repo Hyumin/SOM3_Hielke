@@ -49,6 +49,8 @@ void AnimationWindow::Update(float _dt)
 		}
 		
 		m_Obj.m_RenderInterface.srcRect = m_CurrentClip->GetRect();
+		m_Obj.m_Size = Vector2{ (float)m_CurrentClip->GetRect().w,(float)m_CurrentClip->GetRect().h };
+		m_Obj.m_Size *= 2;
 	}
 
 }
@@ -130,6 +132,7 @@ void AnimationWindow::Render(SDLRenderer* _renderer)
 	_renderer->DrawFilledBox(m_RawPreviewBox, { 0x0, 0x8D, 0xAD, 0xff }, { 0,0 }, 0);
 	_renderer->DrawFilledBox(m_InGamePreviewBox, { 0x0, 0x8D, 0xAD, 0xff }, { 0,0 }, 0);
 	_renderer->DrawFilledBox(m_TopContentBox, m_Color, { 0,0 }, 0);
+	_renderer->DrawFilledBox(m_EditFrameBox, m_Color);
 	m_IntervalInputField->Render(_renderer);
 	if (m_CurrentClip != nullptr)
 	{
@@ -262,7 +265,7 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_Buttons.push_back(&m_PrevFrame);
 
 	//Initialize input text field
-		m_IntervalInputField = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "Interval", nullptr,
+	m_IntervalInputField = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "Interval", nullptr,
 			{ 0,0 }, { 70,20 }, 9, { 0,0,0,255 }, { 0,0,0,255 }, { 75,75,75,255 }, { 255,255,255,255 });
 
 	m_IntervalInputField->m_NameOffset = Vector2{ -60,0 };
@@ -300,17 +303,20 @@ void AnimationWindow::ReScaleContent()
 	m_CrossRelativePos.x = m_Bar.w - m_ExitButton.GetSize().x;
 
 	m_RawPreviewBox.w = newWidth / 2;
-	m_RawPreviewBox.h = newHeight / 2;
+	m_RawPreviewBox.h = newHeight / 4;
 	m_InGamePreviewBox.w = newWidth / 2;
-	m_InGamePreviewBox.h = newHeight / 2;
+	m_InGamePreviewBox.h = newHeight / 4;
 
 	//Todo fix this so that when we rescale the width will be adjusted yo
 	//m_FilePathTextField.m_Size.x= newWidth;
 
 	m_TopContentBox.w = newWidth;
-	m_TopContentBox.h = newHeight / 3;
+	m_TopContentBox.h = newHeight / 4;
+	m_EditFrameBox.w = newWidth;
+	m_EditFrameBox.h = newHeight / 4;
+
 	m_BottomContentBox.w = newWidth;
-	m_BottomContentBox.h = m_ContentBox.h - m_TopContentBox.h - m_InGamePreviewBox.h;
+	m_BottomContentBox.h = m_ContentBox.h - m_TopContentBox.h - m_InGamePreviewBox.h- m_EditFrameBox.h;
 
 	m_ButtonsOffset = Vector2{ m_TopContentBox.w / 2 - (m_PlayButton.GetSize().x * 1.5f),20 };
 }
@@ -329,9 +335,12 @@ void AnimationWindow::Reposition()
 	m_EnableLooping.pos.x += m_IsLoopingTextField.m_Size.x;
 	m_IntervalInputField->SetPosition(m_IsLoopingTextField.m_pos + Vector2{ m_IntervalInputField->m_NameOffset.x*-1,m_IsLoopingTextField.m_Size.y });
 
+	//The edit framebox position
+	m_EditFrameBox.pos = m_TopContentBox.pos + Vector2{0,m_TopContentBox.h};
+
 	//The two preview panels part
-	m_InGamePreviewBox.pos = m_TopContentBox.pos + Vector2{ 0,m_TopContentBox.h };
-	m_RawPreviewBox.pos = m_TopContentBox.pos + Vector2{ m_InGamePreviewBox.w,m_TopContentBox.h };
+	m_InGamePreviewBox.pos = m_EditFrameBox.pos + Vector2{ 0,m_EditFrameBox.h };
+	m_RawPreviewBox.pos = m_EditFrameBox.pos + Vector2{ m_InGamePreviewBox.w,m_EditFrameBox.h };
 
 	m_InGameText.m_pos = m_InGamePreviewBox.pos;
 	m_RawText.m_pos = m_RawPreviewBox.pos;

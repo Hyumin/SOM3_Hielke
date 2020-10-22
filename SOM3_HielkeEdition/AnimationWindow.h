@@ -39,6 +39,7 @@ protected:
        Box m_TopContentBox;
        Box m_InGamePreviewBox;
        Box m_RawPreviewBox;
+       Box m_EditFrameBox;//This box area will be used to edit the frame
 
        //Buttons
        Button m_PlayButton;
@@ -69,6 +70,7 @@ protected:
        //Use this to call generic functions like Render
        std::vector<TextField*> m_TextFields;
        std::vector<Button*> m_Buttons;
+       std::vector<InputTextField*> m_InputTextField;
 
        Object m_Obj;
        Object m_InGame;

@@ -33,6 +33,7 @@ protected:
        void PrevFrame();
        void SpeedUp();
        void SlowDown();
+       void ToggleOffset();
 
        Box m_EnableLooping; //Could be a button, 
        Box m_BottomContentBox;
@@ -47,6 +48,7 @@ protected:
        Button m_LoopButton;
        Button m_NextFrame;
        Button m_PrevFrame;
+       Button m_ToggleOffset;
     
        //Fast forward button
        Button m_FastForward;
@@ -60,6 +62,7 @@ protected:
        //Textfields
        TextField m_FilePathTextField;
        TextField m_IsLoopingTextField;
+       TextField m_EnableOffsetTextField;
        TextField m_FrameCounterTextField;
        TextField m_CurrentSpeedTextField;
        TextField m_InGameText;

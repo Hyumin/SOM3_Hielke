@@ -166,7 +166,7 @@ void AnimationWindow::Render(SDLRenderer* _renderer)
 	_renderer->DrawFilledBox(m_InGamePreviewBox, { 0x0, 0x8D, 0xAD, 0xff }, { 0,0 }, 0);
 	_renderer->DrawFilledBox(m_TopContentBox, m_Color, { 0,0 }, 0);
 	_renderer->DrawFilledBox(m_EditFrameBox, m_Color);
-
+	
 	for (unsigned int i = 0; i < m_InputTextFields.size(); ++i)
 	{
 		m_InputTextFields[i]->Render(_renderer);
@@ -181,6 +181,11 @@ void AnimationWindow::Render(SDLRenderer* _renderer)
 		{
 			_renderer->DrawBox(m_EnableLooping, { 0,0,0,255 }, { 0,0 }, 1);
 		}
+		if (m_CurrentClip->m_UseOffsets)
+		{
+			_renderer->DrawFilledBox(m_ToggleOffset.GetCollider(), { 0,0,0,255 });
+		}
+
 	}
 	if (m_Pausing)
 	{
@@ -240,7 +245,9 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_CurrentSpeedTextField = TextFieldBuilder::BuildTextField({ 255,255,255,255 }, "Speed:", nullptr, { 0,0 }, { 80,20 });
 	m_RawText = TextFieldBuilder::BuildTextField({ 255,255,255,255 }, "Raw:", nullptr, { 0,0 }, { 80,20 });
 	m_InGameText = TextFieldBuilder::BuildTextField({ 255,255,255,255 }, "In-Game:", nullptr, { 0,0 }, { 80,20 });
+	m_EnableOffsetTextField = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Enable Offsets:", nullptr, { 0,0 }, { 100,20 });
 
+	m_TextFields.push_back(&m_EnableOffsetTextField);
 	m_TextFields.push_back(&m_FilePathTextField);
 	m_TextFields.push_back(&m_IsLoopingTextField);
 	m_TextFields.push_back(&m_FrameCounterTextField);
@@ -264,7 +271,9 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_SlowDown = ButtonBuilder::BuildButton({ 0,0 }, { 35,35 }, 1, std::bind(&AnimationWindow::SlowDown, this));
 	m_NextFrame = ButtonBuilder::BuildButton({ 0,0 }, { 35,35 }, 1, std::bind(&AnimationWindow::NextFrame, this));
 	m_PrevFrame = ButtonBuilder::BuildButton({ 0,0 }, { 35,35 }, 1, std::bind(&AnimationWindow::PrevFrame, this));
+	m_ToggleOffset = ButtonBuilder::BuildButton({ 0,0 }, { 20,20 }, 1, std::bind(&AnimationWindow::ToggleOffset, this));
 
+	m_ToggleOffset.SetWireFrameMode({0,0,0,255}, {100,100,100,255}, {255,255,255});
 
 	m_ButtonsOffset = Vector2{ m_TopContentBox.w / 2 -(m_PlayButton.GetSize().x*1.5f),20 };
 
@@ -309,6 +318,7 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_Buttons.push_back(&m_SlowDown);
 	m_Buttons.push_back(&m_NextFrame);
 	m_Buttons.push_back(&m_PrevFrame);
+	m_Buttons.push_back(&m_ToggleOffset);
 
 	//Initialize input text field
 	m_IntervalInputField = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "Interval", nullptr,
@@ -413,6 +423,9 @@ void AnimationWindow::Reposition()
 	m_EnableLooping.pos.x += m_IsLoopingTextField.m_Size.x;
 	m_IntervalInputField->SetPosition(m_IsLoopingTextField.m_pos + Vector2{ m_IntervalInputField->m_NameOffset.x*-1,m_IsLoopingTextField.m_Size.y });
 
+	m_EnableOffsetTextField.m_pos = m_EnableLooping.pos + Vector2{ m_EnableLooping.w ,0};
+	m_ToggleOffset.SetPosition(m_EnableOffsetTextField.m_pos + Vector2{ m_EnableOffsetTextField.m_Size.x,0 });
+
 	//The edit framebox position
 	m_EditFrameBox.pos = m_TopContentBox.pos + Vector2{0,m_TopContentBox.h};
 	//God please forgive me 
@@ -514,5 +527,13 @@ void AnimationWindow::SlowDown()
 	if (m_PlayBackSpeed > 0.1f)
 	{
 		m_PlayBackSpeed -= 0.1f;
+	}
+}
+
+void AnimationWindow::ToggleOffset()
+{
+	if (m_CurrentClip != nullptr)
+	{
+		m_CurrentClip->m_UseOffsets = m_CurrentClip->m_UseOffsets ? false : true;
 	}
 }

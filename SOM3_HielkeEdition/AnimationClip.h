@@ -30,13 +30,13 @@ public:
 	bool m_IsPlaying;
 	bool m_Looping;
 	bool m_IsFinished;
+	bool m_UseOffsets = false;
 
 	std::string m_ClipName;
 	std::string m_FileName;
 
 private:
 	float m_AnimTimer;
-	bool m_UseOffsets = false;
 	
 };
 

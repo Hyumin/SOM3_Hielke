@@ -35,7 +35,6 @@ void EditorWindow::Init(Texture* _IconsTexture)
 
 	m_ContentScaler.pos = m_ContentBox.pos + Vector2{ m_ContentBox.w,m_ContentBox.h };
 
-
 	m_BarRelativePos = Vector2{ 0,0 };
 	m_CrossRelativePos = Vector2{ 250,0 };
 	m_ContentRelativePos = Vector2{ 0,40 };

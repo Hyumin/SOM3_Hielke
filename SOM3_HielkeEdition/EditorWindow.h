@@ -38,6 +38,7 @@ public:
 	void ExitPressed();
 
 	bool m_Dragging;
+	bool m_ReadyForDelete;
 
 protected:
 
@@ -70,7 +71,6 @@ protected:
 	Texture* m_IconTexture;
 
 	Vector2 m_Pos;
-	bool m_ReadyForDelete;
 
 	Vector2 m_MousePos;
 

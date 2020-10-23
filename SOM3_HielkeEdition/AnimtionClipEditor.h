@@ -13,6 +13,8 @@
 //Editing, saving and loading of any existing clip.
 
 class EditorWindow;
+class AnimationWindow;
+class AddFrameWindow;
 class TextField;
 
 class AnimationClipEditor
@@ -37,6 +39,9 @@ private:
 	void LoadWindowThingy();
 	void Init();
 	void LoadDefaultAssets();
+	void OpenAddFrameWindow();
+	void OpenAnimationWindow();
+
 
 	bool m_Sprinting,m_Up, m_Left, m_Down, m_Right=false;
 
@@ -62,11 +67,16 @@ private:
 
 	Texture* m_EditorIconsTexture; // the texture we use for all of our editor icons
 	Texture* m_CurrentTexture;
-	EditorWindow* m_AnimationWindow;
-	EditorWindow* m_AddFrameWindow;
+	AnimationWindow* m_AnimationWindow;
+	AddFrameWindow* m_AddFrameWindow;
 	TTF_Font* m_DefaultFont;
 
+	Button m_OpenAddFrameWindow;
+	Button m_OpenAnimationWindow;
 
+	//An array that is used  to call, update , render mouse move etc. for all editor windows
+	std::vector<EditorWindow*> m_EditorWindows;
+	std::vector<Button*> m_Buttons;
 	std::vector<NumberedBox> m_NumbrdBoxes;
 
 

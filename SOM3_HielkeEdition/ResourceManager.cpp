@@ -65,11 +65,12 @@ Texture* ResourceManager::GetTexture(const std::string& _texName)
 		printf("Resrouce Manager: failed to get texture from map \n");
 		//This will add m_textoload to the map if succesfull
 		Texture* textoload = LoadTexture(_texName);
-		if (textoload != NULL)
+		if (textoload == NULL)
 		{
 			printf("Resource Manager :Failed to load texutre returning default instead \n");
 			return m_Textures[std::string(DefaultTextureName)];
 		}
+		return textoload;
 	}
 
 	return nullptr;

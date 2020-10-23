@@ -4,6 +4,7 @@
 #include "TextField.h"
 #include "AnimationWindow.h"
 #include "AddFrameWindow.h"
+#include "ButtonBuilder.h"
 
 AnimationClipEditor::AnimationClipEditor()
 {
@@ -52,16 +53,32 @@ void AnimationClipEditor::Init()
 	AddFrameWindow* frameWin = new AddFrameWindow(Vector2{ 300,300 },std::string( "AddFrame window"), m_EditorIconsTexture);
 	m_AddFrameWindow = frameWin;
 
+	m_OpenAddFrameWindow = ButtonBuilder::BuildButton({ 25,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAddFrameWindow, this));
+	m_OpenAddFrameWindow.SetText("AddFrame");
+	m_OpenAddFrameWindow.SetWireFrameMode();
+
+	m_OpenAnimationWindow = ButtonBuilder::BuildButton({ 125,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAnimationWindow, this));
+	m_OpenAnimationWindow.SetText("Animation");
+	m_OpenAnimationWindow.SetWireFrameMode();
+
 	Object obj = Object{};
 
 
 	m_AnimationWindow = animWindow;
 
+	m_EditorWindows.push_back(m_AddFrameWindow);
+	m_EditorWindows.push_back(m_AnimationWindow);
+
 	if (m_DefaultFont != nullptr)
 	{
+		m_OpenAddFrameWindow.SetFont(m_DefaultFont);
+		m_OpenAnimationWindow.SetFont(m_DefaultFont);
 		m_AnimationWindow->SetFont(m_DefaultFont);
 		m_AddFrameWindow->SetFont(m_DefaultFont);
 	}
+
+	m_Buttons.push_back(&m_OpenAddFrameWindow);
+	m_Buttons.push_back(&m_OpenAnimationWindow);
 }
 
 void AnimationClipEditor::KeyDown(unsigned int _key)
@@ -85,13 +102,9 @@ void AnimationClipEditor::KeyDown(unsigned int _key)
 		m_Sprinting = true;
 		break;
 	}
-	if (m_AddFrameWindow != nullptr)
+	for (int i = 0; i < m_EditorWindows.size(); ++i)
 	{
-		m_AddFrameWindow->KeyDown(_key);
-	}
-	if (m_AnimationWindow != nullptr)
-	{
-		m_AnimationWindow->KeyDown(_key);
+		m_EditorWindows[i]->KeyDown(_key);
 	}
 }
 
@@ -121,27 +134,23 @@ void AnimationClipEditor::KeyUp(unsigned int _key)
 		m_Sprinting = false;
 		break;
 	}
-	if (m_AddFrameWindow != nullptr)
+
+	for (int i = 0; i < m_EditorWindows.size(); ++i)
 	{
-		m_AddFrameWindow->KeyUp(_key);
-	}
-	if (m_AnimationWindow != nullptr)
-	{
-		m_AnimationWindow->KeyUp(_key);
+		m_EditorWindows[i]->KeyUp(_key);
 	}
 }
 
 void AnimationClipEditor::MouseDown(unsigned int _key)
 {
-	if (m_AnimationWindow != nullptr)
+	for (int i = 0; i < m_EditorWindows.size(); ++i)
 	{
-		m_AnimationWindow->MouseDown(_key);
+		m_EditorWindows[i]->MouseDown(_key);
 	}
-	if (m_AddFrameWindow != nullptr)
+	for (int i = 0; i < m_Buttons.size(); ++i)
 	{
-		m_AddFrameWindow->MouseDown(_key);
+		m_Buttons[i]->MouseDown(_key);
 	}
-
 	if (_key == SDL_BUTTON_LEFT)
 	{
 		m_Dragging = true;
@@ -151,13 +160,13 @@ void AnimationClipEditor::MouseDown(unsigned int _key)
 
 void AnimationClipEditor::MouseUp(unsigned int _key)
 {
-	if (m_AnimationWindow != nullptr)
+	for (int i = 0; i < m_EditorWindows.size(); ++i)
 	{
-		m_AnimationWindow->MouseUp(_key);
+		m_EditorWindows[i]->MouseUp(_key);
 	}
-	if (m_AddFrameWindow != nullptr)
+	for (int i = 0; i < m_Buttons.size(); ++i)
 	{
-		m_AddFrameWindow->MouseUp(_key);
+		m_Buttons[i]->MouseUp(_key);
 	}
 	if (_key == SDL_BUTTON_LEFT)
 	{
@@ -183,13 +192,13 @@ void AnimationClipEditor::MouseMove(int _x, int _y)
 	{
 		m_HoverLoadButton = false;
 	}
-	if (m_AnimationWindow != nullptr)
+	for (int i = 0; i < m_EditorWindows.size(); ++i)
 	{
-		m_AnimationWindow->MouseMove(_x, _y);
+		m_EditorWindows[i]->MouseMove(_x,_y);
 	}
-	if (m_AddFrameWindow != nullptr)
+	for (int i = 0; i < m_Buttons.size(); ++i)
 	{
-		m_AddFrameWindow->MouseMove(_x,_y);
+		m_Buttons[i]->MouseMove(_x,_y);
 	}
 
 }
@@ -228,8 +237,14 @@ void AnimationClipEditor::LoadWindowThingy()
 	{
 		m_CurrentClip = AnimationClip();// "clear the previous animation clip then load
 		m_CurrentClip.LoadClipFromFile(path, m_ResMan);
+
+	
 		//m_CurrentClip.m_Looping = true;
-		m_CurrentClip.Play();
+		m_SpriteSheet.m_RenderInterface.textureName = m_CurrentClip.m_SourceTexture->GetName();
+		m_SpriteSheet.m_Size = Vector2{(float)m_CurrentClip.m_SourceTexture->GetWidth(),(float) m_CurrentClip.m_SourceTexture->GetHeight()};
+		m_SpriteSheet.m_RenderInterface.srcRect.w = m_SpriteSheet.m_Size.x;
+		m_SpriteSheet.m_RenderInterface.srcRect.h = m_SpriteSheet.m_Size.y;
+		//m_CurrentClip.Play();
 		GenerateNumberedBoxes();
 		if (m_AnimationWindow != nullptr)
 		{
@@ -241,45 +256,21 @@ void AnimationClipEditor::LoadWindowThingy()
 
 void AnimationClipEditor::Update(float _dt)
 {
-	if (m_AnimationWindow != nullptr)
+	for (int i = 0; i < m_EditorWindows.size(); ++i)
 	{
-		try
-		{	
-			m_CurrentAnimationObject.m_RenderInterface.srcRect = m_CurrentClip.GetRect();
-			m_CurrentAnimationObject.m_RenderInterface.textureName = m_SpriteSheet.m_RenderInterface.textureName;
-
-			//m_WindowTest->SetShowingObject(m_CurrentAnimationObject);
-		}
-		catch (std::exception& e)
-		{
-			//std::cout << e.what() << "\n";
-		}
-		m_AnimationWindow->Update(_dt);
-		if (m_AnimationWindow->m_Dragging)
+		m_EditorWindows[i]->Update(_dt);
+		if (m_EditorWindows[i]->m_Dragging)
 		{
 			m_Dragging = false;
 		}
-		if (m_AnimationWindow->CanDelete())
+		if (m_EditorWindows[i]->m_ReadyForDelete)
 		{
-			delete m_AnimationWindow;
-			m_AnimationWindow = nullptr;
+			m_EditorWindows.erase(m_EditorWindows.begin() + i);
+			continue;
 		}
-		
-	}
 
-	if (m_AddFrameWindow != nullptr)
-	{
-		m_AddFrameWindow->Update(_dt);
-		if (m_AddFrameWindow->m_Dragging)
-		{
-			m_Dragging = false;
-		}
-		if (m_AddFrameWindow->CanDelete())
-		{
-			delete m_AddFrameWindow;
-			m_AddFrameWindow = nullptr;
-		}
 	}
+	
 	if (m_Dragging)
 	{
 		m_DragEnd = m_MousePos + m_Position;
@@ -323,7 +314,6 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 {
 	Vector2 zoomVector = {m_Zoom,m_Zoom};
 	m_SpriteSheet.Render(_renderer, m_Position,zoomVector,0);
-	//m_CurrentAnimationObject.Render(_renderer, Vector2(0, 0));
 	m_LoadObject.Render(_renderer, Vector2{ 0,0 },1);
 	_renderer->DrawBox(m_SelectionBox, { 255,255,255,255 },m_Position);
 	_renderer->DrawFilledBox(0, 0, 1280, 25, SDL_Color{ 0,122,0,255 });
@@ -339,14 +329,15 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 		_renderer->DrawBox(m_LoadButtonCollider, { 255,255,255,255 }, Vector2(0,0),1);
 	}
 
-	if (m_AnimationWindow != nullptr)
+	for (int i = 0; i < m_EditorWindows.size(); ++i)
 	{
-		m_AnimationWindow->Render(_renderer);
+		m_EditorWindows[i]->Render(_renderer);
 	}
-	if (m_AddFrameWindow != nullptr)
+	for (int i = 0; i < m_Buttons.size(); ++i)
 	{
-		m_AddFrameWindow->Render(_renderer);
+		m_Buttons[i]->Render(_renderer);
 	}
+
 
 }
 
@@ -376,5 +367,50 @@ void AnimationClipEditor::LoadDefaultAssets()
 			m_LoadObject.m_RenderInterface.srcRect = {48,0,16,16};
 		}
 		
+	}
+}
+
+void AnimationClipEditor::OpenAddFrameWindow()
+{
+	bool found = false;
+
+	//If the add frame window is not within the 
+	for (unsigned int i = 0; i < m_EditorWindows.size(); ++i)
+	{
+		if (m_EditorWindows[i] == m_AddFrameWindow)
+		{
+			found = true;
+			break;
+		}
+	}
+
+	if (!found)
+	{
+		//set can delete to false;
+		m_AddFrameWindow->m_ReadyForDelete = false;
+		m_AddFrameWindow->MouseMove((unsigned int)m_MousePos.x, (unsigned int)m_MousePos.y);
+		m_EditorWindows.push_back(m_AddFrameWindow);
+	}
+}
+
+void AnimationClipEditor::OpenAnimationWindow()
+{
+	bool found = false;
+	//If the add frame window is not within the 
+	for (unsigned int i = 0; i < m_EditorWindows.size(); ++i)
+	{
+		if (m_EditorWindows[i] == m_AnimationWindow)
+		{
+			found = true;
+			break;
+		}
+	}
+
+	if (!found)
+	{
+		//set can delete to false;
+		m_AnimationWindow->m_ReadyForDelete = false;
+		m_AnimationWindow->MouseMove((unsigned int)m_MousePos.x, (unsigned int)m_MousePos.y);
+		m_EditorWindows.push_back(m_AnimationWindow);
 	}
 }

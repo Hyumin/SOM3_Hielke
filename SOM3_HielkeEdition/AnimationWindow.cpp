@@ -271,16 +271,20 @@ void AnimationWindow::SetClip(AnimationClip* _clip)
 
 	m_AnimationClipName.SetText("Name: " + _clip->m_ClipName);
 	m_Looping = m_CurrentClip->m_Looping;
+	
 
-
+	//Set textures for the objects
 	m_Obj.m_RenderInterface.textureName = m_CurrentClip->m_SourceTexture->GetName();
 	m_InGame.m_RenderInterface.textureName = m_Obj.m_RenderInterface.textureName;
+	
+	//Update edit textfields
 	m_IntervalInputField->SetText(std::to_string(m_CurrentClip->m_AnimInterval));
 	const SDL_Rect& rect =m_CurrentClip->GetRect();
 	m_FrameX->SetText(std::to_string(rect.x));
 	m_FrameY->SetText(std::to_string(rect.y));
 	m_FrameW->SetText(std::to_string(rect.w));
 	m_FrameH->SetText(std::to_string(rect.h));
+
 	Vector2 offset = m_CurrentClip->m_Offsets[m_CurrentClip->m_CurrentIndex];
 	m_OffsetX->SetText(std::to_string((int)offset.x));
 	m_OffsetY->SetText(std::to_string((int)offset.y));
@@ -310,7 +314,6 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 
 	m_InGame.m_Size = { 75,75 };
 
-
 	//Initialize textfields
 	m_AnimationClipName= TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Name:", nullptr, { 0,0 }, { 300,50 });
 	m_IsLoopingTextField = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Looping:", nullptr, { 0,0 }, { 100,30 });
@@ -321,8 +324,6 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_EnableOffsetTextField = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Enable Offsets:", nullptr, { 0,0 }, { 100,20 });
 	m_OffsetText = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Offset:", nullptr, { 0,0 }, { 60,20 });
 	m_FrameRectText = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Frame Rect:", nullptr, { 0,0 }, { 100,20 });
-
-
 
 	m_TextFields.push_back(&m_OffsetText);
 	m_TextFields.push_back(&m_FrameRectText);
@@ -467,7 +468,6 @@ void AnimationWindow::ReScaleContent()
 	{
 		newHeight = 100;
 	}
-
 	m_ContentBox.w = newWidth;
 	m_ContentBox.h = newHeight;
 
@@ -478,9 +478,6 @@ void AnimationWindow::ReScaleContent()
 	m_RawPreviewBox.h = m_ContentBox.h / 4;
 	m_InGamePreviewBox.w = m_ContentBox.w / 2;
 	m_InGamePreviewBox.h = m_ContentBox.h / 4;
-
-	//Todo fix this so that when we rescale the width will be adjusted yo
-	//m_FilePathTextField.m_Size.x= newWidth;
 
 	m_TopContentBox.w = m_ContentBox.w;
 	m_TopContentBox.h = m_ContentBox.h / 4;
@@ -496,7 +493,14 @@ void AnimationWindow::ReScaleContent()
 void AnimationWindow::Reposition()
 {
 	EditorWindow::Reposition();
+	RepositionTop();
+	RepositionEditFrame();
+	RepositionPreview();
+	RepositionBottom();
+}
 
+void AnimationWindow::RepositionTop()
+{
 	//Top part
 	m_TopContentBox.pos = m_ContentBox.pos;
 	m_AnimationClipName.m_pos = m_TopContentBox.pos;
@@ -505,29 +509,34 @@ void AnimationWindow::Reposition()
 
 	m_EnableLooping.pos = m_IsLoopingTextField.m_pos;
 	m_EnableLooping.pos.x += m_IsLoopingTextField.m_Size.x;
-	m_IntervalInputField->SetPosition(m_IsLoopingTextField.m_pos + Vector2{ m_IntervalInputField->m_NameOffset.x*-1,m_IsLoopingTextField.m_Size.y });
+	m_IntervalInputField->SetPosition(m_IsLoopingTextField.m_pos + Vector2{ m_IntervalInputField->m_NameOffset.x * -1,m_IsLoopingTextField.m_Size.y });
 
-	m_EnableOffsetTextField.m_pos = m_EnableLooping.pos + Vector2{ m_EnableLooping.w ,0};
+	m_EnableOffsetTextField.m_pos = m_EnableLooping.pos + Vector2{ m_EnableLooping.w ,0 };
 	m_ToggleOffset.SetPosition(m_EnableOffsetTextField.m_pos + Vector2{ m_EnableOffsetTextField.m_Size.x,0 });
 
+}
+
+void AnimationWindow::RepositionEditFrame()
+{
 	//The edit framebox position
-	m_EditFrameBox.pos = m_TopContentBox.pos + Vector2{0,m_TopContentBox.h};
+	m_EditFrameBox.pos = m_TopContentBox.pos + Vector2{ 0,m_TopContentBox.h };
 
 	m_FrameRectText.m_pos = m_EditFrameBox.pos;
 	m_OffsetText.m_pos = m_FrameRectText.m_pos + Vector2{ m_FrameW->GetSize().x * 4,0 };
 
-	//God please forgive me 
 	m_FrameX->SetPosition(m_FrameRectText.m_pos + m_FrameX->m_NameOffset * -1 + Vector2{ 0,m_FrameX->GetSize().y });
 	m_FrameY->SetPosition(m_FrameX->GetPosition() + Vector2{ m_FrameX->GetSize().x * 2,0 });
-	
-	m_FrameW->SetPosition(m_FrameX->GetPosition() + Vector2{ 0,m_FrameX->GetSize().y } );
+
+	m_FrameW->SetPosition(m_FrameX->GetPosition() + Vector2{ 0,m_FrameX->GetSize().y });
 	m_FrameH->SetPosition(m_FrameW->GetPosition() + Vector2{ m_FrameW->GetSize().x * 2,0 });
 
 	m_OffsetX->SetPosition(m_OffsetText.m_pos + Vector2{ 0,m_OffsetText.m_Size.y });
-	m_OffsetY->SetPosition(m_OffsetX->GetPosition() + Vector2{ m_OffsetY->GetSize().x*2,0 });
+	m_OffsetY->SetPosition(m_OffsetX->GetPosition() + Vector2{ m_OffsetY->GetSize().x * 2,0 });
 
+}
 
-
+void AnimationWindow::RepositionPreview()
+{
 	//The two preview panels part
 	m_InGamePreviewBox.pos = m_EditFrameBox.pos + Vector2{ 0,m_EditFrameBox.h };
 	m_RawPreviewBox.pos = m_EditFrameBox.pos + Vector2{ m_InGamePreviewBox.w,m_EditFrameBox.h };
@@ -535,28 +544,28 @@ void AnimationWindow::Reposition()
 	m_InGameText.m_pos = m_InGamePreviewBox.pos;
 	m_RawText.m_pos = m_RawPreviewBox.pos;
 
-	m_Obj.m_Pos = m_RawPreviewBox.pos + Vector2{m_RawPreviewBox.w/4,m_RawPreviewBox.h/4};
+	m_Obj.m_Pos = m_RawPreviewBox.pos + Vector2{ m_RawPreviewBox.w / 4,m_RawPreviewBox.h / 4 };
 	m_InGamePos = m_InGamePreviewBox.pos + Vector2{ m_InGamePreviewBox.w / 4,m_InGamePreviewBox.h / 4 };
 	m_InGame.m_Pos = m_InGamePos;
-	
+}
+
+void AnimationWindow::RepositionBottom()
+{
 	//Bottom part
 	m_BottomContentBox.pos.x = m_ContentBox.pos.x;
 	m_BottomContentBox.pos.y = m_InGamePreviewBox.pos.y + m_InGamePreviewBox.h;
-
 
 	//Reposition bottom buttons
 	m_PauseButton.SetPosition(m_BottomContentBox.pos + m_ButtonsOffset + Vector2{ m_LoopButton.GetSize().x,0 });
 	m_PlayButton.SetPosition(m_BottomContentBox.pos + m_ButtonsOffset + Vector2{ m_PauseButton.GetSize().x * 2,0 });
 	m_LoopButton.SetPosition(m_BottomContentBox.pos + m_ButtonsOffset);
-	m_SlowDown.SetPosition(m_LoopButton.GetPosition() + Vector2{-m_SlowDown.GetSize().x,0});
+	m_SlowDown.SetPosition(m_LoopButton.GetPosition() + Vector2{ -m_SlowDown.GetSize().x,0 });
 	m_FastForward.SetPosition(m_PlayButton.GetPosition() + Vector2{ m_FastForward.GetSize().x,0 });
-	m_PrevFrame.SetPosition(m_LoopButton.GetPosition() + Vector2{-m_LoopButton.GetSize().x/2,m_LoopButton.GetSize().y});
+	m_PrevFrame.SetPosition(m_LoopButton.GetPosition() + Vector2{ -m_LoopButton.GetSize().x / 2,m_LoopButton.GetSize().y });
 	//Speed, frame counter and next frame arrow
-	m_FrameCounterTextField.m_pos = m_PrevFrame.GetPosition() + Vector2{m_PrevFrame.GetSize().x,0};
-	m_CurrentSpeedTextField.m_pos = m_LoopButton.GetPosition() + Vector2{0,-m_LoopButton.GetSize().y/2 };
-	m_NextFrame.SetPosition(m_FrameCounterTextField.m_pos + Vector2{ m_FrameCounterTextField.m_Size.x,0});
-
-	
+	m_FrameCounterTextField.m_pos = m_PrevFrame.GetPosition() + Vector2{ m_PrevFrame.GetSize().x,0 };
+	m_CurrentSpeedTextField.m_pos = m_LoopButton.GetPosition() + Vector2{ 0,-m_LoopButton.GetSize().y / 2 };
+	m_NextFrame.SetPosition(m_FrameCounterTextField.m_pos + Vector2{ m_FrameCounterTextField.m_Size.x,0 });
 
 }
 

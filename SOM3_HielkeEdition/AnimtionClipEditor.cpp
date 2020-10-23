@@ -54,7 +54,7 @@ void AnimationClipEditor::Init()
 	m_OpenAddFrameWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 25,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAddFrameWindow, this),
 		"AddFrame", Button::DrawMode::FILLEDRECT, { 0,140,15,255 }, { 0,160,15, 255 }, { 0,235,15,255 }, {0,0,0,255});
 
-	m_OpenAnimationWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 125,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAddFrameWindow, this),
+	m_OpenAnimationWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 125,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAnimationWindow, this),
 		"Animation", Button::DrawMode::FILLEDRECT, { 0,140,15,255 }, { 0,160,15, 255 }, { 0,235,15,255 }, { 0,0,0,255 });
 
 	Object obj = Object{};
@@ -219,9 +219,7 @@ void AnimationClipEditor::GenerateNumberedBoxes()
 			nb.SetColour({200,200,200,255});
 			nb.SetFont(m_DefaultFont);
 			m_NumbrdBoxes.push_back(nb);
-
 		}
-
 	}
 }
 
@@ -263,9 +261,7 @@ void AnimationClipEditor::Update(float _dt)
 			m_EditorWindows.erase(m_EditorWindows.begin() + i);
 			continue;
 		}
-
 	}
-	
 	if (m_Dragging)
 	{
 		m_DragEnd = m_MousePos + m_Position;
@@ -273,7 +269,6 @@ void AnimationClipEditor::Update(float _dt)
 		m_SelectionBox.w = m_DragEnd.x - m_DragStart.x;
 		m_SelectionBox.h = m_DragEnd.y - m_DragStart.y;
 	}
-
 	//Figure out velocity
 	Vector2 direction = Vector2{ 0,0 };
 	float sprintMod = m_Sprinting ? m_SprintMultiplier : 1;

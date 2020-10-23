@@ -24,7 +24,13 @@ public:
 protected:
        virtual void Init(Texture* _IconsTexture);
        virtual void ReScaleContent();
-         virtual  void Reposition();
+       virtual void Reposition();
+
+       //We seperated our 4 sections into seperate functions to make it more clear
+       void RepositionTop();
+       void RepositionEditFrame();
+       void RepositionPreview();
+       void RepositionBottom();
 
        void PlayClip();
        void LoopClip();

@@ -41,23 +41,21 @@ void AnimationClipEditor::Init()
 	std::string windowName = "Animation Window";
 
 
-	m_LoadObject.m_Pos = Vector2{0, 0};
+	m_LoadObject.m_Pos = Vector2{ 0, 0 };
 	m_LoadObject.m_Size = Vector2{ 25,25 };
 	m_LoadButtonCollider.pos = m_LoadObject.m_Pos;
 	m_LoadButtonCollider.w = m_LoadObject.m_Size.x;
 	m_LoadButtonCollider.h = m_LoadObject.m_Size.y;
 
 	AnimationWindow* animWindow = new AnimationWindow(Vector2{ 700,100 }, windowName, m_EditorIconsTexture);
-	AddFrameWindow* frameWin = new AddFrameWindow(Vector2{ 300,300 },std::string( "AddFrame window"), m_EditorIconsTexture);
+	AddFrameWindow* frameWin = new AddFrameWindow(Vector2{ 300,300 }, std::string("AddFrame window"), m_EditorIconsTexture);
 	m_AddFrameWindow = frameWin;
 
-	m_OpenAddFrameWindow = ButtonBuilder::BuildButton({ 25,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAddFrameWindow, this));
-	m_OpenAddFrameWindow.SetText("AddFrame");
-	m_OpenAddFrameWindow.SetWireFrameMode();
+	m_OpenAddFrameWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 25,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAddFrameWindow, this),
+		"AddFrame", Button::DrawMode::FILLEDRECT, { 0,140,15,255 }, { 0,160,15, 255 }, { 0,235,15,255 }, {0,0,0,255});
 
-	m_OpenAnimationWindow = ButtonBuilder::BuildButton({ 125,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAnimationWindow, this));
-	m_OpenAnimationWindow.SetText("Animation");
-	m_OpenAnimationWindow.SetWireFrameMode();
+	m_OpenAnimationWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 125,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAddFrameWindow, this),
+		"Animation", Button::DrawMode::FILLEDRECT, { 0,140,15,255 }, { 0,160,15, 255 }, { 0,235,15,255 }, { 0,0,0,255 });
 
 	Object obj = Object{};
 

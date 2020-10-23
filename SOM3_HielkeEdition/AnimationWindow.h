@@ -60,13 +60,15 @@ protected:
     
 
        //Textfields
-       TextField m_FilePathTextField;
+       TextField m_AnimationClipName;
        TextField m_IsLoopingTextField;
        TextField m_EnableOffsetTextField;
        TextField m_FrameCounterTextField;
        TextField m_CurrentSpeedTextField;
        TextField m_InGameText;
        TextField m_RawText;
+       TextField m_OffsetText;
+       TextField m_FrameRectText;
 
        //Input TextFields
        InputTextField* m_IntervalInputField;

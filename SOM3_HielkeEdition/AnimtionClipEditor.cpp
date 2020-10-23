@@ -39,7 +39,7 @@ void AnimationClipEditor::Init()
 	m_ClipName = "newClip";
 	m_FileName = "newClip.hanimclip";
 	m_Dragging = false;
-	std::string windowName = "Testwindow";
+	std::string windowName = "Animation Window";
 
 
 	m_LoadObject.m_Pos = Vector2{0, 0};
@@ -233,7 +233,6 @@ void AnimationClipEditor::LoadWindowThingy()
 		GenerateNumberedBoxes();
 		if (m_AnimationWindow != nullptr)
 		{
-			m_AnimationWindow->SetName(m_CurrentClip.m_ClipName);
 			m_AnimationWindow->SetClip(&m_CurrentClip);
 			m_AddFrameWindow->SetClip(&m_CurrentClip);
 		}

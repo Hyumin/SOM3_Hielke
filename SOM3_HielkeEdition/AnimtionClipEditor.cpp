@@ -26,8 +26,6 @@ AnimationClipEditor::~AnimationClipEditor()
 	m_AddFrameWindow = nullptr;
 }
 
-
-
 void AnimationClipEditor::Init()
 {
 	//Load default resources
@@ -238,7 +236,6 @@ void AnimationClipEditor::LoadWindowThingy()
 		m_CurrentClip = AnimationClip();// "clear the previous animation clip then load
 		m_CurrentClip.LoadClipFromFile(path, m_ResMan);
 
-	
 		//m_CurrentClip.m_Looping = true;
 		m_SpriteSheet.m_RenderInterface.textureName = m_CurrentClip.m_SourceTexture->GetName();
 		m_SpriteSheet.m_Size = Vector2{(float)m_CurrentClip.m_SourceTexture->GetWidth(),(float) m_CurrentClip.m_SourceTexture->GetHeight()};

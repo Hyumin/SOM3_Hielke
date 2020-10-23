@@ -1,2 +1,23 @@
-﻿  ResourceManager.cpp
+﻿  AddFrameWindow.cpp
+  AnimationWindow.cpp
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(89,54): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(93,54): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(96,29): warning C4101: 'e': unreferenced local variable
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(100,33): warning C4101: 'a': unreferenced local variable
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(242,109): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(242,90): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(242,71): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimationWindow.cpp(242,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  AnimtionClipEditor.cpp
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(184,27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(184,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(217,16): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(218,16): warning C4244: '=': conversion from 'const int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(242,67): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AnimtionClipEditor.cpp(243,67): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  InputTextField.cpp
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\InputTextField.cpp(116,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\InputTextField.cpp(117,17): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  TextFieldBuilder.cpp
+  Generating Code...
   SOM3_HielkeEdition.vcxproj -> D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\x64\Debug\Bin\Debug\x64\SOM3_HielkeEdition.exe

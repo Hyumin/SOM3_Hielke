@@ -40,6 +40,12 @@ void AnimationWindow::Update(float _dt)
 {
 	EditorWindow::Update(_dt);
 
+
+	for (unsigned int i = 0; i < m_InputTextFields.size(); ++i)
+	{
+		m_InputTextFields[i]->Update(_dt);
+	}
+
 	if (m_CurrentClip != nullptr)
 	{
 		int currIndex = m_CurrentClip->m_CurrentIndex;
@@ -64,7 +70,6 @@ void AnimationWindow::Update(float _dt)
 		{
 			if (m_FrameX->m_Changed)
 			{
-
 				m_CurrentClip->m_SourceRects[currIndex].x = std::stoi(m_FrameX->GetText());
 			}
 			if (m_FrameY->m_Changed)

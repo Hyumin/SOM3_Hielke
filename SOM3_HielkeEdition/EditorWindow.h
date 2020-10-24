@@ -39,6 +39,7 @@ public:
 
 	bool m_Dragging;
 	bool m_ReadyForDelete;
+	bool m_ChangeToAnimationClip;// If anything changes that requires the animation clip editor to change something set this to true
 
 protected:
 

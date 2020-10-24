@@ -82,6 +82,7 @@ void EditorWindow::Init(Texture* _IconsTexture)
 	m_Color = { 0,160,15,255 };
 	m_LightColor = {0,235,15,255};
 	m_DarkColor = { 0,140,15,255 };
+	m_ChangeToAnimationClip = false;
 	
 }
 

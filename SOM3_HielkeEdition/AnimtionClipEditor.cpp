@@ -40,30 +40,42 @@ void AnimationClipEditor::Init()
 	m_Dragging = false;
 	std::string windowName = "Animation Window";
 
-
-	m_LoadObject.m_Pos = Vector2{ 0, 0 };
-	m_LoadObject.m_Size = Vector2{ 25,25 };
-	m_LoadButtonCollider.pos = m_LoadObject.m_Pos;
-	m_LoadButtonCollider.w = m_LoadObject.m_Size.x;
-	m_LoadButtonCollider.h = m_LoadObject.m_Size.y;
-
 	AnimationWindow* animWindow = new AnimationWindow(Vector2{ 700,100 }, windowName, m_EditorIconsTexture);
 	AddFrameWindow* frameWin = new AddFrameWindow(Vector2{ 300,300 }, std::string("AddFrame window"), m_EditorIconsTexture);
 	m_AddFrameWindow = frameWin;
 
-	m_OpenAddFrameWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 25,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAddFrameWindow, this),
+	m_OpenAddFrameWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 50,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAddFrameWindow, this),
 		"AddFrame", Button::DrawMode::FILLEDRECT, { 0,140,15,255 }, { 0,160,15, 255 }, { 0,235,15,255 }, {0,0,0,255});
 
-	m_OpenAnimationWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 125,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAnimationWindow, this),
+	m_OpenAnimationWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 150,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAnimationWindow, this),
 		"Animation", Button::DrawMode::FILLEDRECT, { 0,140,15,255 }, { 0,160,15, 255 }, { 0,235,15,255 }, { 0,0,0,255 });
+
+	m_LoadButton = ButtonBuilder::BuildButton({ 0,0 }, { 25,25 }, 1, std::bind(&AnimationClipEditor::LoadClip, this));
+	m_SaveButton = ButtonBuilder::BuildButton({ 25,0 }, { 25,25 }, 1, std::bind(&AnimationClipEditor::SaveClip, this));
+
+	SDL_Rect norm = {96,16,16,16};
+	SDL_Rect clicked = {128,16,16,16};
+	SDL_Rect hover = {112,16,16,16};
+
+	if (m_EditorIconsTexture != nullptr)
+	{
+		m_LoadButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
+		norm = { 96,32,16,16 };
+		clicked = { 128,32,16,16 };
+		hover = { 112,32,16,16 };
+		m_SaveButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
+
+		m_Buttons.push_back(&m_LoadButton);
+		m_Buttons.push_back(&m_SaveButton);
+	}
 
 	Object obj = Object{};
 
 
 	m_AnimationWindow = animWindow;
-
 	m_EditorWindows.push_back(m_AddFrameWindow);
 	m_EditorWindows.push_back(m_AnimationWindow);
+
 
 	if (m_DefaultFont != nullptr)
 	{
@@ -72,6 +84,7 @@ void AnimationClipEditor::Init()
 		m_AnimationWindow->SetFont(m_DefaultFont);
 		m_AddFrameWindow->SetFont(m_DefaultFont);
 	}
+
 
 	m_Buttons.push_back(&m_OpenAddFrameWindow);
 	m_Buttons.push_back(&m_OpenAnimationWindow);
@@ -170,26 +183,12 @@ void AnimationClipEditor::MouseUp(unsigned int _key)
 	{
 		m_DragEnd = m_MousePos + m_Position;
 		m_Dragging = false;
-
-		if (m_LoadButtonCollider.BoxCollision(m_LoadButtonCollider, m_MousePos))
-		{
-			m_LoadWindowActive = true;
-			LoadWindowThingy();
-		}
 	}
 }
 
 void AnimationClipEditor::MouseMove(int _x, int _y)
 {
 	m_MousePos = Vector2(_x, _y);
-	if (m_LoadButtonCollider.BoxCollision(m_LoadButtonCollider, m_MousePos))
-	{
-		m_HoverLoadButton = true;
-	}
-	else
-	{
-		m_HoverLoadButton = false;
-	}
 	for (int i = 0; i < m_EditorWindows.size(); ++i)
 	{
 		m_EditorWindows[i]->MouseMove(_x,_y);
@@ -263,6 +262,11 @@ void AnimationClipEditor::Update(float _dt)
 			m_EditorWindows.erase(m_EditorWindows.begin() + i);
 			continue;
 		}
+		if (m_EditorWindows[i]->m_ChangeToAnimationClip)
+		{
+			GenerateNumberedBoxes();
+			m_EditorWindows[i]->m_ChangeToAnimationClip = false;
+		}
 	}
 	if (m_Dragging)
 	{
@@ -306,7 +310,6 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 {
 	Vector2 zoomVector = {m_Zoom,m_Zoom};
 	m_SpriteSheet.Render(_renderer, m_Position,zoomVector,0);
-	m_LoadObject.Render(_renderer, Vector2{ 0,0 },1);
 	_renderer->DrawBox(m_SelectionBox, { 255,255,255,255 },m_Position);
 	_renderer->DrawFilledBox(0, 0, 1280, 25, SDL_Color{ 0,122,0,255 });
 
@@ -321,11 +324,6 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 		{
 			m_NumbrdBoxes[i].Render(_renderer, m_Position,zoomVector,false);
 		}
-	}
-
-	if (m_HoverLoadButton)
-	{
-		_renderer->DrawBox(m_LoadButtonCollider, { 255,255,255,255 }, Vector2(0,0),1);
 	}
 
 	for (int i = 0; i < m_EditorWindows.size(); ++i)
@@ -357,14 +355,6 @@ void AnimationClipEditor::LoadDefaultAssets()
 		m_DefaultFont = m_ResMan->LoadFont("Assets//Fonts//LucidaBrightRegular.ttf",16);
 		//m_DefaultFont =m_ResMan->GetFont("Assets//Fonts//arial.ttf");
 
-		
-
-		//Icons loaded configure src rect
-		if (m_EditorIconsTexture != nullptr)
-		{
-			m_LoadObject.m_RenderInterface.textureName = m_EditorIconsTexture->GetName();
-			m_LoadObject.m_RenderInterface.srcRect = {48,0,16,16};
-		}
 		
 	}
 }
@@ -412,4 +402,14 @@ void AnimationClipEditor::OpenAnimationWindow()
 		m_AnimationWindow->MouseMove((unsigned int)m_MousePos.x, (unsigned int)m_MousePos.y);
 		m_EditorWindows.push_back(m_AnimationWindow);
 	}
+}
+
+void AnimationClipEditor::LoadClip()
+{
+	LoadWindowThingy();
+}
+
+void AnimationClipEditor::SaveClip()
+{
+
 }

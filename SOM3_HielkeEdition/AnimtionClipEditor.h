@@ -41,7 +41,8 @@ private:
 	void LoadDefaultAssets();
 	void OpenAddFrameWindow();
 	void OpenAnimationWindow();
-
+	void LoadClip();
+	void SaveClip();
 
 	bool m_Sprinting,m_Up, m_Left, m_Down, m_Right=false;
 
@@ -61,9 +62,8 @@ private:
 	ResourceManager* m_ResMan;//Reference to the resource manager do not delete
 	Box m_SelectionBox; //Current selection box
 
-	//Button to enable loading
-	Box m_LoadButtonCollider;
-	Object m_LoadObject;
+	Button m_LoadButton;
+	Button m_SaveButton;
 
 	Texture* m_EditorIconsTexture; // the texture we use for all of our editor icons
 	Texture* m_CurrentTexture;
@@ -85,7 +85,5 @@ private:
 	float m_Speed = 50.0f;
 	float m_SprintMultiplier = 2.5f;
 
-	bool m_HoverLoadButton = false;
-	bool m_LoadWindowActive = false;
 };
 

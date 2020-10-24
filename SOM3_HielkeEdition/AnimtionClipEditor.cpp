@@ -75,6 +75,8 @@ void AnimationClipEditor::Init()
 
 	m_Buttons.push_back(&m_OpenAddFrameWindow);
 	m_Buttons.push_back(&m_OpenAnimationWindow);
+
+	m_HighlightedBoxColour = {255,0,0,255};
 }
 
 void AnimationClipEditor::KeyDown(unsigned int _key)
@@ -311,7 +313,14 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 
 	for (unsigned int i = 0; i < m_NumbrdBoxes.size(); ++i)
 	{
-		m_NumbrdBoxes[i].Render(_renderer, m_Position,zoomVector,false);
+		if(i == m_CurrentClip.m_CurrentIndex)
+		{
+			m_NumbrdBoxes[i].Render(_renderer, m_Position, m_HighlightedBoxColour, zoomVector, false);
+		}
+		else
+		{
+			m_NumbrdBoxes[i].Render(_renderer, m_Position,zoomVector,false);
+		}
 	}
 
 	if (m_HoverLoadButton)

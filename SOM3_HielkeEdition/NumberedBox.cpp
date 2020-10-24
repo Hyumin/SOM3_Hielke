@@ -77,6 +77,35 @@ void NumberedBox::Render(SDLRenderer* _renderer, Vector2 _WorldPos, Vector2 _Sca
 	}
 }
 
+void NumberedBox::Render(SDLRenderer* _renderer, Vector2 _WorldPos, SDL_Color _col, Vector2 _ScaleMult, bool _drawFilled)
+{
+	Vector2 zF = _ScaleMult;
+	if (_drawFilled)
+	{
+		_renderer->DrawFilledBox(m_Box.pos.x, m_Box.pos.y, m_Box.w * zF.x, m_Box.h * zF.y, _col, _WorldPos, 1);
+	}
+	else
+	{
+		Box b = m_Box;
+		b.pos *= zF.x;
+		b.w *= zF.x;
+		b.h *= zF.y;
+
+		_renderer->DrawBox(b, _col, _WorldPos, 1);
+	}
+	//_renderer->DrawBox(m_Box, m_Colour, _WorldPos, 1);
+
+
+	if (m_Text.GetFont() != nullptr)
+	{
+		Vector2 t_Tpos = m_Text.m_pos;
+		m_Text.m_pos *= zF.x;
+		m_Text.Render(_renderer, _WorldPos, 2);
+		m_Text.m_pos = t_Tpos;
+	}
+
+}
+
 void NumberedBox::SetBox(Box _box)
 {
 	m_Box = _box;

@@ -79,6 +79,7 @@ private:
 	std::vector<Button*> m_Buttons;
 	std::vector<NumberedBox> m_NumbrdBoxes;
 
+	SDL_Color m_HighlightedBoxColour;
 
 	float m_Zoom = 1.0f;
 	float m_Speed = 50.0f;

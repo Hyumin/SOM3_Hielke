@@ -12,6 +12,7 @@ public:
 
 	void Render(SDLRenderer* _renderer, Vector2 _WorldPos = { 0,0 },bool _drawFilled = false);
 	void Render(SDLRenderer* _renderer, Vector2 _WorldPos = { 0,0 }, Vector2 _ScaleMult = {1,1}, bool _drawFilled = false);
+	void Render(SDLRenderer* _renderer, Vector2 _WorldPos = { 0,0 }, SDL_Color _col = {255,255,255,255}, Vector2 _ScaleMult = { 1,1 }, bool _drawFilled = false);
 
 
 	void SetBox(Box _box);

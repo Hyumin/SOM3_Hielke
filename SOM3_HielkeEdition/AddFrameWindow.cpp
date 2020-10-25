@@ -133,6 +133,8 @@ AddFrameWindow::~AddFrameWindow()
 void AddFrameWindow::AddFrame()
 {
 	printf("AddFrame pressed \n");
+	//Converst currently selected frame into a new one and adds it at the given space
+	
 }
 
 void AddFrameWindow::PrevFrame()

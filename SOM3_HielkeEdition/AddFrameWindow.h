@@ -43,7 +43,7 @@ protected:
     std::vector<InputTextField*> m_InputFields; // Store al the input textfields in the vector but keep the pointer of them seperate somewhere
                                                 // so we can acces seperately when needed, the pointers won't be deleted unless we delete the addfraem windwow anyways
     int m_X;
-
+    unsigned int m_CurrentIndex = 0;
     
     TextField m_CurrentFrameField;
     std::string m_ConstFrameText = "Current frame:";

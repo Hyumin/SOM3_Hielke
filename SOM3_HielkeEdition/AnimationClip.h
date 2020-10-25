@@ -24,6 +24,8 @@ public:
 	void NextFrame();
 	void PrevFrame();
 	void GenerateOffsetsArray();//Generate vector2.zero offsets to fill the array
+	void AddFrameAtIndex(unsigned int _index, SDL_Rect _rect);
+
 
 	std::vector<SDL_Rect> m_SourceRects;
 	std::vector<Vector2> m_Offsets;

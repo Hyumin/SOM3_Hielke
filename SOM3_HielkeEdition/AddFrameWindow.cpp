@@ -132,20 +132,67 @@ AddFrameWindow::~AddFrameWindow()
 
 void AddFrameWindow::AddFrame()
 {
-	printf("AddFrame pressed \n");
+	if (m_CurrentClip == nullptr)
+	{
+		printf("Attempt to add frame but no clip has been created addframewindow.cpp \n");
+		return;
+	}
+
 	//Converst currently selected frame into a new one and adds it at the given space
-	
+	SDL_Rect r;
+	try
+	{
+		r.x = std::stoi(m_XInput->GetText());
+		r.y = std::stoi(m_YInput->GetText());
+		r.w = std::stoi(m_WInput->GetText());
+		r.h = std::stoi(m_HInput->GetText());
+
+		m_CurrentClip->AddFrameAtIndex(m_CurrentIndex+1, r);
+		//Animationclip .insert or smth
+	}
+	catch (std::out_of_range& e)
+	{
+
+	}
+	catch (std::invalid_argument& a)
+	{
+
+	}
+
 }
 
 void AddFrameWindow::PrevFrame()
 {
-	printf("Prevframe pressed \n");
+	if (m_CurrentClip == nullptr)
+	{
+		return;
+	}
+	if (m_CurrentIndex > 0)
+	{
+		m_CurrentIndex--;
+	}
+	else if (m_CurrentIndex ==0)
+	{
+		m_CurrentIndex = m_CurrentClip->m_SourceRects.size() - 1;
+	}
 }
 
 void AddFrameWindow::NextFrame()
 {
-	printf("Nextframe pressed \n");
-	
+
+	if (m_CurrentClip == nullptr)
+	{
+		return;
+	}
+
+	if (m_CurrentIndex < m_CurrentClip->m_SourceRects.size())
+	{
+		m_CurrentIndex++;
+	}
+	else
+	{
+		m_CurrentIndex = 0;
+	}
 }
 
 void AddFrameWindow::Update(float _dt)
@@ -160,7 +207,7 @@ void AddFrameWindow::Update(float _dt)
 
 	if (m_CurrentClip != nullptr)
 	{
-		m_CurrentFrameField.SetText((m_ConstFrameText + std::to_string(m_CurrentClip->m_CurrentIndex).data()));
+		m_CurrentFrameField.SetText((m_ConstFrameText + std::to_string(m_CurrentIndex).data()));
 	}
 
 }
@@ -253,4 +300,6 @@ void AddFrameWindow::Render(SDLRenderer* _renderer)
 void AddFrameWindow::SetClip(AnimationClip* _clip)
 {
 	m_CurrentClip = _clip;
+
+	m_CurrentIndex = 0;
 }

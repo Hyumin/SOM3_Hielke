@@ -198,5 +198,15 @@ void AnimationClip::GenerateOffsetsArray()
 
 }
 
+void AnimationClip::AddFrameAtIndex(unsigned int _index, SDL_Rect _rect)
+{
+	//Smaller or equals will allow it to add a frame at the end!
+	if (_index <= m_SourceRects.size())
+	{
+		m_SourceRects.insert(m_SourceRects.begin() + _index, _rect);
+		m_Offsets.insert(m_Offsets.begin() + _index, { 0,0 });
+	}
+}
+
 
 

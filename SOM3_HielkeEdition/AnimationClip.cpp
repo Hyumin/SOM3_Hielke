@@ -129,6 +129,34 @@ void AnimationClip::LoadClipFromFile(const std::string& _path, ResourceManager* 
 	GenerateOffsetsArray();
 }
 
+void AnimationClip::SaveClipToFilePath(const std::string& _path)
+{
+	std::ofstream file (_path);
+
+	//Variable to keep track of which source rect or offsets we are
+	unsigned int index = 0;
+	file << std::string("Texture: ") + m_SourceTexture->GetName() + '\n';
+	file << "Clip_name: " + m_ClipName + '\n';
+	file << "anim_interval: " + std::to_string(m_AnimInterval) + '\n';
+	file << "is_looping: " << m_Looping << '\n';
+	file << "Using_offset: " << m_UseOffsets << '\n';
+	while (index < m_SourceRects.size())
+	{
+		SDL_Rect r = m_SourceRects[index];
+		file <<"SDL_rect: "<< r.x << " " << r.y<< " "<< r.w<< " "<< r.h << '\n' ;
+		if (m_UseOffsets)
+		{
+			Vector2 v = m_Offsets[index];
+			file << "Offset: " << v.x << " " << v.y << "\n";
+		}
+
+
+		index++;
+	}
+
+	file.close();
+}
+
 void AnimationClip::Play()
 {
 	m_IsPlaying = true;

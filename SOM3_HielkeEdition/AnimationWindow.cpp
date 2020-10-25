@@ -48,8 +48,8 @@ void AnimationWindow::Update(float _dt)
 
 	if (m_CurrentClip != nullptr)
 	{
-		int currIndex = m_CurrentClip->m_CurrentIndex;
 		m_CurrentClip->Update(_dt * m_PlayBackSpeed);
+		int currIndex = m_CurrentClip->m_CurrentIndex;
 		m_FrameCounterTextField.SetText("Frame:" + std::to_string(m_CurrentClip->m_CurrentIndex));
 		m_CurrentSpeedTextField.SetText("Speed:" + std::to_string(m_PlayBackSpeed));
 
@@ -68,33 +68,37 @@ void AnimationWindow::Update(float _dt)
 		}
 		try
 		{
-			if (m_FrameX->m_Changed)
+			//Only allow editing when the clip isn't playing
+			if (!m_CurrentClip->m_IsPlaying)
 			{
-				m_CurrentClip->m_SourceRects[currIndex].x = std::stoi(m_FrameX->GetText());
-				m_ChangeToAnimationClip = true;
-			}
-			if (m_FrameY->m_Changed)
-			{
-				m_CurrentClip->m_SourceRects[currIndex].y = std::stoi(m_FrameY->GetText());
-				m_ChangeToAnimationClip = true;
-			}
-			if (m_FrameW->m_Changed)
-			{
-				m_CurrentClip->m_SourceRects[currIndex].w = std::stoi(m_FrameW->GetText());
-				m_ChangeToAnimationClip = true;
-			}
-			if (m_FrameH->m_Changed)
-			{
-				m_CurrentClip->m_SourceRects[currIndex].h = std::stoi(m_FrameH->GetText());
-				m_ChangeToAnimationClip = true;
-			}
-			if (m_OffsetX->m_Changed)
-			{
-				m_CurrentClip->m_Offsets[currIndex].x = std::stoi(m_OffsetX->GetText());
-			}
-			if (m_OffsetY->m_Changed)
-			{
-				m_CurrentClip->m_Offsets[currIndex].y = std::stoi(m_OffsetY->GetText());
+				if (m_FrameX->m_Changed)
+				{
+					m_CurrentClip->m_SourceRects[currIndex].x = std::stoi(m_FrameX->GetText());
+					m_ChangeToAnimationClip = true;
+				}
+				if (m_FrameY->m_Changed)
+				{
+					m_CurrentClip->m_SourceRects[currIndex].y = std::stoi(m_FrameY->GetText());
+					m_ChangeToAnimationClip = true;
+				}
+				if (m_FrameW->m_Changed)
+				{
+					m_CurrentClip->m_SourceRects[currIndex].w = std::stoi(m_FrameW->GetText());
+					m_ChangeToAnimationClip = true;
+				}
+				if (m_FrameH->m_Changed)
+				{
+					m_CurrentClip->m_SourceRects[currIndex].h = std::stoi(m_FrameH->GetText());
+					m_ChangeToAnimationClip = true;
+				}
+				if (m_OffsetX->m_Changed)
+				{
+					m_CurrentClip->m_Offsets[currIndex].x = std::stoi(m_OffsetX->GetText());
+				}
+				if (m_OffsetY->m_Changed)
+				{
+					m_CurrentClip->m_Offsets[currIndex].y = std::stoi(m_OffsetY->GetText());
+				}
 			}
 		}
 		catch (std::out_of_range &e)

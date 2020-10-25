@@ -59,11 +59,11 @@ void AnimationClipEditor::Init()
 
 	if (m_EditorIconsTexture != nullptr)
 	{
-		m_LoadButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
+		m_SaveButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
 		norm = { 96,32,16,16 };
 		clicked = { 128,32,16,16 };
 		hover = { 112,32,16,16 };
-		m_SaveButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
+		m_LoadButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
 
 		m_Buttons.push_back(&m_LoadButton);
 		m_Buttons.push_back(&m_SaveButton);
@@ -406,10 +406,34 @@ void AnimationClipEditor::OpenAnimationWindow()
 
 void AnimationClipEditor::LoadClip()
 {
-	LoadWindowThingy();
+	WindowOpener opener = WindowOpener();
+	std::string path = opener.PrintAndOpenStuff();
+	if (path != "CANCELED")
+	{
+		m_CurrentClip = AnimationClip();// "clear the previous animation clip then load
+		m_CurrentClip.LoadClipFromFile(path, m_ResMan);
+
+		//m_CurrentClip.m_Looping = true;
+		m_SpriteSheet.m_RenderInterface.textureName = m_CurrentClip.m_SourceTexture->GetName();
+		m_SpriteSheet.m_Size = Vector2{ (float)m_CurrentClip.m_SourceTexture->GetWidth(),(float)m_CurrentClip.m_SourceTexture->GetHeight() };
+		m_SpriteSheet.m_RenderInterface.srcRect.w = m_SpriteSheet.m_Size.x;
+		m_SpriteSheet.m_RenderInterface.srcRect.h = m_SpriteSheet.m_Size.y;
+		//m_CurrentClip.Play();
+		GenerateNumberedBoxes();
+		if (m_AnimationWindow != nullptr)
+		{
+			m_AnimationWindow->SetClip(&m_CurrentClip);
+			m_AddFrameWindow->SetClip(&m_CurrentClip);
+		}
+	}
 }
 
 void AnimationClipEditor::SaveClip()
 {
-
+	WindowOpener opener = WindowOpener();
+	std::string path = opener.SaveFileStuff();
+	if (path != "thisisnotasavelocation")
+	{
+		m_CurrentClip.SaveClipToFilePath(path);
+	}
 }

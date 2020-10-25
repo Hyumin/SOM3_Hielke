@@ -127,7 +127,7 @@ public:
 	}
 	~Box(){}
 
-	bool BoxCollision(const Box& _b1, const Box& _b2)
+	static bool BoxCollision(const Box& _b1, const Box& _b2)
 	{
 
 		if (_b1.pos.x + _b1.w >= _b2.pos.x &&
@@ -140,7 +140,7 @@ public:
 
 		return false;
 	}
-	bool BoxCollision(const Box& _b1, const Vector2 _p1)
+	static bool BoxCollision(const Box& _b1, const Vector2 _p1)
 	{
 		if (_b1.pos.x + _b1.w >= _p1.x &&
 			_b1.pos.y + _b1.h >= _p1.y &&

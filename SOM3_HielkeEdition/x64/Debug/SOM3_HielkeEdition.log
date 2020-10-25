@@ -1,5 +1,6 @@
 ﻿  AddFrameWindow.cpp
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AddFrameWindow.cpp(153,28): warning C4101: 'e': unreferenced local variable
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AddFrameWindow.cpp(157,32): warning C4101: 'a': unreferenced local variable
-D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AddFrameWindow.cpp(176,59): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AddFrameWindow.cpp(192,30): warning C4101: '_e': unreferenced local variable
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AddFrameWindow.cpp(221,28): warning C4101: 'e': unreferenced local variable
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AddFrameWindow.cpp(225,32): warning C4101: 'a': unreferenced local variable
+D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\AddFrameWindow.cpp(244,59): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
   SOM3_HielkeEdition.vcxproj -> D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\x64\Debug\Bin\Debug\x64\SOM3_HielkeEdition.exe

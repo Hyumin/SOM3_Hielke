@@ -33,11 +33,8 @@ void AnimationClipEditor::Init()
 
 	m_MousePos = Vector2(0, 0);
 	m_Position = Vector2(0, 0);
-	m_DragStart = Vector2(0, 0);
-	m_DragEnd = Vector2(0, 0);
 	m_ClipName = "newClip";
 	m_FileName = "newClip.hanimclip";
-	m_Dragging = false;
 	std::string windowName = "Animation Window";
 
 	AnimationWindow* animWindow = new AnimationWindow(Vector2{ 700,100 }, windowName, m_EditorIconsTexture);
@@ -162,11 +159,7 @@ void AnimationClipEditor::MouseDown(unsigned int _key)
 	{
 		m_Buttons[i]->MouseDown(_key);
 	}
-	if (_key == SDL_BUTTON_LEFT)
-	{
-		m_Dragging = true;
-		m_DragStart = m_MousePos+ m_Position;
-	}
+
 }
 
 void AnimationClipEditor::MouseUp(unsigned int _key)
@@ -179,11 +172,7 @@ void AnimationClipEditor::MouseUp(unsigned int _key)
 	{
 		m_Buttons[i]->MouseUp(_key);
 	}
-	if (_key == SDL_BUTTON_LEFT)
-	{
-		m_DragEnd = m_MousePos + m_Position;
-		m_Dragging = false;
-	}
+
 }
 
 void AnimationClipEditor::MouseMove(int _x, int _y)
@@ -253,10 +242,6 @@ void AnimationClipEditor::Update(float _dt)
 	for (int i = 0; i < m_EditorWindows.size(); ++i)
 	{
 		m_EditorWindows[i]->Update(_dt);
-		if (m_EditorWindows[i]->m_Dragging)
-		{
-			m_Dragging = false;
-		}
 		if (m_EditorWindows[i]->m_ReadyForDelete)
 		{
 			m_EditorWindows.erase(m_EditorWindows.begin() + i);
@@ -268,13 +253,7 @@ void AnimationClipEditor::Update(float _dt)
 			m_EditorWindows[i]->m_ChangeToAnimationClip = false;
 		}
 	}
-	if (m_Dragging)
-	{
-		m_DragEnd = m_MousePos + m_Position;
-		m_SelectionBox.pos = m_DragStart;
-		m_SelectionBox.w = m_DragEnd.x - m_DragStart.x;
-		m_SelectionBox.h = m_DragEnd.y - m_DragStart.y;
-	}
+
 	//Figure out velocity
 	Vector2 direction = Vector2{ 0,0 };
 	float sprintMod = m_Sprinting ? m_SprintMultiplier : 1;
@@ -296,6 +275,8 @@ void AnimationClipEditor::Update(float _dt)
 	}
 
 	m_Position += direction * m_Speed * _dt*m_Zoom*sprintMod;
+	m_AddFrameWindow->m_ViewPos = m_Position;
+	m_AddFrameWindow->m_ZoomVector = {m_Zoom,m_Zoom};
 
 }
 
@@ -310,7 +291,6 @@ void AnimationClipEditor::Render(SDLRenderer* _renderer)
 {
 	Vector2 zoomVector = {m_Zoom,m_Zoom};
 	m_SpriteSheet.Render(_renderer, m_Position,zoomVector,0);
-	_renderer->DrawBox(m_SelectionBox, { 255,255,255,255 },m_Position);
 	_renderer->DrawFilledBox(0, 0, 1280, 25, SDL_Color{ 0,122,0,255 });
 
 

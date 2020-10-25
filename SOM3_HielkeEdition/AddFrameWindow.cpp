@@ -2,6 +2,7 @@
 #include "Texture.h"
 #include "AnimationClip.h"
 #include "TextFieldBuilder.h"
+#include "ButtonBuilder.h"
 
 
 void AddFrameWindow::Init(Texture* _IconsTexture)
@@ -11,13 +12,16 @@ void AddFrameWindow::Init(Texture* _IconsTexture)
 	m_ContentBox.h = 200;
 
 	//Init addframe button
-	m_AddFrameButton = Button{};
-	m_AddFrameButton.SetLayer(1);
-	m_AddFrameButton.SetText(std::string("Add"));
-	m_AddFrameButton.SetSize({50,25});
-	m_AddFrameButton.SetCallbackFunction(std::bind(&AddFrameWindow::AddFrame, this));
-	m_AddFrameButton.SetWireFrameMode({ 0,0,0,255 }, { 100,100,100,255 }, {255,255,255,255});
-	m_AddFrameButton.SetTextColor({0,0,0,255});
+
+	m_AddFrameButton = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 0,0 }, { 50,25 }, 1, std::bind(&AddFrameWindow::AddFrame, this),
+		"Add", Button::DrawMode::WIREFRAME, { 0,0,0,255 }, { 100,100,100,255 }, { 255,255,255,255 }, { 0,0,0,255 });
+
+	m_SelectButton = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 0,0 }, { 50,25 }, 1, std::bind(&AddFrameWindow::ToggleSelect, this),
+		"Select", Button::DrawMode::WIREFRAME, { 0,0,0,255 }, { 100,100,100,255 }, { 255,255,255,255 }, { 0,0,0,255 });
+
+	m_DragButton = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 0,0 }, { 50,25 }, 1, std::bind(&AddFrameWindow::ToggleDrag, this),
+		"Drag", Button::DrawMode::WIREFRAME, { 0,0,0,255 }, { 100,100,100,255 }, { 255,255,255,255 }, { 0,0,0,255 });
+
 
 	//Init the two arrow buttons 
 	m_PrevFrameButton = Button{};
@@ -26,8 +30,8 @@ void AddFrameWindow::Init(Texture* _IconsTexture)
 	m_PrevFrameButton.SetLayer(1);
 	m_NextFrameButton.SetLayer(1);
 
-	m_PrevFrameButton.SetSize({ 50,50 });
-	m_NextFrameButton.SetSize({50,50});
+	m_PrevFrameButton.SetSize({ 34,34 });
+	m_NextFrameButton.SetSize({34,34});
 
 	m_PrevFrameButton.SetCallbackFunction(std::bind(&AddFrameWindow::PrevFrame, this));
 	m_NextFrameButton.SetCallbackFunction(std::bind(&AddFrameWindow::NextFrame, this));
@@ -70,6 +74,15 @@ void AddFrameWindow::Init(Texture* _IconsTexture)
 	m_CurrentFrameField.m_Size = Vector2{240, 30};
 	m_CurrentFrameField.SetText("Current frame:");
 	m_CurrentFrameField.SetColour({0,0,0,255});
+
+
+	m_Buttons.push_back(&m_AddFrameButton);
+	m_Buttons.push_back(&m_PrevFrameButton);
+	m_Buttons.push_back(&m_NextFrameButton);
+	m_Buttons.push_back(&m_SelectButton);
+	m_Buttons.push_back(&m_DragButton);
+
+
 	Reposition();
 
 }
@@ -84,16 +97,20 @@ void AddFrameWindow::Reposition()
 	EditorWindow::Reposition();
 	m_AfOffset.y = m_ContentBox.pos.y + m_ContentBox.h - m_PrevFrameButton.GetSize().y;
 
-	m_PrevOffset.x = m_ContentBox.pos.x + m_PrevFrameButton.GetSize().x;
+	m_PrevOffset.x = m_ContentBox.pos.x ;
 	m_PrevOffset.y = m_ContentBox.pos.y + m_ContentBox.h - m_PrevFrameButton.GetSize().y;
 
 	m_NextOffset.x = m_ContentBox.pos.x + m_ContentBox.w - m_NextFrameButton.GetSize().x * 2;
 	m_NextOffset.y = m_ContentBox.pos.y + m_ContentBox.h - m_NextFrameButton.GetSize().y;
 
-	m_AfOffset.x = m_PrevOffset.x + m_AddFrameButton.GetSize().x;
-	m_CurrentFrameField.m_pos = m_AfOffset + Vector2{ 0,-30 };
+	m_AfOffset.x = m_PrevOffset.x + m_PrevFrameButton.GetSize().x;
+	//Places the current counter roughly in the middle
+	m_CurrentFrameField.m_pos = m_ContentBox.pos + Vector2{m_ContentBox.w/2,m_ContentBox.h/2}-(m_CurrentFrameField.m_Size/2);
 
 	m_AddFrameButton.SetPosition(m_AfOffset);
+	m_SelectButton.SetPosition(m_AfOffset + Vector2{m_AddFrameButton.GetSize().x*1.5f, 0});
+	m_DragButton.SetPosition(m_SelectButton.GetPosition() + Vector2{ m_SelectButton.GetSize().x * 1.5f, 0 });
+
 	m_NextFrameButton.SetPosition(m_NextOffset);
 	m_PrevFrameButton.SetPosition(m_PrevOffset);
 
@@ -128,6 +145,57 @@ AddFrameWindow::~AddFrameWindow()
 	m_WInput= nullptr;
 	delete m_HInput;
 	m_HInput = nullptr;
+}
+
+void AddFrameWindow::UpdateDragSelectionBox()
+{
+	if (m_DragMode&& m_DragginSelection)
+	{
+		m_SelectionBox.pos = m_MousePos - m_DragSelectionStart;
+		m_XInput->SetText(std::to_string((int)m_SelectionBox.pos.x));
+		m_YInput->SetText(std::to_string((int)m_SelectionBox.pos.y));
+	}
+}
+
+void AddFrameWindow::UpdateSelectionBox()
+{
+	if (m_SelectingMode)
+	{
+		if (m_Selecting)
+		{
+			m_SelectEnd = m_MousePos + m_ViewPos * m_ZoomVector.x;
+			m_SelectionBox.pos = m_SelectStart;
+			m_SelectionBox.w = m_SelectEnd.x - m_SelectStart.x;
+			m_SelectionBox.h = m_SelectEnd.y - m_SelectStart.y;
+
+			//When width or height is lower then 0 meaning negative
+			//we want to substract that from the position and inverse the width
+			if (m_SelectionBox.w < 0)
+			{
+				m_SelectionBox.pos.x += m_SelectionBox.w;
+				m_SelectionBox.w *= -1;
+			}
+			if (m_SelectionBox.h < 0)
+			{
+				m_SelectionBox.pos.y += m_SelectionBox.h;
+				m_SelectionBox.h *= -1;
+			}
+
+			try
+			{
+				m_XInput->SetText(std::to_string((int)m_SelectionBox.pos.x));
+				m_YInput->SetText(std::to_string((int)m_SelectionBox.pos.y));
+				m_WInput->SetText(std::to_string((int)m_SelectionBox.w));
+				m_HInput->SetText(std::to_string((int)m_SelectionBox.h));
+
+			}
+			catch (std::out_of_range& _e)
+			{
+
+			}
+
+		}
+	}
 }
 
 void AddFrameWindow::AddFrame()
@@ -195,57 +263,108 @@ void AddFrameWindow::NextFrame()
 	}
 }
 
+void AddFrameWindow::ToggleSelect()
+{
+	m_SelectingMode = m_SelectingMode ? false : true;
+	m_Selecting = false;
+	m_DragMode = false;
+
+}
+
+void AddFrameWindow::ToggleDrag()
+{
+	m_DragMode = m_DragMode ? false : true;
+	m_DragginSelection = false;
+	m_SelectingMode = false;
+}
+
 void AddFrameWindow::Update(float _dt)
 {
 	EditorWindow::Update(_dt);
-
 	for (unsigned int i = 0; i < m_InputFields.size(); ++i)
 	{
 		m_InputFields[i]->Update(_dt);
 	}
-
-
 	if (m_CurrentClip != nullptr)
 	{
 		m_CurrentFrameField.SetText((m_ConstFrameText + std::to_string(m_CurrentIndex).data()));
 	}
-
+	UpdateSelectionBox();
 }
 
 void AddFrameWindow::MouseDown(unsigned int _key)
 {
 	EditorWindow::MouseDown(_key);
-	m_AddFrameButton.MouseDown(_key);
-	m_NextFrameButton.MouseDown(_key);
-	m_PrevFrameButton.MouseDown(_key);
+	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
+	{
+		m_Buttons[i]->MouseDown(_key);
+	}
+
 	for (unsigned int i = 0; i < m_InputFields.size(); ++i)
 	{
 		m_InputFields[i]->MouseDown(_key);
+	}
+	if (_key == 1&&!m_InContentBox)
+	{
+		if (m_SelectingMode)
+		{
+			m_Selecting = true;
+			m_SelectStart = m_MousePos + m_ViewPos * m_ZoomVector.x;
+		}
+		if (m_DragMode)
+		{
+			//Check collision with the selection box
+			if (Box::BoxCollision(m_SelectionBox, m_MousePos))
+			{
+				m_DragginSelection = true;
+				m_DragSelectionStart = m_MousePos - m_SelectionBox.pos;
+			}
+		}
 	}
 }
 
 void AddFrameWindow::MouseUp(unsigned int _key)
 {
 	EditorWindow::MouseUp(_key);
-	m_AddFrameButton.MouseUp(_key);
-	m_NextFrameButton.MouseUp(_key);
-	m_PrevFrameButton.MouseUp(_key);
+
+	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
+	{
+		m_Buttons[i]->MouseUp(_key);
+	}
+
 	for (unsigned int i = 0; i < m_InputFields.size(); ++i)
 	{
 		m_InputFields[i]->MouseUp(_key);
+	}
+	if (_key == 1 )
+	{
+		if (m_Selecting)
+		{
+			UpdateSelectionBox();
+			m_Selecting = false;
+		}
+		if (m_DragginSelection)
+		{
+			m_DragginSelection = false;
+		}
 	}
 }
 
 void AddFrameWindow::MouseMove(unsigned int _x, unsigned int _y)
 {
 	EditorWindow::MouseMove(_x, _y);
-	m_AddFrameButton.MouseMove(_x, _y);
-	m_NextFrameButton.MouseMove(_x, _y);
-	m_PrevFrameButton.MouseMove(_x, _y);
+	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
+	{
+		m_Buttons[i]->MouseMove(_x, _y);
+	}
 	for (unsigned int i = 0; i < m_InputFields.size(); ++i)
 	{
 		m_InputFields[i]->MouseMove(_x, _y);
 	}
+	m_MousePos = {(float)_x,(float)_y};
+	m_InContentBox = m_ContentBox.BoxCollision(m_ContentBox, m_MousePos);
+
+	UpdateDragSelectionBox();
 }
 
 void AddFrameWindow::SetFont(TTF_Font* _font)
@@ -257,7 +376,12 @@ void AddFrameWindow::SetFont(TTF_Font* _font)
 		printf("Wtf went wrong?");
 	}
 
-	m_AddFrameButton.SetFont(_font);
+	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
+	{
+		m_Buttons[i]->SetFont(_font);
+	}
+
+
 	m_CurrentFrameField.SetFont(_font);
 	for (unsigned int i = 0; i < m_InputFields.size(); ++i)
 	{
@@ -285,10 +409,19 @@ void AddFrameWindow::Render(SDLRenderer* _renderer)
 {
 	EditorWindow::Render(_renderer);
 
+	Box zoomedBox=  m_SelectionBox;
+	zoomedBox.pos.x *= m_ZoomVector.x;
+	zoomedBox.pos.y *= m_ZoomVector.y;
+	zoomedBox.w *= m_ZoomVector.x;
+	zoomedBox.h*= m_ZoomVector.y;
+
+	_renderer->DrawBox(zoomedBox, { 255,255,255,255 },m_ViewPos);
 	_renderer->DrawFilledBox(m_ContentBox, m_Color, { 0,0 }, 0);
-	m_AddFrameButton.Render(_renderer);
-	m_NextFrameButton.Render(_renderer);
-	m_PrevFrameButton.Render(_renderer);
+	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
+	{
+		m_Buttons[i]->Render(_renderer);
+	}
+
 	m_CurrentFrameField.Render(_renderer, { 0,0 }, 1);
 	for (unsigned int i = 0; i < m_InputFields.size(); ++i)
 	{

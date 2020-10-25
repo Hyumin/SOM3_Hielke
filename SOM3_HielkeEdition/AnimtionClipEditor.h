@@ -46,7 +46,6 @@ private:
 
 	bool m_Sprinting,m_Up, m_Left, m_Down, m_Right=false;
 
-	bool m_Dragging;
 	std::string m_ClipName;
 	std::string m_FileName;
 
@@ -54,13 +53,10 @@ private:
 	AnimationClip m_CurrentClip;
 	Object m_CurrentAnimationObject;
 
-	Vector2 m_DragStart;//when you start holding the left mouse button down
-	Vector2 m_DragEnd;//When you release the left mouse button
 	Vector2 m_MousePos;
 	Vector2 m_Position;// "World position"
 
 	ResourceManager* m_ResMan;//Reference to the resource manager do not delete
-	Box m_SelectionBox; //Current selection box
 
 	Button m_LoadButton;
 	Button m_SaveButton;

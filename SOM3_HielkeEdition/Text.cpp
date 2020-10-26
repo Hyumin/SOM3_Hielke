@@ -94,7 +94,7 @@ bool  Text::WrapText(SDL_Surface* _Mainsurface, std::string _remainingText, floa
 	}
 	float sizePerChar = _sizePerCharacter;
 
-	
+	//Create a surface from the text
 	SDL_Surface* textSurface = TTF_RenderText_Solid(m_FontPointer, _remainingText.data(), m_Colour);
 	if (textSurface == NULL)
 	{
@@ -103,7 +103,9 @@ bool  Text::WrapText(SDL_Surface* _Mainsurface, std::string _remainingText, floa
 	}
 	if (sizePerChar == 0)
 	{
-		sizePerChar = textSurface->w / _remainingText.size();
+		//rough estimate of the size per char by dividing the text surface's width by the size
+		// of the string
+		sizePerChar = std::ceil(textSurface->w / _remainingText.size());
 	}
 ;
 
@@ -117,6 +119,8 @@ bool  Text::WrapText(SDL_Surface* _Mainsurface, std::string _remainingText, floa
 		
 		//Get rid of old surface
 		SDL_FreeSurface(textSurface);
+		//intended cutoff index, divide the surface by sizer per char to figure out how many
+		//chars can fit inside along the width of the surface
 		int cutoffIndex = _Mainsurface->w / sizePerChar;
 
 		std::string buffer;
@@ -124,12 +128,54 @@ bool  Text::WrapText(SDL_Surface* _Mainsurface, std::string _remainingText, floa
 
 		if (cutoffIndex > 1)
 		{
-			std::string remaining;
-			//std::copy(_remainingText.begin() + cutoffIndex, _remainingText.end(), &remaining);
-			remaining.assign(_remainingText, cutoffIndex - 1, _remainingText.size());
+			//Check whether it is not a white space if so we want to go back in the string untill we
+			//find a white space, if none can be found we simply continue like normal
+			if (_remainingText[cutoffIndex] != ' ')
+			{
+				for (int i = cutoffIndex; i >= 0; --i)
+				{
+					if (_remainingText[i] == ' ')
+					{
+						cutoffIndex = i;
+						break;
+					}
+				}
+			}
+			buffer.assign(_remainingText, 0, cutoffIndex);
 
 			textSurface = TTF_RenderText_Solid(m_FontPointer, buffer.data(), m_Colour);
+			//In case the text surface is still bigger than the width of our surface
+			//recalculate the size per char,
+			if (textSurface->w > _Mainsurface->w)
+			{
+				sizePerChar = std::ceil(textSurface->w / buffer.size());
+				//Figure out where we went wrong
+				int estimatedLostVikings = std::floor((textSurface->w - _Mainsurface->w) / sizePerChar);
+				if (estimatedLostVikings == 0)
+				{
+					estimatedLostVikings = 1;
+				}
+				cutoffIndex -= estimatedLostVikings;
+				if (_remainingText[cutoffIndex] != ' ')
+				{
+					for (int i = cutoffIndex; i >= 0; --i)
+					{
+						if (_remainingText[i] == ' ')
+						{
+							cutoffIndex = i;
+							break;
+						}
+					}
+				}
+				buffer.assign(_remainingText, 0, cutoffIndex);
+				textSurface = TTF_RenderText_Solid(m_FontPointer, buffer.data(), m_Colour);
 
+			}
+			std::string remaining;
+			//std::copy(_remainingText.begin() + cutoffIndex, _remainingText.end(), &remaining);
+			remaining.assign(_remainingText, cutoffIndex , _remainingText.size());
+
+			
 			destRect = textSurface->clip_rect;
 			destRect.y = height * _ypos;
 			SDL_BlitSurface(textSurface, &textSurface->clip_rect, _Mainsurface, &destRect);

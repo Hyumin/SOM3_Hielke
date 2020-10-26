@@ -43,6 +43,8 @@ private:
 	void OpenAnimationWindow();
 	void LoadClip();
 	void SaveClip();
+	void ZoomIn();
+	void ZoomOut();
 
 	bool m_Sprinting,m_Up, m_Left, m_Down, m_Right=false;
 
@@ -60,6 +62,8 @@ private:
 
 	Button m_LoadButton;
 	Button m_SaveButton;
+	Button m_ZoomInButton;
+	Button m_ZoomOutButton;
 
 	Texture* m_EditorIconsTexture; // the texture we use for all of our editor icons
 	Texture* m_CurrentTexture;

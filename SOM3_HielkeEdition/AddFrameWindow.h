@@ -71,6 +71,7 @@ protected:
     bool m_DragginSelection;
     
     TextField m_CurrentFrameField;
+    TextField m_Info;
     std::string m_ConstFrameText = "Current frame:";
 };
 

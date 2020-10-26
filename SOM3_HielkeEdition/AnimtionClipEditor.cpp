@@ -49,6 +49,9 @@ void AnimationClipEditor::Init()
 
 	m_LoadButton = ButtonBuilder::BuildButton({ 0,0 }, { 25,25 }, 1, std::bind(&AnimationClipEditor::LoadClip, this));
 	m_SaveButton = ButtonBuilder::BuildButton({ 25,0 }, { 25,25 }, 1, std::bind(&AnimationClipEditor::SaveClip, this));
+	//TODO make sure we get the window width and height to use for this instead
+	m_ZoomInButton = ButtonBuilder::BuildButton({1280-50,0}, { 25,25 }, 1, std::bind(&AnimationClipEditor::ZoomIn, this));
+	m_ZoomOutButton = ButtonBuilder::BuildButton({ 1280-25,0 }, { 25,25 }, 1, std::bind(&AnimationClipEditor::ZoomOut, this));
 
 	SDL_Rect norm = {96,16,16,16};
 	SDL_Rect clicked = {128,16,16,16};
@@ -61,7 +64,20 @@ void AnimationClipEditor::Init()
 		clicked = { 128,32,16,16 };
 		hover = { 112,32,16,16 };
 		m_LoadButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
+		
+		norm = { 48,48,16,16 };
+		clicked = { 80,48,16,16 };
+		hover = { 64,48,16,16 };
+		m_ZoomInButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
+		norm = { 96,48,16,16 };
+		clicked = { 128,48,16,16 };
+		hover = { 112,48,16,16 };
+		m_ZoomOutButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
 
+
+
+		m_Buttons.push_back(&m_ZoomInButton);
+		m_Buttons.push_back(&m_ZoomOutButton);
 		m_Buttons.push_back(&m_LoadButton);
 		m_Buttons.push_back(&m_SaveButton);
 	}
@@ -131,12 +147,6 @@ void AnimationClipEditor::KeyUp(unsigned int _key)
 		break;
 	case SDLK_LEFT:
 		m_Left = false;
-		break;
-	case SDLK_EQUALS:
-		m_Zoom += 0.1f;
-		break;
-	case SDLK_MINUS:
-		m_Zoom -= 0.1f;
 		break;
 	case SDLK_LSHIFT:
 		m_Sprinting = false;
@@ -416,4 +426,14 @@ void AnimationClipEditor::SaveClip()
 	{
 		m_CurrentClip.SaveClipToFilePath(path);
 	}
+}
+
+void AnimationClipEditor::ZoomIn()
+{
+	m_Zoom += 0.1f;
+}
+
+void AnimationClipEditor::ZoomOut()
+{
+	m_Zoom -= 0.1f;
 }

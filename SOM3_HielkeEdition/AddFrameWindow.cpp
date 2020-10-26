@@ -54,14 +54,14 @@ void AddFrameWindow::Init(Texture* _IconsTexture)
 	m_HInput->m_CharLimit = 5;
 
 	m_XInputOffset = Vector2{ 30,5 };
-	m_YInputOffset = Vector2{ 175,5 };
-	m_WInputOffset = Vector2{ 30,55 };
-	m_HInputOffset = Vector2{ 175,55 };
+	m_YInputOffset = Vector2{ 125,5 };
+	m_WInputOffset = Vector2{ 30,35 };
+	m_HInputOffset = Vector2{ 125,35 };
 
-	m_XInput->SetSize(Vector2{ 50,30 });
-	m_YInput->SetSize(Vector2{ 50,30 });
-	m_WInput->SetSize(Vector2{ 50,30 });
-	m_HInput->SetSize(Vector2{ 50,30 });
+	m_XInput->SetSize(Vector2{ 50,20 });
+	m_YInput->SetSize(Vector2{ 50,20 });
+	m_WInput->SetSize(Vector2{ 50,20 });
+	m_HInput->SetSize(Vector2{ 50,20 });
 	
 
 	m_InputFields.push_back(m_XInput);
@@ -82,6 +82,7 @@ void AddFrameWindow::Init(Texture* _IconsTexture)
 	m_Buttons.push_back(&m_SelectButton);
 	m_Buttons.push_back(&m_DragButton);
 
+	m_Info = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Info OwO", nullptr, { 0,0 }, { 250,70 });
 
 	Reposition();
 
@@ -106,6 +107,7 @@ void AddFrameWindow::Reposition()
 	m_AfOffset.x = m_PrevOffset.x + m_PrevFrameButton.GetSize().x;
 	//Places the current counter roughly in the middle
 	m_CurrentFrameField.m_pos = m_ContentBox.pos + Vector2{m_ContentBox.w/2,m_ContentBox.h/2}-(m_CurrentFrameField.m_Size/2);
+	m_Info.m_pos = m_CurrentFrameField.m_pos + Vector2{0, m_CurrentFrameField.m_Size.y};
 
 	m_AddFrameButton.SetPosition(m_AfOffset);
 	m_SelectButton.SetPosition(m_AfOffset + Vector2{m_AddFrameButton.GetSize().x*1.5f, 0});
@@ -196,6 +198,26 @@ void AddFrameWindow::UpdateSelectionBox()
 
 		}
 	}
+	else
+	{
+		try
+		{
+			m_SelectionBox.pos.x = std::stoi(m_XInput->GetText());
+			m_SelectionBox.pos.y = std::stoi(m_YInput->GetText());
+			m_SelectionBox.w = std::stoi(m_WInput->GetText());
+			m_SelectionBox.h = std::stoi(m_HInput->GetText());
+
+
+		}
+		catch (std::out_of_range& _e)
+		{
+
+		}
+		catch (std::invalid_argument& _e)
+		{
+
+		}
+	}
 }
 
 void AddFrameWindow::AddFrame()
@@ -216,6 +238,7 @@ void AddFrameWindow::AddFrame()
 		r.h = std::stoi(m_HInput->GetText());
 
 		m_CurrentClip->AddFrameAtIndex(m_CurrentIndex+1, r);
+		m_ChangeToAnimationClip = true;
 		//Animationclip .insert or smth
 	}
 	catch (std::out_of_range& e)
@@ -269,6 +292,14 @@ void AddFrameWindow::ToggleSelect()
 	m_Selecting = false;
 	m_DragMode = false;
 
+	if (m_SelectingMode)
+	{
+		m_Info.SetText("Click and hold left mouse button to create a box, press select again to disable ");
+	}
+	else
+	{
+		m_Info.SetText(" ");
+	}
 }
 
 void AddFrameWindow::ToggleDrag()
@@ -276,6 +307,14 @@ void AddFrameWindow::ToggleDrag()
 	m_DragMode = m_DragMode ? false : true;
 	m_DragginSelection = false;
 	m_SelectingMode = false;
+	if (m_DragMode)
+	{
+		m_Info.SetText("Click on the selection box to drag it, press drag again to disable ");
+	}
+	else
+	{
+		m_Info.SetText(" ");
+	}
 }
 
 void AddFrameWindow::Update(float _dt)
@@ -371,16 +410,12 @@ void AddFrameWindow::SetFont(TTF_Font* _font)
 {
 	EditorWindow::SetFont(_font);
 
-	if (m_TextField.GetFont() == nullptr)
-	{
-		printf("Wtf went wrong?");
-	}
 
 	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
 	{
 		m_Buttons[i]->SetFont(_font);
 	}
-
+	m_Info.SetFont(_font);
 
 	m_CurrentFrameField.SetFont(_font);
 	for (unsigned int i = 0; i < m_InputFields.size(); ++i)
@@ -417,6 +452,8 @@ void AddFrameWindow::Render(SDLRenderer* _renderer)
 
 	_renderer->DrawBox(zoomedBox, { 255,255,255,255 },m_ViewPos);
 	_renderer->DrawFilledBox(m_ContentBox, m_Color, { 0,0 }, 0);
+
+	m_Info.Render(_renderer, { 0,0 }, 1);
 	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
 	{
 		m_Buttons[i]->Render(_renderer);

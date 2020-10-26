@@ -51,6 +51,11 @@ public:
 		newVec.y = y / rhand;
 		return newVec;
 	}
+	void operator/= (const float& rhand)
+	{
+		x = x / rhand;
+		y = y / rhand;
+	}
 
 	void operator*= (float rhand)
 	{

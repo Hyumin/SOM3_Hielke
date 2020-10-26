@@ -70,6 +70,8 @@ protected:
     bool m_DragMode;
     bool m_DragginSelection;
     
+    Object m_Preview;
+
     TextField m_CurrentFrameField;
     TextField m_Info;
     std::string m_ConstFrameText = "Current frame:";

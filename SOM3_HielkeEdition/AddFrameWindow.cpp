@@ -43,27 +43,21 @@ void AddFrameWindow::Init(Texture* _IconsTexture)
 	}
 
 	//Init input fields
-	m_XInput = new InputTextField{InputTextField::InputTextMode::Numbers,"X:"};
-	m_YInput = new InputTextField{ InputTextField::InputTextMode::Numbers,"Y:" };
-	m_WInput = new InputTextField{ InputTextField::InputTextMode::Numbers,"W:" };
-	m_HInput = new InputTextField{ InputTextField::InputTextMode::Numbers,"H:" };
+	m_XInput = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "X:", nullptr, { 30,5 }, { 50,20 },5,
+		{ 0,0,0,255 }, { 0,0,0,255 }, { 100,100,100,255 }, { 255,255 ,255 });
+	m_YInput = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "Y:", nullptr, { 30,5 }, { 50,20 }, 5,
+		{ 0,0,0,255 }, { 0,0,0,255 }, { 100,100,100,255 }, { 255,255 ,255 });
+	m_WInput = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "W:", nullptr, { 30,5 }, { 50,20 }, 5,
+		{ 0,0,0,255 }, { 0,0,0,255 }, { 100,100,100,255 }, { 255,255 ,255 });
+	m_HInput = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "H:", nullptr, { 30,5 }, { 50,20 }, 5,
+		{ 0,0,0,255 }, { 0,0,0,255 }, { 100,100,100,255 }, { 255,255 ,255 });
 
-	m_XInput->m_CharLimit = 5;
-	m_YInput->m_CharLimit = 5;
-	m_WInput->m_CharLimit = 5;
-	m_HInput->m_CharLimit = 5;
-
+	//Init offsets for the input fields
 	m_XInputOffset = Vector2{ 30,5 };
 	m_YInputOffset = Vector2{ 125,5 };
 	m_WInputOffset = Vector2{ 30,35 };
 	m_HInputOffset = Vector2{ 125,35 };
-
-	m_XInput->SetSize(Vector2{ 50,20 });
-	m_YInput->SetSize(Vector2{ 50,20 });
-	m_WInput->SetSize(Vector2{ 50,20 });
-	m_HInput->SetSize(Vector2{ 50,20 });
 	
-
 	m_InputFields.push_back(m_XInput);
 	m_InputFields.push_back(m_YInput);
 	m_InputFields.push_back(m_WInput);
@@ -82,7 +76,9 @@ void AddFrameWindow::Init(Texture* _IconsTexture)
 	m_Buttons.push_back(&m_SelectButton);
 	m_Buttons.push_back(&m_DragButton);
 
-	m_Info = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Info OwO", nullptr, { 0,0 }, { 250,70 });
+	m_Preview = Object{ {0,0},{100,100} };
+	
+	m_Info = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, " ", nullptr, { 0,0 }, { 250,70 });
 
 	Reposition();
 
@@ -121,6 +117,8 @@ void AddFrameWindow::Reposition()
 	m_YInput->SetPosition(m_ContentBox.pos + m_YInputOffset);
 	m_WInput->SetPosition(m_ContentBox.pos + m_WInputOffset);
 	m_HInput->SetPosition(m_ContentBox.pos + m_HInputOffset);
+
+	m_Preview.m_Pos = m_YInput->GetPosition() + Vector2{ m_YInput->GetSize().x,0 };
 }
 
 AddFrameWindow::AddFrameWindow(Vector2 _pos, const std::string& _name, Texture* _IconsTexture)
@@ -165,10 +163,14 @@ void AddFrameWindow::UpdateSelectionBox()
 	{
 		if (m_Selecting)
 		{
-			m_SelectEnd = m_MousePos + m_ViewPos * m_ZoomVector.x;
-			m_SelectionBox.pos = m_SelectStart;
+			m_SelectEnd = (m_MousePos+m_ViewPos);
+			m_SelectionBox.pos = m_SelectStart ;
 			m_SelectionBox.w = m_SelectEnd.x - m_SelectStart.x;
 			m_SelectionBox.h = m_SelectEnd.y - m_SelectStart.y;
+
+			m_SelectionBox.pos /= m_ZoomVector.x;
+			m_SelectionBox.w /= m_ZoomVector.x;
+			m_SelectionBox.h /= m_ZoomVector.x;
 
 			//When width or height is lower then 0 meaning negative
 			//we want to substract that from the position and inverse the width
@@ -218,6 +220,8 @@ void AddFrameWindow::UpdateSelectionBox()
 
 		}
 	}
+
+	m_Preview.m_RenderInterface.srcRect = {(int)m_SelectionBox.pos.x,(int)m_SelectionBox.pos.y,(int)m_SelectionBox.w,(int)m_SelectionBox.h};
 }
 
 void AddFrameWindow::AddFrame()
@@ -348,12 +352,12 @@ void AddFrameWindow::MouseDown(unsigned int _key)
 		if (m_SelectingMode)
 		{
 			m_Selecting = true;
-			m_SelectStart = m_MousePos + m_ViewPos * m_ZoomVector.x;
+			m_SelectStart = (m_MousePos+m_ViewPos);
 		}
 		if (m_DragMode)
 		{
 			//Check collision with the selection box
-			if (Box::BoxCollision(m_SelectionBox, m_MousePos))
+			if (Box::BoxCollision(m_SelectionBox, m_MousePos+m_ViewPos))
 			{
 				m_DragginSelection = true;
 				m_DragSelectionStart = m_MousePos - m_SelectionBox.pos;
@@ -409,8 +413,6 @@ void AddFrameWindow::MouseMove(unsigned int _x, unsigned int _y)
 void AddFrameWindow::SetFont(TTF_Font* _font)
 {
 	EditorWindow::SetFont(_font);
-
-
 	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
 	{
 		m_Buttons[i]->SetFont(_font);
@@ -453,6 +455,11 @@ void AddFrameWindow::Render(SDLRenderer* _renderer)
 	_renderer->DrawBox(zoomedBox, { 255,255,255,255 },m_ViewPos);
 	_renderer->DrawFilledBox(m_ContentBox, m_Color, { 0,0 }, 0);
 
+	if (m_CurrentClip != nullptr)
+	{
+		m_Preview.Render(_renderer, { 0,0 }, 1);
+	}
+
 	m_Info.Render(_renderer, { 0,0 }, 1);
 	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
 	{
@@ -472,4 +479,6 @@ void AddFrameWindow::SetClip(AnimationClip* _clip)
 	m_CurrentClip = _clip;
 
 	m_CurrentIndex = 0;
+
+	m_Preview.m_RenderInterface.textureName = _clip->m_SourceTexture->GetName();
 }

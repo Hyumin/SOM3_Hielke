@@ -151,7 +151,7 @@ void AddFrameWindow::UpdateDragSelectionBox()
 {
 	if (m_DragMode&& m_DragginSelection)
 	{
-		m_SelectionBox.pos = m_MousePos - m_DragSelectionStart;
+		m_SelectionBox.pos = (m_MousePos+m_ViewPos) / m_ZoomVector.x - m_DragSelectionStart;
 		m_XInput->SetText(std::to_string((int)m_SelectionBox.pos.x));
 		m_YInput->SetText(std::to_string((int)m_SelectionBox.pos.y));
 	}
@@ -357,10 +357,10 @@ void AddFrameWindow::MouseDown(unsigned int _key)
 		if (m_DragMode)
 		{
 			//Check collision with the selection box
-			if (Box::BoxCollision(m_SelectionBox, m_MousePos+m_ViewPos))
+			if (Box::BoxCollision(m_SelectionBox, (m_MousePos+m_ViewPos)/m_ZoomVector.x))
 			{
 				m_DragginSelection = true;
-				m_DragSelectionStart = m_MousePos - m_SelectionBox.pos;
+				m_DragSelectionStart = (m_MousePos+m_ViewPos) / m_ZoomVector.x - m_SelectionBox.pos;
 			}
 		}
 	}

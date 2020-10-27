@@ -208,5 +208,14 @@ void AnimationClip::AddFrameAtIndex(unsigned int _index, SDL_Rect _rect)
 	}
 }
 
+void AnimationClip::RemoveFrameAtIndex(unsigned int _index)
+{
+	if (_index <= m_SourceRects.size())
+	{
+		m_SourceRects.erase(m_SourceRects.begin() + _index);
+		m_Offsets.erase(m_Offsets.begin() + _index);
+	}
+}
+
 
 

@@ -34,6 +34,8 @@ AnimationWindow::~AnimationWindow()
 	m_OffsetX = nullptr;
 	delete m_OffsetY;
 	m_OffsetY = nullptr;
+	delete m_AnimationClipName;
+	m_AnimationClipName = nullptr;
 }
 
 void AnimationWindow::Update(float _dt)
@@ -277,7 +279,7 @@ void AnimationWindow::SetClip(AnimationClip* _clip)
 {
 	m_CurrentClip = _clip;
 
-	m_AnimationClipName.SetText("Name: " + _clip->m_ClipName);
+	m_AnimationClipName->SetText(_clip->m_ClipName);
 	m_Looping = m_CurrentClip->m_Looping;
 	
 
@@ -310,6 +312,8 @@ void AnimationWindow::SetFont(TTF_Font* _font)
 	{
 		m_InputTextFields[i]->SetFont(_font);
 	}
+	m_DeleteYes.SetFont(_font);
+	m_DeleteNo.SetFont(_font);
 }
 
 void AnimationWindow::Init(Texture* _IconsTexture)
@@ -323,25 +327,25 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_InGame.m_Size = { 75,75 };
 
 	//Initialize textfields
-	m_AnimationClipName= TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Name:", nullptr, { 0,0 }, { 300,50 });
-	m_IsLoopingTextField = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Looping:", nullptr, { 0,0 }, { 100,30 });
+	m_IsLoopingTextField = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Looping:", nullptr, { 0,0 }, { 70,20 });
 	m_FrameCounterTextField = TextFieldBuilder::BuildTextField({ 255,255,255,255 }, "Frame:", nullptr, { 0,0 }, { 80,20 });
 	m_CurrentSpeedTextField = TextFieldBuilder::BuildTextField({ 255,255,255,255 }, "Speed:", nullptr, { 0,0 }, { 80,20 });
 	m_RawText = TextFieldBuilder::BuildTextField({ 255,255,255,255 }, "Raw:", nullptr, { 0,0 }, { 80,20 });
 	m_InGameText = TextFieldBuilder::BuildTextField({ 255,255,255,255 }, "In-Game:", nullptr, { 0,0 }, { 80,20 });
-	m_EnableOffsetTextField = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Enable Offsets:", nullptr, { 0,0 }, { 100,20 });
+	m_EnableOffsetTextField = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Enable Offsets:", nullptr, { 0,0 }, { 120,20 });
 	m_OffsetText = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Offset:", nullptr, { 0,0 }, { 60,20 });
 	m_FrameRectText = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, "Frame Rect:", nullptr, { 0,0 }, { 100,20 });
+	m_DeletePrompt = TextFieldBuilder::BuildTextField({ 0,0,0,255 }, " ", nullptr, { 0,0 }, { 200,40 });
 
 	m_TextFields.push_back(&m_OffsetText);
 	m_TextFields.push_back(&m_FrameRectText);
 	m_TextFields.push_back(&m_EnableOffsetTextField);
-	m_TextFields.push_back(&m_AnimationClipName);
 	m_TextFields.push_back(&m_IsLoopingTextField);
 	m_TextFields.push_back(&m_FrameCounterTextField);
 	m_TextFields.push_back(&m_CurrentSpeedTextField);
 	m_TextFields.push_back(&m_RawText);
 	m_TextFields.push_back(&m_InGameText);
+	m_TextFields.push_back(&m_DeletePrompt);
 
 	//Define  sizes of content boxes( the green boxes )
 	m_BottomContentBox = Box{ 0,m_ContentBox.pos.y+m_ContentScaleObject.m_Size.y- m_Bar.h,m_ContentBox.w,m_ContentBox.h/5 };
@@ -360,6 +364,11 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_NextFrame = ButtonBuilder::BuildButton({ 0,0 }, { 35,35 }, 1, std::bind(&AnimationWindow::NextFrame, this));
 	m_PrevFrame = ButtonBuilder::BuildButton({ 0,0 }, { 35,35 }, 1, std::bind(&AnimationWindow::PrevFrame, this));
 	m_ToggleOffset = ButtonBuilder::BuildButton({ 0,0 }, { 20,20 }, 1, std::bind(&AnimationWindow::ToggleOffset, this));
+	m_DeleteButton = ButtonBuilder::BuildButton({ 0,0 }, { 35,35 }, 1, std::bind(&AnimationWindow::DeleteCallback, this));
+	m_DeleteYes = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 0,0 }, {40,20 }, 1, std::bind(&AnimationWindow::DeleteYes, this),
+		"Yes", Button::DrawMode::WIREFRAME, { 0,0,0,255 }, { 255,255,255,255 }, { 100,100,100,255 }, {0,0,0,255});
+	m_DeleteNo = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 0,0 }, { 40,20 }, 1, std::bind(&AnimationWindow::DeleteYes, this),
+		"no", Button::DrawMode::WIREFRAME, { 0,0,0,255 }, { 255,255,255,255 }, { 100,100,100,255 }, { 0,0,0,255 });
 
 	m_ToggleOffset.SetWireFrameMode({0,0,0,255}, {100,100,100,255}, {255,255,255});
 
@@ -394,6 +403,11 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 		m_FastForward.SetTextureDrawModeWithSheet(_IconsTexture->GetName(), norm, clicked, hovered);
 		m_SlowDown.SetTextureDrawModeWithSheet(_IconsTexture->GetName(), norm, clicked, hovered, SDL_RendererFlip::SDL_FLIP_HORIZONTAL);
 
+		norm = { 160,0,16,16 };
+		hovered = { 176,0,16,16 };
+		clicked = { 192,0,16,16 };
+		m_DeleteButton.SetTextureDrawModeWithSheet(m_IconTexture->GetName(), norm, clicked, hovered);
+
 	}
 	m_Playing = false;
 	m_Looping = false;
@@ -407,14 +421,19 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_Buttons.push_back(&m_NextFrame);
 	m_Buttons.push_back(&m_PrevFrame);
 	m_Buttons.push_back(&m_ToggleOffset);
+	m_Buttons.push_back(&m_DeleteButton);
 
 	//Initialize input text field
 	m_IntervalInputField = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "Interval", nullptr,
 			{ 0,0 }, { 70,20 }, 9, { 0,0,0,255 }, { 0,0,0,255 }, { 75,75,75,255 }, { 255,255,255,255 });
+	m_AnimationClipName = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Text, "Name:", nullptr,
+		{ 0,0 }, { 200,20 }, 50, { 0,0,0,255 }, { 0,0,0,255 }, { 75,75,75,255 }, { 255,255,255,255 });
+
 
 	m_IntervalInputField->m_NameOffset = Vector2{ -60,0 };
+	m_AnimationClipName->m_NameOffset = Vector2{ -60,0 };
 
-	//What a fricking mess :eyes:
+	//What a fricking mess it is to initilaize this much
 	m_FrameX = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "X", nullptr,
 		{ 0,0 }, { 50,20 }, 9, { 0,0,0,255 }, { 0,0,0,255 }, { 75,75,75,255 }, { 255,255,255,255 });
 	m_FrameY = TextFieldBuilder::BuildInputTextField(InputTextField::InputTextMode::Numbers, "Y", nullptr,
@@ -435,6 +454,7 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 	m_InputTextFields.push_back(m_FrameH);
 	m_InputTextFields.push_back(m_OffsetX);
 	m_InputTextFields.push_back(m_OffsetY);
+	m_InputTextFields.push_back(m_AnimationClipName);
 
 	m_InputTextFields.push_back(m_IntervalInputField);
 
@@ -482,18 +502,26 @@ void AnimationWindow::ReScaleContent()
 	m_Bar.w = m_ContentBox.w;
 	m_CrossRelativePos.x = m_Bar.w - m_ExitButton.GetSize().x;
 
-	m_RawPreviewBox.w = m_ContentBox.w / 2;
-	m_RawPreviewBox.h = m_ContentBox.h / 4;
-	m_InGamePreviewBox.w = m_ContentBox.w / 2;
-	m_InGamePreviewBox.h = m_ContentBox.h / 4;
 
+	// top part
 	m_TopContentBox.w = m_ContentBox.w;
-	m_TopContentBox.h = m_ContentBox.h / 4;
-	m_EditFrameBox.w = m_ContentBox.w;
-	m_EditFrameBox.h = m_ContentBox.h / 4;
+	m_TopContentBox.h = m_AnimationClipName->GetSize().y + m_IsLoopingTextField.m_Size.y + m_IntervalInputField->GetSize().y;
 
+	//bottom part
 	m_BottomContentBox.w = m_ContentBox.w;
-	m_BottomContentBox.h = m_ContentBox.h - m_TopContentBox.h - m_InGamePreviewBox.h- m_EditFrameBox.h;
+	m_BottomContentBox.h = m_CurrentSpeedTextField.m_Size.y+ m_LoopButton.GetSize().y+ m_PrevFrame.GetSize().y;
+
+	//edit fram part or upple middle part
+	m_EditFrameBox.w = m_ContentBox.w;
+	m_EditFrameBox.h =  m_FrameRectText.m_Size.y +( m_OffsetX->GetSize().y*2)+ m_DeleteButton.GetSize().y + m_DeletePrompt.m_Size.y+ m_DeleteYes.GetSize().y;
+
+	//Preview boxes scaling
+	m_RawPreviewBox.w = m_ContentBox.w / 2;
+	m_InGamePreviewBox.w = m_ContentBox.w / 2;
+
+	m_InGamePreviewBox.h = m_ContentBox.h-  m_EditFrameBox.h- m_BottomContentBox.h - m_TopContentBox.h;
+	m_RawPreviewBox.h = m_InGamePreviewBox.h;
+
 
 	m_ButtonsOffset = Vector2{ m_TopContentBox.w / 2 - (m_PlayButton.GetSize().x * 1.5f),20 };
 }
@@ -511,9 +539,9 @@ void AnimationWindow::RepositionTop()
 {
 	//Top part
 	m_TopContentBox.pos = m_ContentBox.pos;
-	m_AnimationClipName.m_pos = m_TopContentBox.pos;
+	m_AnimationClipName->SetPosition(m_TopContentBox.pos-m_AnimationClipName->m_NameOffset);
 	m_IsLoopingTextField.m_pos = m_TopContentBox.pos;
-	m_IsLoopingTextField.m_pos.y += m_AnimationClipName.m_Size.y;
+	m_IsLoopingTextField.m_pos.y += m_AnimationClipName->GetSize().y;
 
 	m_EnableLooping.pos = m_IsLoopingTextField.m_pos;
 	m_EnableLooping.pos.x += m_IsLoopingTextField.m_Size.x;
@@ -540,6 +568,11 @@ void AnimationWindow::RepositionEditFrame()
 
 	m_OffsetX->SetPosition(m_OffsetText.m_pos + Vector2{ 0,m_OffsetText.m_Size.y });
 	m_OffsetY->SetPosition(m_OffsetX->GetPosition() + Vector2{ m_OffsetY->GetSize().x * 2,0 });
+
+	m_DeleteButton.SetPosition(m_FrameW->GetPosition() + Vector2{ 0,m_FrameW->GetSize().y });
+	m_DeletePrompt.m_pos = m_DeleteButton.GetPosition() + Vector2{m_DeleteButton.GetSize().x,0};
+	m_DeleteYes.SetPosition(m_DeletePrompt.m_pos + Vector2{ 0,m_DeletePrompt.m_Size.y });
+	m_DeleteNo.SetPosition(m_DeleteYes.GetPosition() + Vector2{ m_DeleteYes.GetSize().x,0 });
 
 }
 
@@ -644,4 +677,78 @@ void AnimationWindow::ToggleOffset()
 	{
 		m_CurrentClip->m_UseOffsets = m_CurrentClip->m_UseOffsets ? false : true;
 	}
+}
+
+void AnimationWindow::DeleteCallback()
+{
+	if (m_CurrentClip != nullptr)
+	{
+		m_DeleteMode = m_DeleteMode ? false : true;
+
+		if (m_DeleteMode)
+		{
+			m_Buttons.push_back(&m_DeleteNo);
+			m_Buttons.push_back(&m_DeleteYes);
+			m_DeletePrompt.SetText("Are you sure you want to delete frame:" + std::to_string(m_CurrentClip->m_CurrentIndex) + "?");
+		}
+		else
+		{
+			RemoveYesNoButtons();
+		}
+	}
+}
+
+void AnimationWindow::DeleteYes()
+{
+	//Delete the actual frame
+	m_DeleteMode = false;
+	m_CurrentClip->RemoveFrameAtIndex(m_CurrentClip->m_CurrentIndex);
+	PrevFrame();
+	RemoveYesNoButtons();
+	
+}
+
+void AnimationWindow::DeleteNo()
+{
+	m_DeleteMode = false;
+	RemoveYesNoButtons();
+}
+
+void AnimationWindow::RemoveYesNoButtons()
+{
+	int leIndex = -1;
+	for (int i = 0; i < m_Buttons.size(); ++i)
+	{
+		if (m_Buttons[i] == &m_DeleteNo)
+		{
+			leIndex = i;
+		}
+		if (m_Buttons[i] == &m_DeleteYes)
+		{
+			leIndex = i;
+		}
+	}
+	if (leIndex >= 0)
+	{
+		m_Buttons.erase(m_Buttons.begin() + leIndex);
+		leIndex = -1;
+		for (int i = 0; i < m_Buttons.size(); ++i)
+		{
+			if (m_Buttons[i] == &m_DeleteNo)
+			{
+				leIndex = i;
+			}
+			if (m_Buttons[i] == &m_DeleteYes)
+			{
+				leIndex = i;
+			}
+		}
+		if (leIndex >= 0)
+		{
+			m_Buttons.erase(m_Buttons.begin() + leIndex);
+		}
+	}
+
+
+	m_DeletePrompt.SetText(" ");
 }

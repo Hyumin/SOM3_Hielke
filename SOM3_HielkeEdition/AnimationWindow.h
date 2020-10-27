@@ -40,6 +40,10 @@ protected:
        void SpeedUp();
        void SlowDown();
        void ToggleOffset();
+       void DeleteCallback();
+       void DeleteYes();
+       void DeleteNo();
+       void RemoveYesNoButtons();
 
        Box m_EnableLooping; //Could be a button, 
        Box m_BottomContentBox;
@@ -55,6 +59,10 @@ protected:
        Button m_NextFrame;
        Button m_PrevFrame;
        Button m_ToggleOffset;
+       Button m_DeleteButton;
+       Button m_DeleteYes;
+       Button m_DeleteNo;
+
     
        //Fast forward button
        Button m_FastForward;
@@ -62,11 +70,10 @@ protected:
 
        float m_PlayBackSpeed;
 
-       bool m_Playing, m_Looping, m_Pausing;
+       bool m_Playing, m_Looping, m_Pausing, m_DeleteMode;
     
 
        //Textfields
-       TextField m_AnimationClipName;
        TextField m_IsLoopingTextField;
        TextField m_EnableOffsetTextField;
        TextField m_FrameCounterTextField;
@@ -75,6 +82,7 @@ protected:
        TextField m_RawText;
        TextField m_OffsetText;
        TextField m_FrameRectText;
+       TextField m_DeletePrompt;
 
        //Input TextFields
        InputTextField* m_IntervalInputField;
@@ -84,6 +92,7 @@ protected:
        InputTextField* m_FrameH;
        InputTextField* m_OffsetX;
        InputTextField* m_OffsetY;
+       InputTextField* m_AnimationClipName;
 
        //Use this to call generic functions like Render
        std::vector<TextField*> m_TextFields;

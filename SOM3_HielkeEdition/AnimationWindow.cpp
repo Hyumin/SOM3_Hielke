@@ -47,8 +47,8 @@ void AnimationWindow::Update(float _dt)
 	{
 		m_InputTextFields[i]->Update(_dt);
 	}
-
-	if (m_CurrentClip != nullptr)
+	//We can only update our animation clip if it has some frames in it
+	if (m_CurrentClip != nullptr&& m_CurrentClip->m_SourceRects.size() > 0)
 	{
 		m_CurrentClip->Update(_dt * m_PlayBackSpeed);
 		int currIndex = m_CurrentClip->m_CurrentIndex;
@@ -289,15 +289,19 @@ void AnimationWindow::SetClip(AnimationClip* _clip)
 	
 	//Update edit textfields
 	m_IntervalInputField->SetText(std::to_string(m_CurrentClip->m_AnimInterval));
-	const SDL_Rect& rect =m_CurrentClip->GetRect();
-	m_FrameX->SetText(std::to_string(rect.x));
-	m_FrameY->SetText(std::to_string(rect.y));
-	m_FrameW->SetText(std::to_string(rect.w));
-	m_FrameH->SetText(std::to_string(rect.h));
 
-	Vector2 offset = m_CurrentClip->m_Offsets[m_CurrentClip->m_CurrentIndex];
-	m_OffsetX->SetText(std::to_string((int)offset.x));
-	m_OffsetY->SetText(std::to_string((int)offset.y));
+	if (m_CurrentClip->m_SourceRects.size() > 0)
+	{
+		const SDL_Rect& rect = m_CurrentClip->GetRect();
+		m_FrameX->SetText(std::to_string(rect.x));
+		m_FrameY->SetText(std::to_string(rect.y));
+		m_FrameW->SetText(std::to_string(rect.w));
+		m_FrameH->SetText(std::to_string(rect.h));
+
+		Vector2 offset = m_CurrentClip->m_Offsets[m_CurrentClip->m_CurrentIndex];
+		m_OffsetX->SetText(std::to_string((int)offset.x));
+		m_OffsetY->SetText(std::to_string((int)offset.y));
+	}
 
 }
 

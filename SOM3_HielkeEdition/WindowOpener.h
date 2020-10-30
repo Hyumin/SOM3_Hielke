@@ -9,6 +9,7 @@ public :
 	WindowOpener();
 	~WindowOpener();
 	std::string PrintAndOpenStuff();
+	std::string PrintAndOpenPng();
 	std::string SaveFileStuff();
 
 private:

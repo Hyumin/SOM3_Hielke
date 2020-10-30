@@ -45,6 +45,7 @@ private:
 	void SaveClip();
 	void ZoomIn();
 	void ZoomOut();
+	void CreateNewFile();
 
 	bool m_Sprinting,m_Up, m_Left, m_Down, m_Right=false;
 
@@ -62,6 +63,7 @@ private:
 
 	Button m_LoadButton;
 	Button m_SaveButton;
+	Button m_NewFileButton;
 	Button m_ZoomInButton;
 	Button m_ZoomOutButton;
 

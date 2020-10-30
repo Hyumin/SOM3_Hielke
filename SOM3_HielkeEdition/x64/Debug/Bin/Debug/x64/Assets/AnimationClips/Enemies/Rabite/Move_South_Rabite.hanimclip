@@ -1,9 +1,0 @@
-Texture: Assets\\SpriteSheets\\enemies\\seiken3_enemies_rabites_and_more.png
-Clip_name: move_south_rabite
-anim_interval: 0.2
-is_looping: 1
-Using_offset: 0
-SDL_rect: 1 419 24 22
-SDL_rect: 24 419 24 22
-SDL_rect: 49 419 24 22
-Offsets: -21 -5

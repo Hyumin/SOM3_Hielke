@@ -40,11 +40,14 @@ void AnimationClipEditor::Init()
 	AnimationWindow* animWindow = new AnimationWindow(Vector2{ 700,100 }, windowName, m_EditorIconsTexture);
 	AddFrameWindow* frameWin = new AddFrameWindow(Vector2{ 300,300 }, std::string("AddFrame window"), m_EditorIconsTexture);
 	m_AddFrameWindow = frameWin;
+	
+	m_NewFileButton = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 50,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::CreateNewFile, this),
+		"New clip", Button::DrawMode::FILLEDRECT, { 0,140,15,255 }, { 0,160,15, 255 }, { 0,235,15,255 }, { 0,0,0,255 });
 
-	m_OpenAddFrameWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 50,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAddFrameWindow, this),
+	m_OpenAddFrameWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 150,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAddFrameWindow, this),
 		"AddFrame", Button::DrawMode::FILLEDRECT, { 0,140,15,255 }, { 0,160,15, 255 }, { 0,235,15,255 }, {0,0,0,255});
 
-	m_OpenAnimationWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 150,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAnimationWindow, this),
+	m_OpenAnimationWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 250,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAnimationWindow, this),
 		"Animation", Button::DrawMode::FILLEDRECT, { 0,140,15,255 }, { 0,160,15, 255 }, { 0,235,15,255 }, { 0,0,0,255 });
 
 	m_LoadButton = ButtonBuilder::BuildButton({ 0,0 }, { 25,25 }, 1, std::bind(&AnimationClipEditor::LoadClip, this));
@@ -94,6 +97,7 @@ void AnimationClipEditor::Init()
 	{
 		m_OpenAddFrameWindow.SetFont(m_DefaultFont);
 		m_OpenAnimationWindow.SetFont(m_DefaultFont);
+		m_NewFileButton.SetFont(m_DefaultFont);
 		m_AnimationWindow->SetFont(m_DefaultFont);
 		m_AddFrameWindow->SetFont(m_DefaultFont);
 	}
@@ -101,6 +105,7 @@ void AnimationClipEditor::Init()
 
 	m_Buttons.push_back(&m_OpenAddFrameWindow);
 	m_Buttons.push_back(&m_OpenAnimationWindow);
+	m_Buttons.push_back(&m_NewFileButton);
 
 	m_HighlightedBoxColour = {255,0,0,255};
 }
@@ -436,4 +441,32 @@ void AnimationClipEditor::ZoomIn()
 void AnimationClipEditor::ZoomOut()
 {
 	m_Zoom -= 0.1f;
+}
+
+//Create new animation clip file, allows you to choose for a texture and then creates a 
+// animation clip based on this filepath
+void AnimationClipEditor::CreateNewFile()
+{
+	WindowOpener opener = WindowOpener();
+	std::string path = opener.PrintAndOpenPng();
+	if (path != "CANCELED")
+	{
+		//replace 
+
+
+		m_CurrentClip = AnimationClip();// 
+		m_CurrentClip.m_SourceTexture = m_ResMan->LoadTexture(path);
+
+		m_SpriteSheet.m_RenderInterface.textureName = m_CurrentClip.m_SourceTexture->GetName();
+		m_SpriteSheet.m_Size = Vector2{ (float)m_CurrentClip.m_SourceTexture->GetWidth(),(float)m_CurrentClip.m_SourceTexture->GetHeight() };
+		m_SpriteSheet.m_RenderInterface.srcRect.w = m_SpriteSheet.m_Size.x;
+		m_SpriteSheet.m_RenderInterface.srcRect.h = m_SpriteSheet.m_Size.y;
+
+		GenerateNumberedBoxes();
+		if (m_AnimationWindow != nullptr)
+		{
+			m_AnimationWindow->SetClip(&m_CurrentClip);
+			m_AddFrameWindow->SetClip(&m_CurrentClip);
+		}
+	}
 }

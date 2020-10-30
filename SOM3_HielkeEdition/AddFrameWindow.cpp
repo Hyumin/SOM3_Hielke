@@ -241,7 +241,14 @@ void AddFrameWindow::AddFrame()
 		r.w = std::stoi(m_WInput->GetText());
 		r.h = std::stoi(m_HInput->GetText());
 
-		m_CurrentClip->AddFrameAtIndex(m_CurrentIndex+1, r);
+		if (m_CurrentClip->m_SourceRects.size() > 0)
+		{
+			m_CurrentClip->AddFrameAtIndex(m_CurrentIndex + 1, r);
+		}
+		else
+		{
+			m_CurrentClip->AddFrameAtIndex(0, r);
+		}
 		m_ChangeToAnimationClip = true;
 		//Animationclip .insert or smth
 	}

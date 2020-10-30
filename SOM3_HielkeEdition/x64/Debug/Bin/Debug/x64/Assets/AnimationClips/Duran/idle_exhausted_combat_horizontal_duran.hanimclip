@@ -1,7 +1,0 @@
-Texture: Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png
-Clip_name: idle_exhausted_combat_horizontal
-anim_interval: 0.15
-is_looping: 1
-SDL_rect: 207 408 22 29
-SDL_rect: 207 458 22 29
-SDL_rect: 207 508 22 29

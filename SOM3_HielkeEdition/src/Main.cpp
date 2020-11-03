@@ -15,7 +15,7 @@
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
 
-const char* WINDOWNAME = "Seiken 3 ";
+const char* WINDOWNAME = "Hielke's cool windowname ";
 
 
 bool init();

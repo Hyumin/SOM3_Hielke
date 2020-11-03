@@ -22,27 +22,34 @@ AnimationClip::~AnimationClip()
 
 void AnimationClip::Update(float _dt)
 {
-	if (m_IsPlaying)
+	if (m_SourceRects.size() > 0)
 	{
-		//Add time to the timer
-		m_AnimTimer += _dt;
-		if (m_AnimTimer > m_AnimInterval)
+		if (m_IsPlaying)
 		{
-			//increment the index and check whether its bigger than the size of the array
-			m_AnimTimer -= m_AnimInterval;
-			m_CurrentIndex++;
-			if (m_CurrentIndex >= m_SourceRects.size())
+			//Add time to the timer
+			m_AnimTimer += _dt;
+			if (m_AnimTimer > m_AnimInterval)
 			{
-				m_CurrentIndex = 0;
-				//If we're not looping stop playing
-				if (!m_Looping)
+				//increment the index and check whether its bigger than the size of the array
+				m_AnimTimer -= m_AnimInterval;
+				m_CurrentIndex++;
+				if (m_CurrentIndex > 100)
 				{
-					m_IsPlaying = false;
-					m_IsFinished = true;
+					printf("nandayo \n");
+				}
+				if (m_CurrentIndex >= m_SourceRects.size())
+				{
+					m_CurrentIndex = 0;
+					//If we're not looping stop playing
+					if (!m_Looping)
+					{
+						m_IsPlaying = false;
+						m_IsFinished = true;
+					}
 				}
 			}
-		}
 
+		}
 	}
 }
 
@@ -182,7 +189,10 @@ void AnimationClip::PrevFrame()
 	}
 	else
 	{
-		m_CurrentIndex = m_SourceRects.size()-1;
+		if (m_SourceRects.size() > 0)
+		{
+			m_CurrentIndex = m_SourceRects.size() - 1;
+		}
 	}
 }
 
@@ -206,15 +216,26 @@ void AnimationClip::AddFrameAtIndex(unsigned int _index, SDL_Rect _rect)
 		m_SourceRects.insert(m_SourceRects.begin() + _index, _rect);
 		m_Offsets.insert(m_Offsets.begin() + _index, { 0,0 });
 	}
+	if (m_SourceRects.size() == 0)
+	{
+		m_SourceRects.push_back(_rect);
+		m_Offsets.push_back({ 0,0 });
+	}
 }
 
 void AnimationClip::RemoveFrameAtIndex(unsigned int _index)
 {
-	if (_index <= m_SourceRects.size())
+	if (m_SourceRects.size() == 1)
+	{
+		m_SourceRects.clear();
+		m_Offsets.clear();
+	}
+	if (_index < m_SourceRects.size())
 	{
 		m_SourceRects.erase(m_SourceRects.begin() + _index);
 		m_Offsets.erase(m_Offsets.begin() + _index);
 	}
+	
 }
 
 

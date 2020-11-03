@@ -58,15 +58,22 @@ void AnimationWindow::Update(float _dt)
 		//update this the moment a new frame has been loaded else when paused can be used to edit certain things OwO
 		if (currIndex != m_PrevFrameIndex)
 		{
-			const SDL_Rect& rect = m_CurrentClip->GetRect();
-			m_FrameX->SetText(std::to_string(rect.x));
-			m_FrameY->SetText(std::to_string(rect.y));
-			m_FrameW->SetText(std::to_string(rect.w));
-			m_FrameH->SetText(std::to_string(rect.h));
+			try
+			{
+				const SDL_Rect& rect = m_CurrentClip->GetRect();
+				m_FrameX->SetText(std::to_string(rect.x));
+				m_FrameY->SetText(std::to_string(rect.y));
+				m_FrameW->SetText(std::to_string(rect.w));
+				m_FrameH->SetText(std::to_string(rect.h));
 
-			Vector2 offset = m_CurrentClip->GetOffset();
-			m_OffsetX->SetText(std::to_string((int)offset.x));
-			m_OffsetY->SetText(std::to_string((int)offset.y));
+				Vector2 offset = m_CurrentClip->GetOffset();
+				m_OffsetX->SetText(std::to_string((int)offset.x));
+				m_OffsetY->SetText(std::to_string((int)offset.y));
+			}
+			catch (std::exception& e)
+			{
+
+			}
 		}
 		try
 		{
@@ -231,10 +238,6 @@ void AnimationWindow::Render(SDLRenderer* _renderer)
 	{
 		m_Buttons[i]->Render(_renderer);
 	}
-	m_PlayButton.Render(_renderer);
-	m_LoopButton.Render(_renderer);
-	m_PauseButton.Render(_renderer);
-
 	_renderer->DrawFilledBox(m_BottomContentBox, m_Color, { 0,0 }, 0);
 	_renderer->DrawFilledBox(m_RawPreviewBox, { 0x0, 0x8D, 0xAD, 0xff }, { 0,0 }, 0);
 	_renderer->DrawFilledBox(m_InGamePreviewBox, { 0x0, 0x8D, 0xAD, 0xff }, { 0,0 }, 0);
@@ -704,9 +707,10 @@ void AnimationWindow::DeleteCallback()
 
 void AnimationWindow::DeleteYes()
 {
-	//Delete the actual frame
+	//Delete the actual frame, and put current animation to the previous one
 	m_DeleteMode = false;
 	m_CurrentClip->RemoveFrameAtIndex(m_CurrentClip->m_CurrentIndex);
+	m_ChangeToAnimationClip = true;
 	PrevFrame();
 	RemoveYesNoButtons();
 	

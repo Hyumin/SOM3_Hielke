@@ -232,7 +232,7 @@ void AddFrameWindow::AddFrame()
 		return;
 	}
 
-	//Converst currently selected frame into a new one and adds it at the given space
+	//Converst current selection box to rectangle and inserts it into the animation
 	SDL_Rect r;
 	try
 	{
@@ -241,16 +241,25 @@ void AddFrameWindow::AddFrame()
 		r.w = std::stoi(m_WInput->GetText());
 		r.h = std::stoi(m_HInput->GetText());
 
+		
+
 		if (m_CurrentClip->m_SourceRects.size() > 0)
 		{
+			//It might happen due to removal of a frame inanother class that the current index is larger than the size, in this case put it at the last index
+			if (m_CurrentIndex >= m_CurrentClip->m_SourceRects.size())
+			{
+				m_CurrentIndex = m_CurrentClip->m_SourceRects.size() - 1;
+			}
+
 			m_CurrentClip->AddFrameAtIndex(m_CurrentIndex + 1, r);
+			//increment the index after adding, this is  to make it nice to use, having to press the right arrow every time is annoying
+			m_CurrentIndex++;
 		}
 		else
 		{
 			m_CurrentClip->AddFrameAtIndex(0, r);
 		}
 		m_ChangeToAnimationClip = true;
-		//Animationclip .insert or smth
 	}
 	catch (std::out_of_range& e)
 	{
@@ -286,8 +295,8 @@ void AddFrameWindow::NextFrame()
 	{
 		return;
 	}
-
-	if (m_CurrentIndex < m_CurrentClip->m_SourceRects.size())
+	//-1 since index minus one
+	if (m_CurrentIndex < m_CurrentClip->m_SourceRects.size()-1)
 	{
 		m_CurrentIndex++;
 	}

@@ -67,6 +67,7 @@ void InputTextField::Init(InputTextMode _mode, const std::string& _name)
 	SetSize(m_Size);
 	SetPosition(m_Pos);
 	m_Changed = false;
+	m_ShiftHeld = false;
 }
 
 void InputTextField::Update(float _dt)
@@ -119,7 +120,14 @@ void InputTextField::MouseMove(int _x, int _y)
 
 void InputTextField::KeyDown(unsigned int _key)
 {
-	
+	if (m_Focused)
+	{
+		//To enable capitals and some special characters
+		if (_key == SDLK_LSHIFT || _key == SDLK_RSHIFT)
+		{
+			m_ShiftHeld = true;
+		}
+	}
 }
 
 void InputTextField::KeyUp(unsigned int _key)
@@ -127,6 +135,12 @@ void InputTextField::KeyUp(unsigned int _key)
 	
 	if (m_Focused)
 	{
+		if (_key == SDLK_LSHIFT || _key == SDLK_RSHIFT)
+		{
+			//We return since we don't want shift release to trigger a letter
+			m_ShiftHeld = false;
+			return;
+		}
 		//If we press backspace remove the last index of the string
 		if (_key == SDLK_BACKSPACE)
 		{
@@ -157,8 +171,24 @@ void InputTextField::KeyUp(unsigned int _key)
 		//Cap the size like this
 		if (m_Text.length() < m_CharLimit)
 		{
-			//Convert the key to a char it should be one to one with what SDL gives us
-			m_Text.push_back((char)_key);
+			unsigned char charToAdd;
+
+			//If we use underscore we should be getting an underscore
+			if (_key == SDLK_MINUS&&m_ShiftHeld)
+			{
+				charToAdd = '_';
+			}
+			else
+			{
+				//Convert the key to a char it should be one to one with what SDL gives us
+				charToAdd = (char)_key;
+				if (m_ShiftHeld)
+				{
+					charToAdd = toupper(charToAdd);
+				}
+			}
+
+			m_Text.push_back(charToAdd);
 			SetText(m_Text.c_str(),true); //Settext will set the changed to true;
 		}
 	}

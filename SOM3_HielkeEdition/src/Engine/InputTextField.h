@@ -84,6 +84,8 @@ private:
 	float m_FocusTimer = 0.0f;
 	float m_FocusInterval = 0.3f;
 	bool m_Stripey = true;
+	
+	bool m_ShiftHeld = false;
 
 };
 

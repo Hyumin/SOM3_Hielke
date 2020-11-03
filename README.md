@@ -1,2 +1,2 @@
 # SOM3_Hielke
-Trying to recreate Seiken densetsu3 in my own code from scratch
+2D SDL2 project where I try to recreate an old game called Seiken densetsu 3 or wel at least a large part of the gameplay

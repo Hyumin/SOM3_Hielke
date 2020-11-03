@@ -1,7 +1,0 @@
-Texture: Assets\\SpriteSheets\\enemies\\seiken3_enemies_rabites_and_more.png
-Clip_name: Idle_Rabite
-anim_interval: 0.5
-is_looping: 0
-Using_offset: 0
-SDL_rect: 2 496 24 24
-SDL_rect: 2 496 24 24

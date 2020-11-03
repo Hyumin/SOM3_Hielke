@@ -1,9 +1,0 @@
-Texture: Assets\\SpriteSheets\\enemies\\seiken3_enemies_rabites_and_more.png
-Clip_name: attack_horizontal_rabite
-anim_interval: 0.2
-is_looping: 0
-Using_offset: 0
-SDL_rect: 89 470 24 24
-SDL_rect: 114 470 24 24
-SDL_rect: 138 470 24 24
-Offsets: -21 -5

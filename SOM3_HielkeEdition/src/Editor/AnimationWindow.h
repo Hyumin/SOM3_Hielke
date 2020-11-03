@@ -1,9 +1,9 @@
 #pragma once
-#include "EditorWindow.h"
+#include "AnimClipEditorWindow.h"
 #include "..\Engine\InputTextField.h"
 
 class AnimationWindow :
-    public virtual  EditorWindow
+    public virtual  AnimClipEditorWindow
 {
 public:
       

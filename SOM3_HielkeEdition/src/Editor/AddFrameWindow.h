@@ -1,10 +1,10 @@
 #pragma once
-#include "EditorWindow.h"
+#include "AnimClipEditorWindow.h"
 #include "..\Engine\InputTextField.h"
 
 
 class AddFrameWindow :
-    public virtual EditorWindow
+    public virtual AnimClipEditorWindow
 {
 public:
 

@@ -59,8 +59,6 @@ void EditorWindow::Init(Texture* _IconsTexture)
 	{
 		m_ContentScaleObject.m_RenderInterface.textureName = _IconsTexture->GetName();
 	}
-	m_CurrentClip = nullptr;
-
 	m_ExitButton = Button{};
 	if (m_IconTexture != nullptr)
 	{
@@ -82,8 +80,6 @@ void EditorWindow::Init(Texture* _IconsTexture)
 	m_Color = { 0,160,15,255 };
 	m_LightColor = {0,235,15,255};
 	m_DarkColor = { 0,140,15,255 };
-	m_ChangeToAnimationClip = false;
-	
 }
 
 
@@ -132,7 +128,6 @@ void EditorWindow::MouseUp( unsigned int _key)
 
 void EditorWindow::MouseMove(unsigned int _x, unsigned int _y)
 {
-
 	m_MousePos.x = _x;
 	m_MousePos.y = _y;
 	//IF we're dragging the box set box pos to be the same as mousepos
@@ -202,19 +197,12 @@ void EditorWindow::SetName(std::string& _name)
 void EditorWindow::Render(SDLRenderer* _renderer)
 {
 	_renderer->DrawFilledBox(m_Bar.pos.x,m_Bar.pos.y,m_Bar.w, m_Bar.h, m_DarkColor);
-//	_renderer->DrawFilledBox(m_ContentBox.pos.x, m_ContentBox.pos.y, m_ContentBox.w, m_ContentBox.h , m_Color);
-
 	_renderer->DrawBox(m_ContentBox, { 255,255,255,255 }, { 0,0 },2);
 	m_ContentScaleObject.Render(_renderer, Vector2{ 0, 0 },1);
 	m_TextField.Render(_renderer, Vector2{ 0,0 },1);
 
 	m_ExitButton.Render(_renderer);
 
-}
-
-void EditorWindow::SetClip(AnimationClip* _clip)
-{
-	m_CurrentClip = _clip;
 }
 
 void EditorWindow::ExitPressed()

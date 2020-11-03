@@ -1,6 +1,7 @@
 #include "AnimtionClipEditor.h"
 
 #include "EditorWindow.h"
+#include "AnimClipEditorWindow.h"
 #include "..\Engine\TextField.h"
 #include "AnimationWindow.h"
 #include "AddFrameWindow.h"

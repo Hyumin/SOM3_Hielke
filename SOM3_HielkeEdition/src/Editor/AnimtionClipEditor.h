@@ -13,6 +13,7 @@
 //Editing, saving and loading of any existing clip.
 
 class EditorWindow;
+class AnimClipEditorWindow;
 class AnimationWindow;
 class AddFrameWindow;
 class TextField;
@@ -77,7 +78,7 @@ private:
 	Button m_OpenAnimationWindow;
 
 	//An array that is used  to call, update , render mouse move etc. for all editor windows
-	std::vector<EditorWindow*> m_EditorWindows;
+	std::vector<AnimClipEditorWindow*> m_EditorWindows;
 	std::vector<Button*> m_Buttons;
 	std::vector<NumberedBox> m_NumbrdBoxes;
 

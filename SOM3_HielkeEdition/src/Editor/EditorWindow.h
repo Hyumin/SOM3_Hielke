@@ -33,14 +33,13 @@ public:
 	std::string& GetName() { return m_Name; }
 	
 	virtual void Render(SDLRenderer* _renderer);
-	virtual void SetClip(AnimationClip* _clip);
-	
+
+	//Button callback function, can be called externally to close the window
 	void ExitPressed();
 
 	bool m_Dragging;
 	bool m_ReadyForDelete;
-	bool m_ChangeToAnimationClip;// If anything changes that requires the animation clip editor to change something set this to true
-
+	
 protected:
 
 	bool m_ScalingSize = false;
@@ -48,8 +47,6 @@ protected:
 	virtual void Init(Texture* _IconsTexture);
 	virtual void ReScaleContent();
 	virtual void Reposition();//Makes it so the positions of the objects only change when dragging 
-
-	AnimationClip* m_CurrentClip;
 
 	std::string m_Name;
 	Box m_Bar;

@@ -37,6 +37,7 @@ Enemy* EnemyLoader::LoadEnemy(const std::string& _fileName,ResourceManager* _res
 			if (word == "Rabite")
 			{
 				enemy =LoadRabite(file,_res);
+				enemy->m_FileName = _fileName;
 			}
 
 		}

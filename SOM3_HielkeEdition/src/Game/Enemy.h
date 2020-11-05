@@ -9,6 +9,7 @@ struct EnemyStats
 	int health;
 	int maxHealth;
 	int damage;
+	int level;
 	float speed;
 };
 namespace Hielke
@@ -27,6 +28,10 @@ public:
 	enum Direction
 	{
 		NORTH,SOUTH,EAST,WEST
+	};
+	enum EnemyType
+	{
+		NOTHING =0, RABITE
 	};
 
 
@@ -47,6 +52,9 @@ public:
 	Direction m_Direction;
 	Vector2 m_Pos;
 	bool m_Dead;
+	std::string m_FileName;//
+	Vector2 m_StartingPos;
+	EnemyType m_Type;
 
 protected:
 

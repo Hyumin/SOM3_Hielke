@@ -16,7 +16,7 @@ h 524
 }
 ConnectedMap Golden_Road_1
 {
-fileName "Assets\SpriteSheets\Maps\Golden_Road_1.hmap"
+fileName "Assets\Maps\Golden_Road_1.hmap"
 x 0
 y 0
 w 200
@@ -24,7 +24,7 @@ h 200
 }
 ConnectedMap maia_inn
 {
-fileName "Assets\SpriteSheets\Maps\maia_inn.hmap"
+fileName "Assets\Maps\maia_inn.hmap"
 x 0
 y 0
 w 200
@@ -32,7 +32,7 @@ h 200
 }
 ConnectedMap maia_weapon_shop
 {
-fileName "Assets\SpriteSheets\Maps\maia_weapon_shop.hmap"
+fileName "Assets\Maps\maia_weapon_shop.hmap"
 x 0
 y 0
 w 200

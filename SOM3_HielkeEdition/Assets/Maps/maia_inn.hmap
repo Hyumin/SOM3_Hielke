@@ -15,7 +15,7 @@ h 224
 }
 ConnectedMap Free city of maia
 {
-fileName Assets\SpriteSheets\Maps\Free_City_of_maia.hmap
+fileName Assets\Maps\Free_City_of_maia.hmap
 x 250
 y 900
 w 200

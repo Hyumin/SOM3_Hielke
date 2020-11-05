@@ -34,6 +34,11 @@ public:
 	void SetResourceManager(ResourceManager* _resMan);
 	void Render(SDLRenderer* _renderer);
 
+	void LoadClip();
+	void SaveClip();
+	void ZoomIn();
+	void ZoomOut();
+
 private:
 	
 	void GenerateNumberedBoxes();//fills the array m_NumbrdBoxes with boxes based on the current animationclip
@@ -42,10 +47,7 @@ private:
 	void LoadDefaultAssets();
 	void OpenAddFrameWindow();
 	void OpenAnimationWindow();
-	void LoadClip();
-	void SaveClip();
-	void ZoomIn();
-	void ZoomOut();
+
 	void CreateNewFile();
 
 	bool m_Sprinting,m_Up, m_Left, m_Down, m_Right=false;

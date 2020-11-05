@@ -23,6 +23,7 @@
     <ClCompile Include="src\Editor\AnimationWindow.cpp" />
     <ClCompile Include="src\Editor\AnimClipEditorWindow.cpp" />
     <ClCompile Include="src\Editor\AnimtionClipEditor.cpp" />
+    <ClCompile Include="src\Editor\Editor.cpp" />
     <ClCompile Include="src\Editor\EditorWindow.cpp" />
     <ClCompile Include="src\Engine\AnimationClip.cpp" />
     <ClCompile Include="src\Engine\Button.cpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="src\Editor\AnimationWindow.h" />
     <ClInclude Include="src\Editor\AnimClipEditorWindow.h" />
     <ClInclude Include="src\Editor\AnimtionClipEditor.h" />
+    <ClInclude Include="src\Editor\Editor.h" />
     <ClInclude Include="src\Editor\EditorWindow.h" />
     <ClInclude Include="src\Engine\AnimationClip.h" />
     <ClInclude Include="src\Engine\Button.h" />

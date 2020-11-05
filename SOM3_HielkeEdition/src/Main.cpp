@@ -7,7 +7,7 @@
 #include "Engine\ResourceManager.h"
 #include "Game\Game.h"
 #include "Engine\SDLRenderer.h"
-#include "Editor\AnimtionClipEditor.h"
+#include "Editor\Editor.h"
 
 
 //Made using https://lazyfoo.net/tutorials/SDL/index.php
@@ -26,10 +26,10 @@ void close();
 SDLRenderer* g_Renderer= NULL;
 ResourceManager* g_Resmanager = NULL;
 Game* g_Game = NULL;
-AnimationClipEditor* g_ClipEditor = NULL;
+Editor* g_Editor = NULL;
 
 
-bool SPRITEDITORMODE = true;
+bool EDITORMODE = true;
 
 
 int main(int arg, char* args[])
@@ -65,11 +65,11 @@ int main(int arg, char* args[])
 				}
 				else if (e.type == SDL_KEYDOWN)
 				{
-					if (SPRITEDITORMODE)
+					if (g_Editor != nullptr)
 					{
-						g_ClipEditor->KeyDown(e.key.keysym.sym);
+						g_Editor->KeyDown(e.key.keysym.sym);
 					}
-					else
+					if (g_Game != nullptr)
 					{
 						g_Game->KeyDown(e.key.keysym.sym);
 					}
@@ -82,27 +82,27 @@ int main(int arg, char* args[])
 				}
 				else if (e.type == SDL_KEYUP)
 				{
-					if (SPRITEDITORMODE)
+					if (g_Editor != nullptr)
 					{
-						g_ClipEditor->KeyUp(e.key.keysym.sym);
+						g_Editor->KeyUp(e.key.keysym.sym);
 					}
-					else 
+					if(g_Game!=nullptr)
 					{
 						g_Game->KeyUp(e.key.keysym.sym);
 					}
 				}
 				else if (e.type == SDL_MOUSEBUTTONDOWN)
 				{
-					if (SPRITEDITORMODE)
+					if (g_Editor != nullptr)
 					{
-						g_ClipEditor->MouseDown(e.button.button);
+						g_Editor->MouseDown(e.button.button);
 					}
 				}
 				else if (e.type == SDL_MOUSEBUTTONUP)
 				{
-					if (SPRITEDITORMODE)
+					if (g_Editor != nullptr)
 					{
-						g_ClipEditor->MouseUp(e.button.button);
+						g_Editor->MouseUp(e.button.button);
 					}
 				}
 				else if (e.type == SDL_MOUSEMOTION)
@@ -110,19 +110,19 @@ int main(int arg, char* args[])
 					//Get mouse position
 					int x, y;
 					SDL_GetMouseState(&x, &y);
-					if (SPRITEDITORMODE)
+					if (g_Editor !=nullptr)
 					{
-						g_ClipEditor->MouseMove(x, y);
+						g_Editor->MouseMove(x, y);
 					}
 				}
 			}
 			// if sprite editor mode launch sprite editor
-			if (SPRITEDITORMODE)
+			if (g_Editor!=nullptr)
 			{
-				g_ClipEditor->Update(dt);
-				g_ClipEditor->Render(g_Renderer);
+				g_Editor->Update(dt);
+				g_Editor->Render(g_Renderer);
 			}
-			else
+			if(g_Game!=nullptr)
 			{
 				g_Game->Update(dt);
 				g_Game->Render(g_Renderer);
@@ -146,9 +146,12 @@ bool init()
 	g_Renderer = new SDLRenderer(std::string(WINDOWNAME), SCREEN_WIDTH, SCREEN_HEIGHT);
 	g_Resmanager = new ResourceManager(g_Renderer);
 	g_Renderer->SetResourceManager(g_Resmanager);
-	if (SPRITEDITORMODE)
+	g_Editor = nullptr;
+	g_Game = nullptr;
+
+	if (EDITORMODE)
 	{
-		g_ClipEditor = new AnimationClipEditor(g_Resmanager);
+		g_Editor = new Editor(g_Resmanager);
 	}
 	else
 	{
@@ -165,8 +168,8 @@ void close()
 	delete g_Game;
 	g_Game = NULL;
 	
-	delete g_ClipEditor;
-	g_ClipEditor = NULL;
+	delete g_Editor;
+	g_Editor = NULL;
 
 	delete g_Resmanager;
 	g_Resmanager = NULL;

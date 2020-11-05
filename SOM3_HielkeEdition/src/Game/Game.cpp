@@ -148,7 +148,7 @@ void Game::Init()
 		m_PlayerCharacter->SetClassStrikeAnim(nAnim, sAnim, hAnim, hAnim);
 
 	}
-	m_CurrentMap = m_ResMan->LoadMap("Assets\\SpriteSheets\\Maps\\Free_City_of_maia.hmap");
+	m_CurrentMap = m_ResMan->LoadMap("Assets\\Maps\\Free_City_of_maia.hmap");
 	m_CurrentMap->SetDefaultFont(m_ResMan->GetFont(("Assets//Fonts//arial.ttf")));
 	m_PlayerCharacter->SetMap(m_CurrentMap);
 

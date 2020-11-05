@@ -1,0 +1,8 @@
+Texture: D:\Vs_projects\SOM3_Hielkmake\SOM3_HielkeEdition\Assets\SpriteSheets\enemies\seikendensetsu3_enemies_sheet.png
+Clip_name:  
+anim_interval: 0.150000
+is_looping: 1
+Using_offset: 0
+SDL_rect: 53 98 32 43
+SDL_rect: 153 97 32 43
+SDL_rect: 103 97 32 43

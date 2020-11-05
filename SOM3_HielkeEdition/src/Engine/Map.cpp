@@ -89,7 +89,59 @@ void Hielke::Map::Render(SDLRenderer* _renderer,Vector2 _worldPos)
 
 void Hielke::Map::SaveMap(const std::string& _filepath)
 {
+	ofstream file(_filepath);
+	file <<"Map "<<m_MapName << "\n";
+	file << "VisualFile " << m_VisalName<<"\n";
+	file << "ColliderFile " << m_ColliderMapName << "\n";
 
+	file << "MapObject" << "\n {  \n";
+	file << "DestinationRect" << "\n";
+	file << "x " << m_BackGround->m_RenderInterface.destRect.x << "\n";
+	file << "y " << m_BackGround->m_RenderInterface.destRect.y << "\n";
+	file << "w " << m_BackGround->m_RenderInterface.destRect.w << "\n";
+	file << "h " << m_BackGround->m_RenderInterface.destRect.h << "\n";
+
+	file << "SourceRect" << "\n";
+	file << "x " << m_BackGround->m_RenderInterface.srcRect.x << "\n";
+	file << "y " << m_BackGround->m_RenderInterface.srcRect.y << "\n";
+	file << "w " << m_BackGround->m_RenderInterface.srcRect.w << "\n";
+	file << "h " << m_BackGround->m_RenderInterface.srcRect.h << "\n";
+	file << "} \n";
+
+	for (unsigned int i = 0; i < m_ConnectedMaps.size(); ++i)
+	{
+		file << "ConnectedMap " << m_ConnectedMaps[i].mapName << "\n { \n";
+		file << "fileName " << m_ConnectedMaps[i].fileName << "\n";
+		file << "x " << m_ConnectedMaps[i].collider.pos.x << "\n";
+		file << "y " << m_ConnectedMaps[i].collider.pos.y << "\n";
+		file << "w " << m_ConnectedMaps[i].collider.w << "\n";
+		file << "h " << m_ConnectedMaps[i].collider.h << "\n";
+		file << "StartPos \n";
+		file <<"x "<< m_ConnectedMaps[i].startPos.x << "\n";
+		file <<"y "<< m_ConnectedMaps[i].startPos.y << "\n";
+	}
+	if (m_Enemies.size() > 0)
+	{
+		file << "Enemies \n { \n ";
+		for (unsigned int i = 0; i < m_Enemies.size(); ++i)
+		{
+			file << "\t  { \n";
+			file << "\t \t type " << m_Enemies[i]->m_Type<< "\n";
+			file << "\t \t filename " << m_Enemies[i]->m_FileName << '\n';
+			file << "\t \t x " << m_Enemies[i]->m_StartingPos.x << '\n';
+			file << "\t \t y " << m_Enemies[i]->m_StartingPos.y << '\n';
+			file << "\t \t Level " << m_Enemies[i]->m_Stats.level<<'\n';
+			file << "\t  } \n";
+		}
+		file << "} \n";
+	}
+
+	for (unsigned int i = 0; i < m_Walls.size(); ++i)
+	{
+
+	}
+
+	file.close();
 }
 
 void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
@@ -198,34 +250,87 @@ void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
 			m_BackGround->m_RenderInterface.point = SDL_Point{ 0,0 };
 
 		}
-		if (word == "Enemy")
+		if (word == "Enemies")
 		{
-			std::string typeString;
-			file >> typeString >> typeString >> typeString;
+			std::string word= " ";
+			std::string next;
+			file >> next;
+			while (word != "}")
+			{
+				file >> next;
+				if (next == "}")
+				{
+					//peek next if its } again meet our end conditions for the while loop
+					file >> next;
+					if (next == "}")
+					{
+						word = "}";
+						break;
+					}
+				}
+				if (next == "{")
+				{
+					//TODO change typestring to type enum
+					std::string typeString;
+					file >>  typeString ;
+					file >>  typeString ;
 
-			std::string fileName;
-			file >> fileName >> fileName;
+					std::string fileName;
+					file >> fileName >> fileName;
 
-			float x, y;
-			int level;
-			file >> word>>x>>word>>y>>word>>level;
+					float x, y;
+					int level;
+					file >> word >> x >> word >> y >> word >> level;
+
+					//Get a copy of enemy named typestring
+					Rabite* enem = dynamic_cast<Rabite*>(_res->GetEnemy(fileName));
+					Rabite* newEnem = new Rabite(enem->m_Object);
+
+					newEnem->m_Stats = enem->m_Stats;
+					newEnem->m_Pos.x = x;
+					newEnem->m_Pos.y = y;
+					newEnem->m_StartingPos = newEnem->m_Pos;
+
+					std::map<Enemy::Direction, AnimationClip> idles = enem->GetIdleAnimMap();
+					std::map<Enemy::Direction, AnimationClip> move = enem->GetMoveAnimMap();
+					std::map<Enemy::Direction, AnimationClip> attack = enem->GetAttacAnimMap();
+					newEnem->SetAttackAnimations(attack[Enemy::NORTH], attack[Enemy::EAST], attack[Enemy::SOUTH]);
+					newEnem->SetIdleAnimations(idles[Enemy::NORTH], idles[Enemy::EAST], idles[Enemy::SOUTH]);
+					newEnem->SetMoveAnimations(move[Enemy::NORTH], move[Enemy::EAST], move[Enemy::SOUTH]);
+
+					newEnem->SetMap(this);
+					m_Enemies.push_back(newEnem);
+				}
+			}
+
+		}
+		if (word == "Colliders")
+		{
+			std::string string;
+			file >> string;
 			
-			//Get a copy of enemy named typestring
-			Rabite* enem = dynamic_cast<Rabite*>(_res->GetEnemy(fileName));
-			Rabite* newEnem = new Rabite(enem->m_Object);
-			newEnem->m_Stats = enem->m_Stats;
-			newEnem->m_Pos.x = x;
-			newEnem->m_Pos.y = y;
-			std::map<Enemy::Direction, AnimationClip> idles = enem->GetIdleAnimMap();
-			std::map<Enemy::Direction, AnimationClip> move = enem->GetMoveAnimMap();
-			std::map<Enemy::Direction, AnimationClip> attack = enem->GetAttacAnimMap();
-			newEnem->SetAttackAnimations(attack[Enemy::NORTH], attack[Enemy::EAST], attack[Enemy::SOUTH]);
-			newEnem->SetIdleAnimations(idles[Enemy::NORTH], idles[Enemy::EAST], idles[Enemy::SOUTH]);
-			newEnem->SetMoveAnimations(move[Enemy::NORTH], move[Enemy::EAST], move[Enemy::SOUTH]);
-
-			newEnem->SetMap(this);
-			m_Enemies.push_back(newEnem);
-
+			//This while loop will go on untill forever!!
+			std::string nextWord;
+			while (string != "}")
+			{
+				file >>nextWord;
+				
+				if (nextWord == "}")
+				{
+					string = "}";
+				}
+				//This should always be followed by a box collider
+				if (nextWord == "{")
+				{
+					Box b;
+					file>>nextWord>>b.pos.x;
+					file>>nextWord>>b.pos.y;
+					file>>nextWord>>b.w;
+					file>>nextWord>>b.h;
+					m_Walls.push_back(b);
+					file >> nextWord;
+				}
+			}
 		}
 	}
 	file.close();
@@ -245,6 +350,7 @@ void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
 
 }
 
+//Deprecated after mapeditor is done
 void Hielke::Map::LoadCollidersFromFile(const std::string& _filePath, const Object* _obj)
 {
 	//Instead of the usual shit we'll load a sdl_surface

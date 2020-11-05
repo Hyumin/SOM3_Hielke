@@ -1,5 +1,7 @@
 #include "..\Engine\SDLRenderer.h"
 #include "..\Engine\ResourceManager.h"
+#include "..\Engine\Button.h"
+#include "..\HielkMath.h"
 #include "AnimtionClipEditor.h"
 
 
@@ -29,10 +31,12 @@ public:
 
 	void Update(float _dt);
 	void Render(SDLRenderer* _renderer);
+	void OnWindowResize(unsigned int _width, unsigned int _height);//This function should be called whenever the SDL window gets resized and right after initialization
 
 private:
 
 	void Init(ResourceManager* _resman);
+	void LoadAssets();
 
 	//Callback functions
 	void SaveCallback();
@@ -40,14 +44,22 @@ private:
 	void ZoomInCallback();
 	void ZoomOutCallback();
 
+	Box m_TopBar;//the giant barr where we want to place our buttons!
+
+	//MapEditor* m_MapEditor;
 	AnimationClipEditor* m_AnimClipEditor;
 	ResourceManager* m_ResourceManager;
 	EditorState m_EditorState;
 
-	//Todo add anim stuff
+	Texture* m_EditorIconsTexture;
 
-	float m_WindowWidth;
-	float m_WindowHeight;
+	Button m_LoadButton, m_SaveButton, m_ZoomInButton, m_ZoomOutButton;
+	std::vector<Button*> m_Buttons;
+
+	SDL_Colour m_BarColour;
+
+	unsigned int  m_WindowWidth;
+	unsigned int  m_WindowHeight;
 
 
 };

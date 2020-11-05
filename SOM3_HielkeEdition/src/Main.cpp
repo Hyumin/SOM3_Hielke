@@ -152,6 +152,7 @@ bool init()
 	if (EDITORMODE)
 	{
 		g_Editor = new Editor(g_Resmanager);
+		g_Editor->OnWindowResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	}
 	else
 	{

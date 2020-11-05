@@ -80,10 +80,10 @@ void AnimationClipEditor::Init()
 
 
 
-		m_Buttons.push_back(&m_ZoomInButton);
-		m_Buttons.push_back(&m_ZoomOutButton);
-		m_Buttons.push_back(&m_LoadButton);
-		m_Buttons.push_back(&m_SaveButton);
+	//m_Buttons.push_back(&m_ZoomInButton);
+	//m_Buttons.push_back(&m_ZoomOutButton);
+	//m_Buttons.push_back(&m_LoadButton);
+	//m_Buttons.push_back(&m_SaveButton);
 	}
 
 	Object obj = Object{};

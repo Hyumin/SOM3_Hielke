@@ -38,6 +38,7 @@ public:
 	void SaveClip();
 	void ZoomIn();
 	void ZoomOut();
+	void GiveTopBarBox(Box _topBarBox);
 
 private:
 	
@@ -64,11 +65,9 @@ private:
 
 	ResourceManager* m_ResMan;//Reference to the resource manager do not delete
 
-	Button m_LoadButton;
-	Button m_SaveButton;
 	Button m_NewFileButton;
-	Button m_ZoomInButton;
-	Button m_ZoomOutButton;
+
+	Box m_TopBarBox;
 
 	Texture* m_EditorIconsTexture; // the texture we use for all of our editor icons
 	Texture* m_CurrentTexture;

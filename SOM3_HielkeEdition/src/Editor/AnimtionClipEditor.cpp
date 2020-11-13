@@ -51,40 +51,9 @@ void AnimationClipEditor::Init()
 	m_OpenAnimationWindow = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 250,0 }, { 100,25 }, 1, std::bind(&AnimationClipEditor::OpenAnimationWindow, this),
 		"Animation", Button::DrawMode::FILLEDRECT, { 0,140,15,255 }, { 0,160,15, 255 }, { 0,235,15,255 }, { 0,0,0,255 });
 
-	m_LoadButton = ButtonBuilder::BuildButton({ 0,0 }, { 25,25 }, 1, std::bind(&AnimationClipEditor::LoadClip, this));
-	m_SaveButton = ButtonBuilder::BuildButton({ 25,0 }, { 25,25 }, 1, std::bind(&AnimationClipEditor::SaveClip, this));
-	//TODO make sure we get the window width and height to use for this instead
-	m_ZoomInButton = ButtonBuilder::BuildButton({1280-50,0}, { 25,25 }, 1, std::bind(&AnimationClipEditor::ZoomIn, this));
-	m_ZoomOutButton = ButtonBuilder::BuildButton({ 1280-25,0 }, { 25,25 }, 1, std::bind(&AnimationClipEditor::ZoomOut, this));
-
 	SDL_Rect norm = {96,16,16,16};
 	SDL_Rect clicked = {128,16,16,16};
 	SDL_Rect hover = {112,16,16,16};
-
-	if (m_EditorIconsTexture != nullptr)
-	{
-		m_SaveButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
-		norm = { 96,32,16,16 };
-		clicked = { 128,32,16,16 };
-		hover = { 112,32,16,16 };
-		m_LoadButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
-		
-		norm = { 48,48,16,16 };
-		clicked = { 80,48,16,16 };
-		hover = { 64,48,16,16 };
-		m_ZoomInButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
-		norm = { 96,48,16,16 };
-		clicked = { 128,48,16,16 };
-		hover = { 112,48,16,16 };
-		m_ZoomOutButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
-
-
-
-	//m_Buttons.push_back(&m_ZoomInButton);
-	//m_Buttons.push_back(&m_ZoomOutButton);
-	//m_Buttons.push_back(&m_LoadButton);
-	//m_Buttons.push_back(&m_SaveButton);
-	}
 
 	Object obj = Object{};
 
@@ -442,6 +411,20 @@ void AnimationClipEditor::ZoomIn()
 void AnimationClipEditor::ZoomOut()
 {
 	m_Zoom -= 0.1f;
+}
+
+void AnimationClipEditor::GiveTopBarBox(Box _topBarBox)
+{
+	m_TopBarBox = _topBarBox;
+
+	//Resize the  height of these buttons
+	m_NewFileButton.SetSize({ m_NewFileButton.GetSize().x,m_TopBarBox.h });
+	m_OpenAddFrameWindow.SetSize({ m_OpenAddFrameWindow.GetSize().x,m_TopBarBox.h });
+	m_OpenAnimationWindow.SetSize({ m_OpenAnimationWindow.GetSize().x,m_TopBarBox.h });
+	//Bit hardcoded but our order will be ->> new clip ->AddFrame ->Animation
+	m_NewFileButton.SetPosition(m_TopBarBox.pos);
+	m_OpenAddFrameWindow.SetPosition(m_NewFileButton.GetPosition() + Vector2{m_NewFileButton.GetSize().x,0});
+	m_OpenAnimationWindow.SetPosition(m_OpenAddFrameWindow.GetPosition() + Vector2{ m_OpenAddFrameWindow.GetSize().x,0 });
 }
 
 //Create new animation clip file, allows you to choose for a texture and then creates a 

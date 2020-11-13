@@ -135,6 +135,12 @@ void Editor::OnWindowResize(unsigned int _width, unsigned int _height)
 	m_ZoomOutButton.SetPosition({m_TopBar.w-m_TopBar.h,0});
 	m_ZoomInButton.SetPosition({ m_TopBar.w - m_TopBar.h*2,0});
 
+	Box availableAreaForSpecificEditors = m_TopBar;
+
+	availableAreaForSpecificEditors.pos.x = m_SaveButton.GetPosition().x + m_SaveButton.GetSize().x;
+	availableAreaForSpecificEditors.w -= m_SaveButton.GetSize().x + m_LoadButton.GetSize().x + m_ZoomInButton.GetSize().x, m_ZoomOutButton.GetSize().x;
+	m_AnimClipEditor->GiveTopBarBox(availableAreaForSpecificEditors);
+
 }
 
 void Editor::Init(ResourceManager* _resman)

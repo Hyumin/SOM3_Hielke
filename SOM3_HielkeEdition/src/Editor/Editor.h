@@ -3,6 +3,7 @@
 #include "..\Engine\Button.h"
 #include "..\HielkMath.h"
 #include "AnimtionClipEditor.h"
+#include "MapEditor.h"
 
 
 //The editor class will make high level decision regard to the individual editors
@@ -43,17 +44,19 @@ private:
 	void LoadCallback();
 	void ZoomInCallback();
 	void ZoomOutCallback();
+	void SwitchModeCallBack();
 
 	Box m_TopBar;//the giant barr where we want to place our buttons!
 
-	//MapEditor* m_MapEditor;
+	MapEditor* m_MapEditor;
 	AnimationClipEditor* m_AnimClipEditor;
 	ResourceManager* m_ResourceManager;
 	EditorState m_EditorState;
 
 	Texture* m_EditorIconsTexture;
+	TTF_Font* m_Font;
 
-	Button m_LoadButton, m_SaveButton, m_ZoomInButton, m_ZoomOutButton;
+	Button m_LoadButton, m_SaveButton, m_ZoomInButton, m_ZoomOutButton, m_SwitchModeButton;
 	std::vector<Button*> m_Buttons;
 
 	SDL_Colour m_BarColour;

@@ -33,38 +33,39 @@ Hielke::Map::~Map()
 
 void Hielke::Map::Update(float _dt)
 {
-	auto it = m_Enemies.begin();
-	while (it != m_Enemies.end())
+	//There's simply no point in updating enemies etc. if there are no players
+	if (m_Players.size() > 0)
 	{
-		it[0]->Update(_dt);
-		if (it[0]->m_Dead)
+		auto it = m_Enemies.begin();
+		while (it != m_Enemies.end())
 		{
-			it = m_Enemies.erase(it);
+			it[0]->Update(_dt);
+			if (it[0]->m_Dead)
+			{
+				it = m_Enemies.erase(it);
+			}
+			else
+			{
+				++it;
+			}
 		}
-		else
+		for (uint32_t i = 0; i < m_FloatingTexts.size(); ++i)
 		{
-			++it;
+			m_FloatingTexts[i]->Update(_dt);
+			if (m_FloatingTexts[i]->m_MarkedForRemoval)
+			{
+				delete m_FloatingTexts[i];
+				m_FloatingTexts[i] = nullptr;
+				m_FloatingTexts.erase(m_FloatingTexts.begin() + i);
+			}
 		}
-	}
-
-
-
-	for (uint32_t i = 0; i < m_FloatingTexts.size(); ++i)
-	{
-		m_FloatingTexts[i]->Update(_dt);
-		if (m_FloatingTexts[i]->m_MarkedForRemoval)
+		//Aka no enemies
+		if (m_Enemies.size() == 0)
 		{
-			delete m_FloatingTexts[i];
-			m_FloatingTexts[i] = nullptr;
-			m_FloatingTexts.erase(m_FloatingTexts.begin() + i);
-		}
-	}
-	//Aka no enemies
-	if (m_Enemies.size() == 0)
-	{
-		for (int i = 0; i < m_Players.size(); ++i)
-		{
-			m_Players[i]->SetCombatState(false);
+			for (int i = 0; i < m_Players.size(); ++i)
+			{
+				m_Players[i]->SetCombatState(false);
+			}
 		}
 	}
 }
@@ -85,6 +86,26 @@ void Hielke::Map::Render(SDLRenderer* _renderer,Vector2 _worldPos)
 	{
 		it[0]->Render(_renderer,_worldPos);
 	}
+}
+
+void Hielke::Map::RenderZoomed(SDLRenderer* _renderer, Vector2 _worldPos, float _zoom)
+{
+	Vector2 zoomVec = { _zoom,_zoom };
+	m_BackGround->Render(_renderer, _worldPos,zoomVec);
+	SDL_Color col = { 0xff,0x00,0x00,0xff };
+	for (uint32_t i = 0; i < m_ConnectedMaps.size(); ++i)
+	{
+		_renderer->DrawBoxZoomed(m_ConnectedMaps[i].collider, col, _worldPos,_zoom);
+	}
+	for (uint32_t i = 0; i < m_FloatingTexts.size(); ++i)
+	{
+		m_FloatingTexts[i]->Render(_renderer, _worldPos, 0);
+	}
+	for (auto it = m_Enemies.begin(); it != m_Enemies.end(); ++it)
+	{
+		it[0]->RenderZoomed(_renderer, _worldPos,_zoom);
+	}
+
 }
 
 void Hielke::Map::SaveMap(const std::string& _filepath)

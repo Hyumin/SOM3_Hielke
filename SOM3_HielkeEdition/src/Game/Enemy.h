@@ -42,6 +42,7 @@ public:
 	virtual void SetPlayerTarget(Hielke::PlayerCharacter* _Player)=0;
 	virtual void Update(float _dt) = 0;
 	virtual void Render(SDLRenderer* _renderer,Vector2 _worldPos) = 0;
+	virtual void RenderZoomed(SDLRenderer* _renderer,Vector2 _worldPos,float _zoom) = 0;
 	virtual void HitReaction(Hielke::PlayerStats _stats) = 0;
 	virtual void SetMap(Hielke::Map* _map) =0;
 
@@ -52,6 +53,7 @@ public:
 	Direction m_Direction;
 	Vector2 m_Pos;
 	bool m_Dead;
+	bool m_DebugMode;
 	std::string m_FileName;//
 	Vector2 m_StartingPos;
 	EnemyType m_Type;

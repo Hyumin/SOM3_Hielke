@@ -11,7 +11,6 @@
 /// e.g. one that shows the current animation, or one that has a okay or no button or something
 /// </summary>
 
-class AnimationClip;
 class Texture;
 class EditorWindow
 {

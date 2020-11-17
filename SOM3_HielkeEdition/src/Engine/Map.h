@@ -39,6 +39,8 @@ namespace Hielke
 		~Map();
 		void Update(float _dt);
 		void Render(SDLRenderer* _renderer, Vector2 _worldPos);
+		void RenderZoomed(SDLRenderer* _renderer, Vector2 _worldPos, float _zoom);
+
 		void SaveMap(const std::string& _filepath);//Saves current map to filepath
 		void LoadMap(const std::string& _filePath, ResourceManager* _res);
 		void LoadCollidersFromFile(const std::string& _filePath, const Object* _obj);

@@ -19,6 +19,7 @@ public:
     virtual void SetPlayerTarget(Hielke::PlayerCharacter* _Player);
     virtual void Update(float _dt);
     virtual void Render(SDLRenderer* _renderer, Vector2 _worldPos);
+    virtual void RenderZoomed(SDLRenderer* _renderer, Vector2 _worldPos, float _zoom);
     virtual void HitReaction(Hielke::PlayerStats _stats);
     void AnimationStateMachine();
     virtual void SetMap(Hielke::Map* _map);

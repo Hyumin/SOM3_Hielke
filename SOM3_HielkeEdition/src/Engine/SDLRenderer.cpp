@@ -51,6 +51,20 @@ void SDLRenderer::AddLine(const Vector2& _a, const Vector2& _b, const Vector2& _
 	m_Layers[_layer].AddLine(newLine);
 }
 
+void SDLRenderer::AddLineZoomed(const Vector2& _a, const Vector2& _b, const Vector2& _worldPos, SDL_Color _color, float _zoom, unsigned int _layer)
+{
+	Line newLine;
+	newLine.start = _a*_zoom;
+	newLine.end = _b*_zoom;
+	newLine.start -= _worldPos;
+	newLine.end -= _worldPos;
+
+
+	newLine.colour = _color;
+
+	m_Layers[_layer].AddLine(newLine);
+}
+
 void SDLRenderer::Render()
 {
 	if (m_ResMan != nullptr)
@@ -211,6 +225,79 @@ void SDLRenderer::DrawFilledBox(Box _box, SDL_Color _color, Vector2 _worldPos, u
 {
 	FilledBox b;
 	b.box = {(int) _box.pos.x - (int)_worldPos.x,(int)_box.pos.y - (int)_worldPos.y,(int)_box.w,(int)_box.h };
+	b.col = _color;
+	m_Layers[_layer].AddFilledBox(b);
+}
+
+void SDLRenderer::DrawBoxZoomed(Box _box, SDL_Color _color, Vector2 _worldPos, float _zoom, unsigned int _layer)
+{
+	//Draw pos x to x+w
+	Vector2 screenPos = _box.pos*_zoom;
+	Vector2 endPoint = screenPos;
+	Vector2 startPoint = screenPos;
+	_box.w *= _zoom;
+	_box.h *= _zoom;
+	endPoint.x += _box.w;
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+
+	//Draw x+w to y+h
+	startPoint = endPoint;
+	endPoint.y += _box.h;
+
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+
+	//Draw xy+wh to y+h
+	startPoint = endPoint;
+	endPoint.x = screenPos.x;
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+	//finally draw y+h to start point
+	startPoint = endPoint;
+	endPoint = screenPos;
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+}
+
+void SDLRenderer::DrawBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos, float _zoom, unsigned int _layer)
+{
+	//Draw pos x to x+w
+	Vector2 screenPos = Vector2(_x, _y)*_zoom;
+	Vector2 endPoint = screenPos;
+	Vector2 startPoint = screenPos;
+	endPoint.x += _h*_zoom;
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+
+	//Draw x+w to y+h
+	startPoint = endPoint;
+	endPoint.y += _h * _zoom;
+
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+
+	//Draw xy+wh to y+h
+	startPoint = endPoint;
+	endPoint.x = screenPos.x;
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+	//finally draw y+h to start point
+	startPoint = endPoint;
+	endPoint = screenPos;
+	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+}
+
+void SDLRenderer::DrawFilledBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos, float _zoom, unsigned int _layer)
+{
+	
+	FilledBox b;
+	b.box = { _x - (int)_worldPos.x,_y - (int)_worldPos.y,(int)(_w*_zoom),(int)(_h*_zoom) };
+	b.box.x *= _zoom;
+	b.box.y *= _zoom;
+	b.col = _color;
+	m_Layers[_layer].AddFilledBox(b);
+}
+
+void SDLRenderer::DrawFilledBoxZoomed(Box _box, SDL_Color _color, Vector2 _worldPos, float _zoom, unsigned int _layer)
+{
+	FilledBox b;
+	b.box = { (int)_box.pos.x - (int)_worldPos.x,(int)_box.pos.y - (int)_worldPos.y,(int)(_box.w*_zoom),(int)(_box.h*_zoom) };
+	b.box.x *= _zoom;
+	b.box.y *= _zoom;
 	b.col = _color;
 	m_Layers[_layer].AddFilledBox(b);
 }

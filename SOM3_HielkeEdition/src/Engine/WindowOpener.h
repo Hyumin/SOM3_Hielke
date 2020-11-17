@@ -11,6 +11,7 @@ public :
 	std::string PrintAndOpenStuff();
 	std::string PrintAndOpenPng();
 	std::string SaveFileStuff();
+	static std::string GetFilepath(const char* _extension);
 
 private:
 

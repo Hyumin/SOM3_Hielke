@@ -14,9 +14,6 @@ Editor::~Editor()
 	m_MapEditor = nullptr;
 	m_EditorIconsTexture = nullptr;
 	m_ResourceManager = nullptr;
-
-
-
 }
 
 void Editor::KeyDown(unsigned int _key)
@@ -53,7 +50,7 @@ void Editor::MouseDown(unsigned int _key)
 		m_AnimClipEditor->MouseDown(_key);
 		break;
 	case EditorState::Map:
-		m_MapEditor->MouseUp(_key);
+		m_MapEditor->MouseDown(_key);
 		break;
 	}
 	for (unsigned int i = 0; i < m_Buttons.size(); ++i)

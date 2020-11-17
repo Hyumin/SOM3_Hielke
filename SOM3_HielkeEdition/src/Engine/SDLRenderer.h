@@ -48,6 +48,7 @@ public:
 	void AddToRenderqueue(RenderInterface _interface, unsigned int _layer =0);
 	void AddToRenderqueue(TextRenderInterface _interface, unsigned int _layer = 0);
 	void AddLine(const Vector2& _a, const Vector2& _b,const Vector2& _worldPos, SDL_Color _color = {0xff,0xff,0xff,0xff}, unsigned int _layer = 0);
+	void AddLineZoomed(const Vector2& _a, const Vector2& _b,const Vector2& _worldPos, SDL_Color _color = {0xff,0xff,0xff,0xff},float _zoom = 1.0f, unsigned int _layer = 0);
 	
 	void Render();
 	void Update(float _dt);
@@ -64,6 +65,11 @@ public:
 	void DrawBox(int _x, int _y, int _w, int _h, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, unsigned int _layer = 0);
 	void DrawFilledBox(int _x, int _y, int _w, int _h, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, unsigned int _layer = 0);
 	void DrawFilledBox(Box _box, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, unsigned int _layer = 0);
+
+	void DrawBoxZoomed(Box _box, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, float _zoom = 1.0f, unsigned int _layer = 0);
+	void DrawBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, float _zoom = 1.0f, unsigned int _layer = 0);
+	void DrawFilledBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, float _zoom = 1.0f, unsigned int _layer = 0);
+	void DrawFilledBoxZoomed(Box _box, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f },float _zoom = 1.0f, unsigned int _layer = 0);
 
 
 private:

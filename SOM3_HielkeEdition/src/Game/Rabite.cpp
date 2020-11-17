@@ -138,9 +138,66 @@ void Rabite::Render(SDLRenderer* _renderer, Vector2 _worldPos)
 	m_Object.m_Pos = m_Pos + offset;
 
 	m_Object.Render(_renderer, _worldPos);
-	_renderer->DrawBox(m_Collider, SDL_Colour{ 255,0,0,255 }, _worldPos);
-	_renderer->DrawBox(m_AttackCollider, SDL_Colour{ 255,0,255,255 }, _worldPos);
-	_renderer->AddLine(m_Pos, m_Pos + m_Velocity, _worldPos);
+	//If we're in debug mode render the colliders and velocity vector
+	if (m_DebugMode)
+	{
+		_renderer->DrawBox(m_Collider, SDL_Colour{ 255,0,0,255 }, _worldPos);
+		_renderer->DrawBox(m_AttackCollider, SDL_Colour{ 255,0,255,255 }, _worldPos);
+		_renderer->AddLine(m_Pos, m_Pos + m_Velocity, _worldPos);
+	}
+
+}
+
+void Rabite::RenderZoomed(SDLRenderer* _renderer, Vector2 _worldPos, float _zoom)
+{
+	try
+	{
+		m_Object.m_RenderInterface.srcRect = m_CurrentAnimationClip->GetRect();
+	}
+	catch (std::exception& e)
+	{
+
+	}
+	switch (m_Direction)
+	{
+
+	case EAST:
+		m_Object.m_RenderInterface.renderFlip = (SDL_RendererFlip)1;
+		break;
+	default:
+		m_Object.m_RenderInterface.renderFlip = SDL_RendererFlip::SDL_FLIP_NONE;
+		break;
+	}
+
+	Vector2 offset = { 0,0 };
+	try
+	{
+		offset += m_CurrentAnimationClip->GetOffset();
+	}
+	catch (std::exception& e)
+	{
+
+	}
+
+	if (m_Object.m_RenderInterface.renderFlip == SDL_RendererFlip::SDL_FLIP_HORIZONTAL)
+	{
+		offset.x *= -1;
+	}
+	offset.x -= m_Object.m_Size.x / 2;
+	offset.y -= m_Object.m_Size.y / 2;
+
+	m_Object.m_Pos = m_Pos + offset;
+	Vector2 zoomVec = { _zoom,_zoom };
+	m_Object.m_Pos *= _zoom;
+
+	m_Object.Render(_renderer, _worldPos, zoomVec);
+	//If we're in debug mode render the colliders and velocity vector
+	if (m_DebugMode)
+	{
+		_renderer->DrawBoxZoomed(m_Collider, SDL_Colour{ 255,0,0,255 }, _worldPos,_zoom);
+		_renderer->DrawBox(m_AttackCollider, SDL_Colour{ 255,0,255,255 }, _worldPos,_zoom);
+		_renderer->AddLine(m_Pos, m_Pos + m_Velocity, _worldPos, {255,255,255,255},_zoom);
+	}
 
 }
 

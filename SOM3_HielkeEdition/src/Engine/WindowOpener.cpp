@@ -84,3 +84,26 @@ std::string WindowOpener::SaveFileStuff()
 
     return returnString;
 }
+
+std::string WindowOpener::GetFilepath(const char* _extension)
+{
+    std::string returnString = "CANCELED";
+    nfdchar_t* outPath = NULL;
+    nfdresult_t result = NFD_OpenDialog(_extension, "($ProjectDir)", &outPath);
+
+    if (result == NFD_OKAY) {
+        puts("Success!");
+        returnString = outPath;
+        puts(outPath);
+        free(outPath);
+        return returnString;
+    }
+    else if (result == NFD_CANCEL) {
+        puts("User pressed cancel.");
+        return returnString;
+    }
+    else {
+        printf("Error: %s\n", NFD_GetError());
+        throw(std::exception("Error!"));
+    }
+}

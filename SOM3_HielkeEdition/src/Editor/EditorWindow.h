@@ -84,5 +84,10 @@ protected:
 	SDL_Color m_LightColor;
 	SDL_Color m_Color;
 	SDL_Color m_DarkColor;
+
+	//in case you want to limit the maximum or minimumheight or width
+	//default initalized to 5000 for maximum 100 for minimum, this is to make it so that only if you specifically want to limit the
+	//width or height you should change this numbers
+	int m_MaxWidth, m_MaxHeight,m_MinWidth,m_MinHeight;
 };
 

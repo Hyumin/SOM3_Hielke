@@ -22,7 +22,7 @@ Hielke::Map::Map()
 	m_Walls.clear();
 	m_ConnectedMaps.clear();
 	m_BackGround = new Object();
-
+	m_DebugMode = false;
 	emptMapReturn.mapName = "None";
 }
 
@@ -74,9 +74,17 @@ void Hielke::Map::Render(SDLRenderer* _renderer,Vector2 _worldPos)
 {
 	m_BackGround->Render(_renderer,_worldPos);
 	SDL_Color col = { 0xff,0x00,0x00,0xff };
-	for (uint32_t i = 0; i < m_ConnectedMaps.size(); ++i)
+	if (m_DebugMode)
 	{
-		_renderer->DrawBox(m_ConnectedMaps[i].collider, col, _worldPos);
+		for (uint32_t i = 0; i < m_ConnectedMaps.size(); ++i)
+		{
+			_renderer->DrawBox(m_ConnectedMaps[i].collider, col, _worldPos);
+		}
+		col = { 0x00,0x00,0xff,0xff };
+		for (uint32_t i = 0; i < m_Walls.size(); ++i)
+		{
+			_renderer->DrawBox(m_Walls[i], col, _worldPos);
+		}
 	}
 	for (uint32_t i = 0; i < m_FloatingTexts.size(); ++i)
 	{
@@ -93,9 +101,17 @@ void Hielke::Map::RenderZoomed(SDLRenderer* _renderer, Vector2 _worldPos, float 
 	Vector2 zoomVec = { _zoom,_zoom };
 	m_BackGround->Render(_renderer, _worldPos,zoomVec);
 	SDL_Color col = { 0xff,0x00,0x00,0xff };
-	for (uint32_t i = 0; i < m_ConnectedMaps.size(); ++i)
+	if (m_DebugMode)
 	{
-		_renderer->DrawBoxZoomed(m_ConnectedMaps[i].collider, col, _worldPos,_zoom);
+		for (uint32_t i = 0; i < m_ConnectedMaps.size(); ++i)
+		{
+			_renderer->DrawBoxZoomed(m_ConnectedMaps[i].collider, col, _worldPos, _zoom);
+		}
+		col = {0x00,0x00,0xff,0xff};
+		for (uint32_t i = 0; i < m_Walls.size(); ++i)
+		{
+			_renderer->DrawBoxZoomed(m_Walls[i], col, _worldPos, _zoom);
+		}
 	}
 	for (uint32_t i = 0; i < m_FloatingTexts.size(); ++i)
 	{
@@ -547,4 +563,9 @@ void Hielke::Map::AddFloatingText(Vector2 _pos, SDL_Color _col, float _duration,
 void Hielke::Map::SetDefaultFont(TTF_Font* _defaultFont)
 {
 	m_DefaultFont = _defaultFont;
+}
+
+void Hielke::Map::AddWall(Box _box)
+{
+	m_Walls.push_back(_box);
 }

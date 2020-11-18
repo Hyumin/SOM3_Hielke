@@ -53,6 +53,7 @@ namespace Hielke
 		void AssignEnemy(Enemy* _enem);
 		void AddFloatingText(Vector2 _pos, SDL_Color _col, float _duration,float _speed, const std::string& _text);
 		void SetDefaultFont(TTF_Font* _defaultFont);
+		void AddWall(Box _box);
 
 		std::string& GetMapName()
 		{
@@ -62,6 +63,8 @@ namespace Hielke
 		{
 			return m_Walls;
 		}
+
+		bool m_DebugMode;
 
 	private:
 		std::string m_MapName, m_VisalName, m_ColliderMapName;

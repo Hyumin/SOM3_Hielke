@@ -27,6 +27,7 @@ void Editor::KeyDown(unsigned int _key)
 		m_MapEditor->KeyDown(_key);
 		break;
 	}
+
 }
 
 void Editor::KeyUp(unsigned int _key)
@@ -38,6 +39,17 @@ void Editor::KeyUp(unsigned int _key)
 		break;
 	case EditorState::Map:
 		m_MapEditor->KeyUp(_key);
+		break;
+	}
+	switch (_key)
+	{
+	case SDLK_KP_PLUS:
+		ZoomInCallback();
+		break;
+	case SDLK_KP_MINUS:
+		ZoomOutCallback();
+		break;
+	default:
 		break;
 	}
 }

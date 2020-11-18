@@ -80,6 +80,11 @@ void EditorWindow::Init(Texture* _IconsTexture)
 	m_Color = { 0,160,15,255 };
 	m_LightColor = {0,235,15,255};
 	m_DarkColor = { 0,140,15,255 };
+
+	m_MaxWidth = 5000;
+	m_MaxHeight = 5000;
+	m_MinWidth = 100;
+	m_MinHeight = 100;
 }
 
 
@@ -152,13 +157,21 @@ void EditorWindow::ReScaleContent()
 	float newWidth = m_ScaleOnStart.x - (m_ScaleStart.x - m_MousePos.x);
 	float newHeight = m_ScaleOnStart.y - (m_ScaleStart.y - m_MousePos.y);
 
-	if (newWidth < 100)
+	if (newWidth < m_MinWidth)
 	{
-		newWidth = 100;
+		newWidth = m_MinWidth;
 	}
-	if (newHeight < 100)
+	if (newHeight < m_MinHeight)
 	{
-		newHeight = 100;
+		newHeight = m_MinHeight;
+	}
+	if (newWidth > m_MaxWidth)
+	{
+		newWidth = m_MaxWidth;
+	}
+	if (newHeight > m_MaxHeight)
+	{
+		newHeight = m_MaxHeight;
 	}
 
 	m_ContentBox.w = newWidth;

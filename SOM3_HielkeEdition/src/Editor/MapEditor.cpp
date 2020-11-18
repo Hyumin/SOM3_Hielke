@@ -46,6 +46,10 @@ void MapEditor::Update(float _dt)
 	vel *= m_MoveSpeed*m_Zoom;
 	m_WorldPos += vel * _dt;
 
+	//Update world pos in the editor window, if this re-occurs
+	//for all editor windows put it in the mapEditorwindow class
+	//and iterate it through
+	m_ColliderWindow->m_WorldPos = m_WorldPos;
 
 
 	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
@@ -202,11 +206,14 @@ void MapEditor::LoadMap()
 	{
 		//Reset world pos and zoom after loading 
 		m_WorldPos = Vector2{ 0,0 };
+		m_ColliderWindow->m_WorldPos = m_WorldPos;
 		m_Zoom = 1.0f;
+		m_CurrentMap->m_DebugMode = true;//Enable debug mode to see the colliders.
 		for (int i = 0; i < m_EditorWindows.size(); ++i)
 		{
 			m_EditorWindows[i]->SetMap(m_CurrentMap);
 		}
+
 	}
 	
 }

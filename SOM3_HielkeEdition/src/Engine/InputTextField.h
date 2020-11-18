@@ -44,6 +44,10 @@ public:
 		return m_NameTextField.GetText();
 	}
 	std::string GetText() {
+		if (m_Text.size() == 0)
+		{
+			return "0";
+		}
 		return m_Text;
 	}
 

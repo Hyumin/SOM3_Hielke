@@ -43,7 +43,6 @@ public:
 private:
 	
 	void GenerateNumberedBoxes();//fills the array m_NumbrdBoxes with boxes based on the current animationclip
-	void LoadWindowThingy();
 	void Init();
 	void LoadDefaultAssets();
 	void OpenAddFrameWindow();

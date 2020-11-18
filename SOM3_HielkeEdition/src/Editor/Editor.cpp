@@ -143,8 +143,8 @@ void Editor::OnWindowResize(unsigned int _width, unsigned int _height)
 	m_WindowWidth = _width;
 	m_WindowHeight = _height;
 
-	m_TopBar.w = m_WindowWidth;
-	m_TopBar.h = _height / 20;
+	m_TopBar.w = (float)m_WindowWidth;
+	m_TopBar.h = (float)_height / 20;
 
 	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
 	{

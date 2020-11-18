@@ -260,6 +260,6 @@ void Game::Render(SDLRenderer* _renderer)
 	}
 	m_DuranUI->Render(_renderer);
 	_renderer->DrawBox(b, { 0x00,0xff,0x00,0xff },m_WorldPos);
-	m_WindowSize.x = _renderer->GetWindowWidth();
-	m_WindowSize.y = _renderer->GetWindowHeight();
+	m_WindowSize.x = (float)_renderer->GetWindowWidth();
+	m_WindowSize.y = (float)_renderer->GetWindowHeight();
 }

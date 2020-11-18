@@ -95,7 +95,7 @@ void PlayerUI::Render(SDLRenderer* _renderer)
 		m_Level->Render(_renderer, Vector2(),2);
 		m_Mana->Render(_renderer, Vector2(),2);
 		m_PlayerIcon.Render(_renderer, Vector2());
-		_renderer->DrawBox(m_PlayerIcon.m_Pos.x, m_PlayerIcon.m_Pos.y, m_PlayerIcon.m_Size.x, m_PlayerIcon.m_Size.y);
+		_renderer->DrawBox((int)m_PlayerIcon.m_Pos.x, (int)m_PlayerIcon.m_Pos.y, (int)m_PlayerIcon.m_Size.x, (int)m_PlayerIcon.m_Size.y);
 		
 		Vector2 vec = { 125,50 };
 		for (int i = 0; i < m_Character->m_Stats.classStrikesMax; ++i)
@@ -116,11 +116,11 @@ void PlayerUI::Render(SDLRenderer* _renderer)
 				}
 			}
 
-			_renderer->DrawFilledBox(pos.x, pos.y, 5, 15, col);
+			_renderer->DrawFilledBox((int)pos.x, (int)pos.y, 5, 15, col);
 			pos.x -= i * 10;
 			pos.x -= 60;
 			pos.x -= i * 10;
-			_renderer->DrawFilledBox(pos.x, pos.y, 5, 15, col);
+			_renderer->DrawFilledBox((int)pos.x, (int)pos.y, 5, 15, col);
 		}
 	}
 }

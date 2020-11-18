@@ -191,7 +191,7 @@ void AnimationClip::PrevFrame()
 	{
 		if (m_SourceRects.size() > 0)
 		{
-			m_CurrentIndex = m_SourceRects.size() - 1;
+			m_CurrentIndex = (unsigned int)m_SourceRects.size() - 1;
 		}
 	}
 }
@@ -200,7 +200,7 @@ void AnimationClip::GenerateOffsetsArray()
 {
 	if (m_SourceRects.size() != 0)
 	{
-		for (int i = m_Offsets.size(); i < m_SourceRects.size(); ++i)
+		for (int i = (int)m_Offsets.size(); i < m_SourceRects.size(); ++i)
 		{
 			m_Offsets.push_back({});
 		}

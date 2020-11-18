@@ -105,7 +105,7 @@ void Rabite::Render(SDLRenderer* _renderer, Vector2 _worldPos)
 	}
 	catch (std::exception& e)
 	{
-
+		printf(e.what());
 	}
 	switch (m_Direction)
 	{
@@ -125,7 +125,7 @@ void Rabite::Render(SDLRenderer* _renderer, Vector2 _worldPos)
 	}
 	catch (std::exception& e)
 	{
-
+		printf(e.what());
 	}
 
 	if (m_Object.m_RenderInterface.renderFlip == SDL_RendererFlip::SDL_FLIP_HORIZONTAL)
@@ -156,7 +156,7 @@ void Rabite::RenderZoomed(SDLRenderer* _renderer, Vector2 _worldPos, float _zoom
 	}
 	catch (std::exception& e)
 	{
-
+		printf(e.what());
 	}
 	switch (m_Direction)
 	{
@@ -176,7 +176,7 @@ void Rabite::RenderZoomed(SDLRenderer* _renderer, Vector2 _worldPos, float _zoom
 	}
 	catch (std::exception& e)
 	{
-
+		printf(e.what());
 	}
 
 	if (m_Object.m_RenderInterface.renderFlip == SDL_RendererFlip::SDL_FLIP_HORIZONTAL)
@@ -195,8 +195,8 @@ void Rabite::RenderZoomed(SDLRenderer* _renderer, Vector2 _worldPos, float _zoom
 	if (m_DebugMode)
 	{
 		_renderer->DrawBoxZoomed(m_Collider, SDL_Colour{ 255,0,0,255 }, _worldPos,_zoom);
-		_renderer->DrawBox(m_AttackCollider, SDL_Colour{ 255,0,255,255 }, _worldPos,_zoom);
-		_renderer->AddLine(m_Pos, m_Pos + m_Velocity, _worldPos, {255,255,255,255},_zoom);
+		_renderer->DrawBoxZoomed(m_AttackCollider, SDL_Colour{ 255,0,255,255 }, _worldPos,_zoom);
+		_renderer->AddLineZoomed(m_Pos, m_Pos + m_Velocity, _worldPos, {255,255,255,255},_zoom);
 	}
 
 }
@@ -296,7 +296,7 @@ void Rabite::Attack()
 
 			for (unsigned int i = 0; i < result.players.size(); ++i)
 			{
-				result.players[i]->TakeDamage(m_Stats.damage);
+				result.players[i]->TakeDamage((float)m_Stats.damage);
 				m_Map->AddFloatingText(result.players[i]->m_Pos, col, 3.0f, 100.0f, std::to_string(m_Stats.damage));
 			}
 			attackFrame = true;

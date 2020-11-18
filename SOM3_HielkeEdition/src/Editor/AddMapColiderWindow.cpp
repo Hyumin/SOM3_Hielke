@@ -13,6 +13,10 @@ AddMapColliderWindow::AddMapColliderWindow(Vector2 _pos, std::string& _name, Tex
 
 AddMapColliderWindow::AddMapColliderWindow()
 {
+	m_Pos = { 0,0 };
+	m_Name = "Defaultname";
+	m_Map = nullptr;
+	Init(nullptr);
 }
 
 AddMapColliderWindow::~AddMapColliderWindow()
@@ -228,7 +232,7 @@ void AddMapColliderWindow::Init(Texture* _IconsTexture)
 	m_MaxHeight = 120;
 	m_MinWidth = 260;
 
-	m_ContentBox.h = m_MaxHeight;
+	m_ContentBox.h = (float)m_MaxHeight;
 	Reposition();
 }
 
@@ -281,10 +285,10 @@ void AddMapColliderWindow::UpdateInputTextFields()
 	else
 	{
 
-		m_CurrentSelectedBox.pos.x = std::stoi(m_XText->GetText());
-		m_CurrentSelectedBox.pos.y = std::stoi(m_YText->GetText());
-		m_CurrentSelectedBox.w = std::stoi(m_WText->GetText());
-		m_CurrentSelectedBox.h = std::stoi(m_HText->GetText());
+		m_CurrentSelectedBox.pos.x = (float)std::stoi(m_XText->GetText());
+		m_CurrentSelectedBox.pos.y = (float)std::stoi(m_YText->GetText());
+		m_CurrentSelectedBox.w = (float)std::stoi(m_WText->GetText());
+		m_CurrentSelectedBox.h = (float)std::stoi(m_HText->GetText());
 	
 	}
 

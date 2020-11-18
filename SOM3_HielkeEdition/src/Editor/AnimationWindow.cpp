@@ -72,52 +72,42 @@ void AnimationWindow::Update(float _dt)
 			}
 			catch (std::exception& e)
 			{
-
+				printf(e.what());
 			}
 		}
-		try
+		//Only allow editing when the clip isn't playing
+		if (!m_CurrentClip->m_IsPlaying)
 		{
-			//Only allow editing when the clip isn't playing
-			if (!m_CurrentClip->m_IsPlaying)
+			if (m_FrameX->m_Changed)
 			{
-				if (m_FrameX->m_Changed)
-				{
-					m_CurrentClip->m_SourceRects[currIndex].x = std::stoi(m_FrameX->GetText());
-					m_ChangeToAnimationClip = true;
-				}
-				if (m_FrameY->m_Changed)
-				{
-					m_CurrentClip->m_SourceRects[currIndex].y = std::stoi(m_FrameY->GetText());
-					m_ChangeToAnimationClip = true;
-				}
-				if (m_FrameW->m_Changed)
-				{
-					m_CurrentClip->m_SourceRects[currIndex].w = std::stoi(m_FrameW->GetText());
-					m_ChangeToAnimationClip = true;
-				}
-				if (m_FrameH->m_Changed)
-				{
-					m_CurrentClip->m_SourceRects[currIndex].h = std::stoi(m_FrameH->GetText());
-					m_ChangeToAnimationClip = true;
-				}
-				if (m_OffsetX->m_Changed)
-				{
-					m_CurrentClip->m_Offsets[currIndex].x = std::stoi(m_OffsetX->GetText());
-				}
-				if (m_OffsetY->m_Changed)
-				{
-					m_CurrentClip->m_Offsets[currIndex].y = std::stoi(m_OffsetY->GetText());
-				}
+				m_CurrentClip->m_SourceRects[currIndex].x = std::stoi(m_FrameX->GetText());
+				m_ChangeToAnimationClip = true;
+			}
+			if (m_FrameY->m_Changed)
+			{
+				m_CurrentClip->m_SourceRects[currIndex].y = std::stoi(m_FrameY->GetText());
+				m_ChangeToAnimationClip = true;
+			}
+			if (m_FrameW->m_Changed)
+			{
+				m_CurrentClip->m_SourceRects[currIndex].w = std::stoi(m_FrameW->GetText());
+				m_ChangeToAnimationClip = true;
+			}
+			if (m_FrameH->m_Changed)
+			{
+				m_CurrentClip->m_SourceRects[currIndex].h = std::stoi(m_FrameH->GetText());
+				m_ChangeToAnimationClip = true;
+			}
+			if (m_OffsetX->m_Changed)
+			{
+				m_CurrentClip->m_Offsets[currIndex].x = std::stof(m_OffsetX->GetText());
+			}
+			if (m_OffsetY->m_Changed)
+			{
+				m_CurrentClip->m_Offsets[currIndex].y = std::stof(m_OffsetY->GetText());
 			}
 		}
-		catch (std::out_of_range &e)
-		{
-
-		}
-		catch (std::invalid_argument& a)
-		{
-
-		}
+		
 		if (m_CurrentClip->m_IsFinished)
 		{
 			m_Playing = false;
@@ -252,7 +242,7 @@ void AnimationWindow::Render(SDLRenderer* _renderer)
 	{
 		if (m_CurrentClip->m_Looping)
 		{
-			_renderer->DrawFilledBox(m_EnableLooping.pos.x, m_EnableLooping.pos.y, m_EnableLooping.w, m_EnableLooping.h, { 0,0,0,255 });
+			_renderer->DrawFilledBox((int)m_EnableLooping.pos.x, (int)m_EnableLooping.pos.y,(int) m_EnableLooping.w,(int) m_EnableLooping.h, { 0,0,0,255 });
 		}
 		else
 		{

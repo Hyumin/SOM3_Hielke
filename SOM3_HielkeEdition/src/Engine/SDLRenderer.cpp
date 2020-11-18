@@ -191,7 +191,7 @@ void SDLRenderer::DrawBox(Box _box, SDL_Color _color, Vector2 _worldPos, unsigne
 void SDLRenderer::DrawBox(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos, unsigned int _layer)
 {
 	//Draw pos x to x+w
-	Vector2 screenPos = Vector2(_x,_y);
+	Vector2 screenPos = Vector2((float)_x, (float)_y);
 	Vector2 endPoint = screenPos;
 	Vector2 startPoint = screenPos;
 	endPoint.x += _h;
@@ -259,7 +259,7 @@ void SDLRenderer::DrawBoxZoomed(Box _box, SDL_Color _color, Vector2 _worldPos, f
 void SDLRenderer::DrawBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos, float _zoom, unsigned int _layer)
 {
 	//Draw pos x to x+w
-	Vector2 screenPos = Vector2(_x, _y)*_zoom;
+	Vector2 screenPos = Vector2(_x, (float)_y)*_zoom;
 	Vector2 endPoint = screenPos;
 	Vector2 startPoint = screenPos;
 	endPoint.x += _h*_zoom;
@@ -286,8 +286,8 @@ void SDLRenderer::DrawFilledBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color 
 	
 	FilledBox b;
 	b.box = { _x - (int)_worldPos.x,_y - (int)_worldPos.y,(int)(_w*_zoom),(int)(_h*_zoom) };
-	b.box.x *= _zoom;
-	b.box.y *= _zoom;
+	b.box.x = (int)(_zoom *b.box.x);
+	b.box.y = (int)(_zoom* b.box.y);
 	b.col = _color;
 	m_Layers[_layer].AddFilledBox(b);
 }
@@ -296,8 +296,8 @@ void SDLRenderer::DrawFilledBoxZoomed(Box _box, SDL_Color _color, Vector2 _world
 {
 	FilledBox b;
 	b.box = { (int)_box.pos.x - (int)_worldPos.x,(int)_box.pos.y - (int)_worldPos.y,(int)(_box.w*_zoom),(int)(_box.h*_zoom) };
-	b.box.x *= _zoom;
-	b.box.y *= _zoom;
+	b.box.x = (int)(_zoom * b.box.x);
+	b.box.y = (int)(_zoom * b.box.y);
 	b.col = _color;
 	m_Layers[_layer].AddFilledBox(b);
 }

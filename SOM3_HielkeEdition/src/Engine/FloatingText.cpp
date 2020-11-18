@@ -56,8 +56,8 @@ void FloatingText::Render(SDLRenderer* _renderer, Vector2 _worldpos,int _layer)
 	}
 
 	UpdateInterface(_renderer);
-	m_Interface.destRect.x = m_pos.x - _worldpos.x;
-	m_Interface.destRect.y = m_pos.y - _worldpos.y;
+	m_Interface.destRect.x = (int)(m_pos.x - _worldpos.x);
+	m_Interface.destRect.y = (int)(m_pos.y - _worldpos.y);
 	_renderer->AddToRenderqueue(m_Interface,_layer);
 }
 

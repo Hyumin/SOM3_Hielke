@@ -185,40 +185,18 @@ void AddFrameWindow::UpdateSelectionBox()
 				m_SelectionBox.h *= -1;
 			}
 
-			try
-			{
-				m_XInput->SetText(std::to_string((int)m_SelectionBox.pos.x));
-				m_YInput->SetText(std::to_string((int)m_SelectionBox.pos.y));
-				m_WInput->SetText(std::to_string((int)m_SelectionBox.w));
-				m_HInput->SetText(std::to_string((int)m_SelectionBox.h));
-
-			}
-			catch (std::out_of_range& _e)
-			{
-
-			}
-
+			m_XInput->SetText(std::to_string(m_SelectionBox.pos.x));
+			m_YInput->SetText(std::to_string(m_SelectionBox.pos.y));
+			m_WInput->SetText(std::to_string(m_SelectionBox.w));
+			m_HInput->SetText(std::to_string(m_SelectionBox.h));
 		}
 	}
 	else
 	{
-		try
-		{
-			m_SelectionBox.pos.x = std::stoi(m_XInput->GetText());
-			m_SelectionBox.pos.y = std::stoi(m_YInput->GetText());
-			m_SelectionBox.w = std::stoi(m_WInput->GetText());
-			m_SelectionBox.h = std::stoi(m_HInput->GetText());
-
-
-		}
-		catch (std::out_of_range& _e)
-		{
-
-		}
-		catch (std::invalid_argument& _e)
-		{
-
-		}
+		m_SelectionBox.pos.x = std::stof(m_XInput->GetText());
+		m_SelectionBox.pos.y = std::stof(m_YInput->GetText());
+		m_SelectionBox.w = std::stof(m_WInput->GetText());
+		m_SelectionBox.h = std::stof(m_HInput->GetText());
 	}
 
 	m_Preview.m_RenderInterface.srcRect = {(int)m_SelectionBox.pos.x,(int)m_SelectionBox.pos.y,(int)m_SelectionBox.w,(int)m_SelectionBox.h};
@@ -234,42 +212,29 @@ void AddFrameWindow::AddFrame()
 
 	//Converst current selection box to rectangle and inserts it into the animation
 	SDL_Rect r;
-	try
+	
+	r.x = std::stoi(m_XInput->GetText());
+	r.y = std::stoi(m_YInput->GetText());
+	r.w = std::stoi(m_WInput->GetText());
+	r.h = std::stoi(m_HInput->GetText());
+
+	if (m_CurrentClip->m_SourceRects.size() > 0)
 	{
-		r.x = std::stoi(m_XInput->GetText());
-		r.y = std::stoi(m_YInput->GetText());
-		r.w = std::stoi(m_WInput->GetText());
-		r.h = std::stoi(m_HInput->GetText());
-
-		
-
-		if (m_CurrentClip->m_SourceRects.size() > 0)
+		//It might happen due to removal of a frame inanother class that the current index is larger than the size, in this case put it at the last index
+		if (m_CurrentIndex >= m_CurrentClip->m_SourceRects.size())
 		{
-			//It might happen due to removal of a frame inanother class that the current index is larger than the size, in this case put it at the last index
-			if (m_CurrentIndex >= m_CurrentClip->m_SourceRects.size())
-			{
-				m_CurrentIndex = m_CurrentClip->m_SourceRects.size() - 1;
-			}
-
-			m_CurrentClip->AddFrameAtIndex(m_CurrentIndex + 1, r);
-			//increment the index after adding, this is  to make it nice to use, having to press the right arrow every time is annoying
-			m_CurrentIndex++;
+			m_CurrentIndex = (unsigned int)m_CurrentClip->m_SourceRects.size() - 1;
 		}
-		else
-		{
-			m_CurrentClip->AddFrameAtIndex(0, r);
-		}
-		m_ChangeToAnimationClip = true;
+
+		m_CurrentClip->AddFrameAtIndex(m_CurrentIndex + 1, r);
+		//increment the index after adding, this is  to make it nice to use, having to press the right arrow every time is annoying
+		m_CurrentIndex++;
 	}
-	catch (std::out_of_range& e)
+	else
 	{
-
+		m_CurrentClip->AddFrameAtIndex(0, r);
 	}
-	catch (std::invalid_argument& a)
-	{
-
-	}
-
+	m_ChangeToAnimationClip = true;
 }
 
 void AddFrameWindow::PrevFrame()
@@ -284,7 +249,7 @@ void AddFrameWindow::PrevFrame()
 	}
 	else if (m_CurrentIndex ==0)
 	{
-		m_CurrentIndex = m_CurrentClip->m_SourceRects.size() - 1;
+		m_CurrentIndex = (unsigned int)m_CurrentClip->m_SourceRects.size() - 1;
 	}
 }
 

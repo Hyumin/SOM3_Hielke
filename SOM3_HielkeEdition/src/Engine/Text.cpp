@@ -51,8 +51,8 @@ void Text::UpdateInterface(SDLRenderer* _renderer)
 		}
 		else
 		{
-			m_SrcSize.x = mainSurface->w;
-			m_SrcSize.y = mainSurface->h;
+			m_SrcSize.x = (float)mainSurface->w;
+			m_SrcSize.y = (float)mainSurface->h;
 		}
 
 		//Get rid of old surface
@@ -68,16 +68,16 @@ void Text::UpdateInterface(SDLRenderer* _renderer)
 	}
 
 	m_Interface.texture = m_Texture;
-	m_Interface.destRect.x = m_pos.x;
-	m_Interface.destRect.y = m_pos.y;
-	m_Interface.destRect.w = m_SrcSize.x;
-	m_Interface.destRect.h = m_SrcSize.y;
+	m_Interface.destRect.x =(int)m_pos.x;
+	m_Interface.destRect.y =(int)m_pos.y;
+	m_Interface.destRect.w =(int)m_SrcSize.x;
+	m_Interface.destRect.h =(int)m_SrcSize.y;
 
 
 	m_Interface.srcRect.x = 0;
 	m_Interface.srcRect.y = 0;
-	m_Interface.srcRect.w = m_SrcSize.x;
-	m_Interface.srcRect.h = m_SrcSize.y;
+	m_Interface.srcRect.w = (int)m_SrcSize.x;
+	m_Interface.srcRect.h = (int)m_SrcSize.y;
 
 
 	m_Interface.renderFlip = SDL_RendererFlip::SDL_FLIP_NONE;
@@ -105,9 +105,9 @@ bool  Text::WrapText(SDL_Surface* _Mainsurface, std::string _remainingText, floa
 	{
 		//rough estimate of the size per char by dividing the text surface's width by the size
 		// of the string
-		sizePerChar = std::ceil(textSurface->w / _remainingText.size());
+		sizePerChar = std::ceilf(textSurface->w / _remainingText.size());
 	}
-;
+
 
 	int height = textSurface->h;
 	SDL_Rect destRect= textSurface->clip_rect;
@@ -121,7 +121,7 @@ bool  Text::WrapText(SDL_Surface* _Mainsurface, std::string _remainingText, floa
 		SDL_FreeSurface(textSurface);
 		//intended cutoff index, divide the surface by sizer per char to figure out how many
 		//chars can fit inside along the width of the surface
-		int cutoffIndex = _Mainsurface->w / sizePerChar;
+		int cutoffIndex = (int)(_Mainsurface->w / sizePerChar);
 
 		std::string buffer;
 		buffer.assign(_remainingText, 0, cutoffIndex);
@@ -148,7 +148,7 @@ bool  Text::WrapText(SDL_Surface* _Mainsurface, std::string _remainingText, floa
 			//recalculate the size per char,
 			if (textSurface->w > _Mainsurface->w)
 			{
-				sizePerChar = std::ceil(textSurface->w / buffer.size());
+				sizePerChar = std::ceilf(textSurface->w / buffer.size());
 				//Figure out where we went wrong
 				int estimatedLostVikings = std::floor((textSurface->w - _Mainsurface->w) / sizePerChar);
 				if (estimatedLostVikings == 0)

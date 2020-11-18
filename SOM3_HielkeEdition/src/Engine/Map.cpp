@@ -202,7 +202,7 @@ void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
 			char name[256];
 			file.getline(name,256);
 			m_MapName = string(name);
-			if (m_MapName[0] == ' ');
+			if (m_MapName[0] == ' ')
 			{
 				m_MapName.erase(m_MapName.begin());
 			}
@@ -215,7 +215,7 @@ void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
 			char name[256];
 			file.getline(name, 256);
 			m_VisalName = string(name);
-			if (m_VisalName[0] == ' ');
+			if (m_VisalName[0] == ' ')
 			{
 				m_VisalName.erase(m_VisalName.begin());
 			}
@@ -228,7 +228,7 @@ void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
 			char name[256];
 			file.getline(name, 256);
 			m_ColliderMapName = string(name);
-			if (m_ColliderMapName[0] == ' ');
+			if (m_ColliderMapName[0] == ' ')
 			{
 				m_ColliderMapName.erase(m_ColliderMapName.begin());
 			}
@@ -241,7 +241,7 @@ void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
 			file.getline(name, 256);
 			string newString;
 			newString = string(name);
-			if (newString[0] == ' ');
+			if (newString[0] == ' ')
 			{
 				newString.erase(newString.begin());
 			}
@@ -282,8 +282,8 @@ void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
 			m_BackGround->m_RenderInterface.srcRect = srcRect;
 			m_BackGround->m_RenderInterface.destRect = destRect;
 			//assumes destrect is an accurate representation of our position etc.
-			m_BackGround->m_Pos = Vector2(destRect.x, destRect.y);
-			m_BackGround->m_Size = Vector2(destRect.w, destRect.h);
+			m_BackGround->m_Pos = Vector2((float)destRect.x, (float)destRect.y);
+			m_BackGround->m_Size = Vector2((float)destRect.w, (float)destRect.h);
 			m_BackGround->m_RenderInterface.point = SDL_Point{ 0,0 };
 
 		}

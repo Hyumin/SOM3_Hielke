@@ -133,8 +133,8 @@ void EditorWindow::MouseUp( unsigned int _key)
 
 void EditorWindow::MouseMove(unsigned int _x, unsigned int _y)
 {
-	m_MousePos.x = _x;
-	m_MousePos.y = _y;
+	m_MousePos.x = (float)_x;
+	m_MousePos.y = (float)_y;
 	//IF we're dragging the box set box pos to be the same as mousepos
 	if (m_Dragging)
 	{
@@ -209,7 +209,7 @@ void EditorWindow::SetName(std::string& _name)
 
 void EditorWindow::Render(SDLRenderer* _renderer)
 {
-	_renderer->DrawFilledBox(m_Bar.pos.x,m_Bar.pos.y,m_Bar.w, m_Bar.h, m_DarkColor);
+	_renderer->DrawFilledBox(m_Bar, m_DarkColor);
 	_renderer->DrawBox(m_ContentBox, { 255,255,255,255 }, { 0,0 },2);
 	m_ContentScaleObject.Render(_renderer, Vector2{ 0, 0 },1);
 	m_TextField.Render(_renderer, Vector2{ 0,0 },1);

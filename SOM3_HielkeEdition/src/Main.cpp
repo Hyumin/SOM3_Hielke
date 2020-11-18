@@ -49,7 +49,7 @@ int main(int arg, char* args[])
 	}
 	else
 	{
-		start = SDL_GetTicks();
+		start =(float) SDL_GetTicks();
 		//Main loop
 		while (!quit)
 		{

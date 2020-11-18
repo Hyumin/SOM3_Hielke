@@ -396,7 +396,7 @@ void Hielke::PlayerCharacter::TakeDamage(float _dmg)
 	{
 		m_State = ENTER_COMBAT;
 	}
-	m_Stats.health -= _dmg;
+	m_Stats.health -= (int)_dmg;
 	m_InCombat = true;
 	
 }
@@ -454,7 +454,6 @@ void Hielke::PlayerCharacter::ClassStrike(float _dt)
 
 Box& Hielke::PlayerCharacter::GetAttackCollider()
 {
-	// TODO: insert return statement here
 	if (m_Attack)
 	{
 		return m_AttackCollider;
@@ -710,7 +709,7 @@ void Hielke::PlayerCharacter::Render(SDLRenderer* _render, Vector2 _worldPos)
 	}
 	catch (std::exception& e)
 	{
-
+		printf(e.what());
 	}
 
 	if (m_Object->m_RenderInterface.renderFlip == SDL_RendererFlip::SDL_FLIP_HORIZONTAL)

@@ -162,7 +162,7 @@ void AnimationClipEditor::MouseUp(unsigned int _key)
 
 void AnimationClipEditor::MouseMove(int _x, int _y)
 {
-	m_MousePos = Vector2(_x, _y);
+	m_MousePos = Vector2((float)_x,(float) _y);
 	for (int i = 0; i < m_EditorWindows.size(); ++i)
 	{
 		m_EditorWindows[i]->MouseMove(_x,_y);
@@ -187,8 +187,8 @@ void AnimationClipEditor::GenerateNumberedBoxes()
 
 			const SDL_Rect& rect = m_CurrentClip.m_SourceRects[i];
 			box.pos = Vector2{ (float)rect.x,(float)rect.y };
-			box.w = rect.w;
-			box.h = rect.h;
+			box.w = (float)rect.w;
+			box.h = (float)rect.h;
 
 			nb.SetBox(box);
 			nb.SetColour({200,200,200,255});
@@ -197,31 +197,6 @@ void AnimationClipEditor::GenerateNumberedBoxes()
 		}
 	}
 }
-
-void AnimationClipEditor::LoadWindowThingy()
-{
-	WindowOpener opener = WindowOpener();
-	std::string path = opener.PrintAndOpenStuff();
-	if (path != "CANCELED")
-	{
-		m_CurrentClip = AnimationClip();// "clear the previous animation clip then load
-		m_CurrentClip.LoadClipFromFile(path, m_ResMan);
-
-		//m_CurrentClip.m_Looping = true;
-		m_SpriteSheet.m_RenderInterface.textureName = m_CurrentClip.m_SourceTexture->GetName();
-		m_SpriteSheet.m_Size = Vector2{(float)m_CurrentClip.m_SourceTexture->GetWidth(),(float) m_CurrentClip.m_SourceTexture->GetHeight()};
-		m_SpriteSheet.m_RenderInterface.srcRect.w = m_SpriteSheet.m_Size.x;
-		m_SpriteSheet.m_RenderInterface.srcRect.h = m_SpriteSheet.m_Size.y;
-		//m_CurrentClip.Play();
-		GenerateNumberedBoxes();
-		if (m_AnimationWindow != nullptr)
-		{
-			m_AnimationWindow->SetClip(&m_CurrentClip);
-			m_AddFrameWindow->SetClip(&m_CurrentClip);
-		}
-	}
-}
-
 void AnimationClipEditor::Update(float _dt)
 {
 	for (int i = 0; i < m_EditorWindows.size(); ++i)
@@ -381,8 +356,8 @@ void AnimationClipEditor::LoadClip()
 		//m_CurrentClip.m_Looping = true;
 		m_SpriteSheet.m_RenderInterface.textureName = m_CurrentClip.m_SourceTexture->GetName();
 		m_SpriteSheet.m_Size = Vector2{ (float)m_CurrentClip.m_SourceTexture->GetWidth(),(float)m_CurrentClip.m_SourceTexture->GetHeight() };
-		m_SpriteSheet.m_RenderInterface.srcRect.w = m_SpriteSheet.m_Size.x;
-		m_SpriteSheet.m_RenderInterface.srcRect.h = m_SpriteSheet.m_Size.y;
+		m_SpriteSheet.m_RenderInterface.srcRect.w = (int)m_SpriteSheet.m_Size.x;
+		m_SpriteSheet.m_RenderInterface.srcRect.h = (int)m_SpriteSheet.m_Size.y;
 		//m_CurrentClip.Play();
 		GenerateNumberedBoxes();
 		if (m_AnimationWindow != nullptr)
@@ -443,8 +418,8 @@ void AnimationClipEditor::CreateNewFile()
 
 		m_SpriteSheet.m_RenderInterface.textureName = m_CurrentClip.m_SourceTexture->GetName();
 		m_SpriteSheet.m_Size = Vector2{ (float)m_CurrentClip.m_SourceTexture->GetWidth(),(float)m_CurrentClip.m_SourceTexture->GetHeight() };
-		m_SpriteSheet.m_RenderInterface.srcRect.w = m_SpriteSheet.m_Size.x;
-		m_SpriteSheet.m_RenderInterface.srcRect.h = m_SpriteSheet.m_Size.y;
+		m_SpriteSheet.m_RenderInterface.srcRect.w = (int)m_SpriteSheet.m_Size.x;
+		m_SpriteSheet.m_RenderInterface.srcRect.h = (int)m_SpriteSheet.m_Size.y;
 
 		GenerateNumberedBoxes();
 		if (m_AnimationWindow != nullptr)

@@ -6,6 +6,8 @@ using namespace Hielke;
 MapEditor::MapEditor()
 {
 	printf("Default initialization not feasible without resource manager mapeditor.cpp \n");
+	m_ResourceManager = nullptr;
+	Init();
 }
 
 MapEditor::MapEditor(ResourceManager* _resMan)
@@ -171,8 +173,8 @@ void MapEditor::MouseMove(int _x, int _y)
 	{
 		m_EditorWindows[i]->MouseMove(_x, _y);
 	}
-	m_MousePos.x = _x;
-	m_MousePos.y = _y;
+	m_MousePos.x = (float)_x;
+	m_MousePos.y = (float)_y;
 }
 
 void MapEditor::ZoomIn()

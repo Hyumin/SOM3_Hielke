@@ -30,8 +30,8 @@ void TextField::Render(SDLRenderer* _renderer, Vector2 _worldpos,int _layer)
 	if (m_FontPointer != NULL)
 	{
 		UpdateInterface(_renderer);
-		m_Interface.destRect.x -= _worldpos.x;
-		m_Interface.destRect.y -= _worldpos.y;
+		m_Interface.destRect.x -= (int)_worldpos.x;
+		m_Interface.destRect.y -= (int)_worldpos.y;
 		_renderer->AddToRenderqueue(m_Interface,_layer);
 	}
 	else

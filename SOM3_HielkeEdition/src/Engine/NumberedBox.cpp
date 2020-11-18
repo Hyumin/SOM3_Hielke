@@ -32,7 +32,7 @@ void NumberedBox::Render(SDLRenderer* _renderer, Vector2 _WorldPos,bool _drawFil
 {
 	if (_drawFilled)
 	{
-		_renderer->DrawFilledBox(m_Box.pos.x, m_Box.pos.y, m_Box.w, m_Box.h, m_Colour, _WorldPos, 1);
+		_renderer->DrawFilledBox(m_Box, m_Colour, _WorldPos, 1);
 	}
 	else
 	{
@@ -54,7 +54,7 @@ void NumberedBox::Render(SDLRenderer* _renderer, Vector2 _WorldPos, Vector2 _Sca
 	Vector2 zF = _ScaleMult;
 	if (_drawFilled)
 	{
-		_renderer->DrawFilledBox(m_Box.pos.x, m_Box.pos.y, m_Box.w*zF.x, m_Box.h*zF.y, m_Colour, _WorldPos, 1);
+		_renderer->DrawFilledBox((int)m_Box.pos.x, (int)m_Box.pos.y, (int)m_Box.w*zF.x, (int)m_Box.h*zF.y, m_Colour, _WorldPos, 1);
 	}
 	else
 	{
@@ -82,7 +82,7 @@ void NumberedBox::Render(SDLRenderer* _renderer, Vector2 _WorldPos, SDL_Color _c
 	Vector2 zF = _ScaleMult;
 	if (_drawFilled)
 	{
-		_renderer->DrawFilledBox(m_Box.pos.x, m_Box.pos.y, m_Box.w * zF.x, m_Box.h * zF.y, _col, _WorldPos, 1);
+		_renderer->DrawFilledBox((int)m_Box.pos.x, (int)m_Box.pos.y, (int)m_Box.w * zF.x, (int)m_Box.h * zF.y, _col, _WorldPos, 1);
 	}
 	else
 	{

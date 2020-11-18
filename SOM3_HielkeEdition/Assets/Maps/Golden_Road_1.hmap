@@ -1,7 +1,8 @@
 Map Golden_Road_1
 VisualFile Assets\SpriteSheets\terrain\Goldenroad.png
+ColliderFile 
 MapObject
-{
+ {  
 DestinationRect
 x 0
 y 0
@@ -12,47 +13,152 @@ x 2244
 y 303
 w 512
 h 221
-}
+} 
 ConnectedMap Golden_Road_2
-{
+ { 
 fileName Assets\Maps\Golden_Road_2.hmap
 x -100
 y 100
 w 100
 h 100
-StartPos
+StartPos 
 x 0
 y 0
-}
 ConnectedMap Free city of maia
-{
+ { 
 fileName Assets\Maps\Free_City_of_maia.hmap
 x 1749
 y 441
 w 200
 h 200
-StartPos
+StartPos 
 x 215
 y 650
-}
-
-Enemies
-{
-	{
-	type Rabite
-	filename Assets\EnemyFiles\Rabite.Henemy
-	x 650
-	y 200
-	Level 1
-	}
-	{
-	type Rabite
-	filename Assets\EnemyFiles\Rabite.Henemy
-	x 700
-	y 200
-	Level 1
-	}
-}
-
-
-
+Enemies 
+ { 
+ 	  { 
+	 	 type 0
+	 	 filename Assets\EnemyFiles\Rabite.Henemy
+	 	 x 650
+	 	 y 200
+	 	 Level 0
+	  } 
+	  { 
+	 	 type 0
+	 	 filename Assets\EnemyFiles\Rabite.Henemy
+	 	 x 700
+	 	 y 200
+	 	 Level 0
+	  } 
+} 
+Walls 
+ {
+	 { 
+	 X -1.59991 
+	 Y 0.200127 
+	 W 422 
+	 H 204 
+	 }
+	 { 
+	 X 421.4 
+	 Y -1.79987 
+	 W 499 
+	 H 154 
+	 }
+	 { 
+	 X 495.4 
+	 Y 134.2 
+	 W 408 
+	 H 114 
+	 }
+	 { 
+	 X 600.4 
+	 Y 217.2 
+	 W 172 
+	 H 90 
+	 }
+	 { 
+	 X 910.803 
+	 Y 6.20013 
+	 W 279 
+	 H 412 
+	 }
+	 { 
+	 X 1192.8 
+	 Y 352.2 
+	 W 165 
+	 H -358 
+	 }
+	 { 
+	 X 1359.8 
+	 Y -8.79987 
+	 W 122 
+	 H 314 
+	 }
+	 { 
+	 X 1480.8 
+	 Y -5.79987 
+	 W 185 
+	 H 384 
+	 }
+	 { 
+	 X 1670.8 
+	 Y 303.2 
+	 W 64 
+	 H -306 
+	 }
+	 { 
+	 X 1417.8 
+	 Y 376.2 
+	 W 70 
+	 H 76 
+	 }
+	 { 
+	 X 1567.8 
+	 Y 428.2 
+	 W 164 
+	 H 50 
+	 }
+	 { 
+	 X 1567.8 
+	 Y 593.6 
+	 W 164 
+	 H 50 
+	 }
+	 { 
+	 X 1722.8 
+	 Y 750.6 
+	 W -322 
+	 H -94 
+	 }
+	 { 
+	 X 1395.8 
+	 Y 753.6 
+	 W -685 
+	 H -64 
+	 }
+	 { 
+	 X 601.399 
+	 Y 753.6 
+	 W -685 
+	 H -64 
+	 }
+	 { 
+	 X -0.601318 
+	 Y 598.6 
+	 W 131 
+	 H 93 
+	 }
+	 { 
+	 X 287.399 
+	 Y 705.6 
+	 W -158 
+	 H -59 
+	 }
+	 { 
+	 X -5.60132 
+	 Y 424.6 
+	 W 94 
+	 H 171 
+	 }
+} 

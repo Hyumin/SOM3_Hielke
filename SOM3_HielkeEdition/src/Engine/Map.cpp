@@ -133,8 +133,10 @@ void Hielke::Map::SaveMap(const std::string& _filepath)
 
 	file << "MapObject" << "\n {  \n";
 	file << "DestinationRect" << "\n";
-	file << "x " << m_BackGround->m_RenderInterface.destRect.x << "\n";
-	file << "y " << m_BackGround->m_RenderInterface.destRect.y << "\n";
+	//Using background's position instead of the dest rect since, world position
+	// changes dest rect position 
+	file << "x " << m_BackGround->m_Pos.x << "\n";
+	file << "y " << m_BackGround->m_Pos.y<< "\n";
 	file << "w " << m_BackGround->m_RenderInterface.destRect.w << "\n";
 	file << "h " << m_BackGround->m_RenderInterface.destRect.h << "\n";
 
@@ -164,7 +166,7 @@ void Hielke::Map::SaveMap(const std::string& _filepath)
 		{
 			file << "\t  { \n";
 			file << "\t \t type " << m_Enemies[i]->m_Type<< "\n";
-			file << "\t \t filename " << m_Enemies[i]->m_FileName << '\n';
+			file << "\t \t filename " << m_Enemies[i]->m_FileName.c_str() << '\n';
 			file << "\t \t x " << m_Enemies[i]->m_StartingPos.x << '\n';
 			file << "\t \t y " << m_Enemies[i]->m_StartingPos.y << '\n';
 			file << "\t \t Level " << m_Enemies[i]->m_Stats.level<<'\n';
@@ -173,11 +175,20 @@ void Hielke::Map::SaveMap(const std::string& _filepath)
 		file << "} \n";
 	}
 
-	for (unsigned int i = 0; i < m_Walls.size(); ++i)
+	if (m_Walls.size() > 0)
 	{
-
+		file << "Walls \n {\n";
+		for (unsigned int i = 0; i < m_Walls.size(); ++i)
+		{
+			file << "\t { \n";
+			file << "\t X " << m_Walls[i].pos.x << " \n";
+			file << "\t Y " << m_Walls[i].pos.y << " \n";
+			file << "\t W " << m_Walls[i].w << " \n";
+			file << "\t H " << m_Walls[i].h << " \n";
+			file << "\t }\n";
+		}
+		file << "} \n";
 	}
-
 	file.close();
 }
 
@@ -323,6 +334,8 @@ void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
 					Rabite* enem = dynamic_cast<Rabite*>(_res->GetEnemy(fileName));
 					Rabite* newEnem = new Rabite(enem->m_Object);
 
+					//for some reason the copy of the enem pointer object, does not get the filename
+					newEnem->m_FileName = enem->m_FileName;
 					newEnem->m_Stats = enem->m_Stats;
 					newEnem->m_Pos.x = x;
 					newEnem->m_Pos.y = y;
@@ -341,7 +354,7 @@ void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
 			}
 
 		}
-		if (word == "Colliders")
+		if (word == "Walls")
 		{
 			std::string string;
 			file >> string;

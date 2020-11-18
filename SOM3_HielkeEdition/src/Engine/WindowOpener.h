@@ -11,7 +11,8 @@ public :
 	std::string PrintAndOpenStuff();
 	std::string PrintAndOpenPng();
 	std::string SaveFileStuff();
-	static std::string GetFilepath(const char* _extension);
+	static std::string GetFilePathSave(const char* _extension);
+	static std::string GetFilepathOpen(const char* _extension);
 
 private:
 

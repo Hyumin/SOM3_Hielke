@@ -194,13 +194,18 @@ void MapEditor::SaveMap()
 {
 	printf(" trying to save map but functionality not implented yet :( mapeditor.cpp \n");
 	//Exports map
+
+	std::string filepath = WindowOpener::GetFilePathSave("hmap");
+
+	m_CurrentMap->SaveMap(filepath);
+
 }
 
 void MapEditor::LoadMap()
 {
 	//Sets map
 
-	std::string filepath = WindowOpener::GetFilepath("hmap");
+	std::string filepath = WindowOpener::GetFilepathOpen("hmap");
 
 	m_CurrentMap = new Map();
 	m_CurrentMap =m_ResourceManager->LoadMap(filepath);

@@ -187,6 +187,7 @@ Enemy* ResourceManager::LoadEnemy(const std::string& _fileName)
 
 	if (enem != nullptr)
 	{
+		enem->m_FileName = _fileName;
 		m_Enemies[_fileName] = enem;
 		return enem;
 	}
@@ -197,6 +198,13 @@ Enemy* ResourceManager::LoadEnemy(const std::string& _fileName)
 
 Enemy* ResourceManager::GetEnemy(const std::string& _fileName)
 {
+	//If it doesn't exist in the map, try and load it in and return that result
+	//if it fails it will be a nullptr
+	if (m_Enemies[_fileName] == nullptr)
+	{
+		return LoadEnemy(_fileName);
+	}
+
 
 	return m_Enemies[_fileName];
 }

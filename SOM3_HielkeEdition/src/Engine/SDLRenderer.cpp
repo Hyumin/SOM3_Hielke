@@ -51,16 +51,39 @@ void SDLRenderer::AddLine(const Vector2& _a, const Vector2& _b, const Vector2& _
 	m_Layers[_layer].AddLine(newLine);
 }
 
+void SDLRenderer::AddLine(const Line& _line, const Vector2& _worldPos, unsigned int _layer)
+{
+	Line newLine= _line;
+	newLine.start -= _worldPos;
+	newLine.end -= _worldPos;
+
+
+	m_Layers[_layer].AddLine(newLine);
+}
+
 void SDLRenderer::AddLineZoomed(const Vector2& _a, const Vector2& _b, const Vector2& _worldPos, SDL_Color _color, float _zoom, unsigned int _layer)
 {
 	Line newLine;
 	newLine.start = _a*_zoom;
 	newLine.end = _b*_zoom;
-	newLine.start -= _worldPos;
-	newLine.end -= _worldPos;
+	newLine.start -= _worldPos*_zoom;
+	newLine.end -= _worldPos*_zoom;
 
 
 	newLine.colour = _color;
+
+	m_Layers[_layer].AddLine(newLine);
+}
+
+void SDLRenderer::AddLineZoomed(const Line& _line, const Vector2& _worldPos, float _zoom, unsigned int _layer)
+{
+	Line newLine = _line;
+	newLine.start *=  _zoom;
+	newLine.end *=  _zoom;
+	newLine.start -= _worldPos * _zoom;
+	newLine.end -= _worldPos * _zoom;
+
+
 
 	m_Layers[_layer].AddLine(newLine);
 }
@@ -238,22 +261,22 @@ void SDLRenderer::DrawBoxZoomed(Box _box, SDL_Color _color, Vector2 _worldPos, f
 	_box.w *= _zoom;
 	_box.h *= _zoom;
 	endPoint.x += _box.w;
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+	AddLine(startPoint, endPoint, _worldPos*_zoom, _color, _layer);
 
 	//Draw x+w to y+h
 	startPoint = endPoint;
 	endPoint.y += _box.h;
 
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
 
 	//Draw xy+wh to y+h
 	startPoint = endPoint;
 	endPoint.x = screenPos.x;
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
 	//finally draw y+h to start point
 	startPoint = endPoint;
 	endPoint = screenPos;
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
 }
 
 void SDLRenderer::DrawBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos, float _zoom, unsigned int _layer)
@@ -263,29 +286,29 @@ void SDLRenderer::DrawBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color _color
 	Vector2 endPoint = screenPos;
 	Vector2 startPoint = screenPos;
 	endPoint.x += _h*_zoom;
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
 
 	//Draw x+w to y+h
 	startPoint = endPoint;
 	endPoint.y += _h * _zoom;
 
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
 
 	//Draw xy+wh to y+h
 	startPoint = endPoint;
 	endPoint.x = screenPos.x;
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
 	//finally draw y+h to start point
 	startPoint = endPoint;
 	endPoint = screenPos;
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
 }
 
 void SDLRenderer::DrawFilledBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos, float _zoom, unsigned int _layer)
 {
 	
 	FilledBox b;
-	b.box = { _x - (int)_worldPos.x,_y - (int)_worldPos.y,(int)(_w*_zoom),(int)(_h*_zoom) };
+	b.box = { _x - (int)(_worldPos.x * _zoom),_y - (int)(_worldPos.y * _zoom),(int)(_w*_zoom),(int)(_h*_zoom) };
 	b.box.x = (int)(_zoom *b.box.x);
 	b.box.y = (int)(_zoom* b.box.y);
 	b.col = _color;
@@ -295,7 +318,7 @@ void SDLRenderer::DrawFilledBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color 
 void SDLRenderer::DrawFilledBoxZoomed(Box _box, SDL_Color _color, Vector2 _worldPos, float _zoom, unsigned int _layer)
 {
 	FilledBox b;
-	b.box = { (int)_box.pos.x - (int)_worldPos.x,(int)_box.pos.y - (int)_worldPos.y,(int)(_box.w*_zoom),(int)(_box.h*_zoom) };
+	b.box = { (int)_box.pos.x - (int)(_worldPos.x * _zoom),(int)_box.pos.y - (int)(_worldPos.y * _zoom),(int)(_box.w*_zoom),(int)(_box.h*_zoom) };
 	b.box.x = (int)(_zoom * b.box.x);
 	b.box.y = (int)(_zoom * b.box.y);
 	b.col = _color;

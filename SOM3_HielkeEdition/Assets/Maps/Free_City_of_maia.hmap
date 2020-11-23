@@ -36,17 +36,7 @@ StartPos
 x 350
 y 800
 }
-ConnectedMap maia_weapon_shop
-{
-fileName Assets\Maps\maia_weapon_shop.hmap
-x -1000
-y -1000
-w 200
-h 200
-StartPos
-x 0
-y 0
-}
+
 
 Colliders
 {

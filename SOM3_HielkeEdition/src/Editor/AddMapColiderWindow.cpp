@@ -253,6 +253,20 @@ void AddMapColliderWindow::CreateBox()
 	if (m_Map != nullptr)
 	{
 		Box b = m_CurrentSelectedBox;
+		//check if width or height are negative
+		//If so substract it from the position, and then set these values to be positive
+		//since no box should have negative values
+		if (b.w < 0)
+		{
+			b.pos.x += b.w;
+			b.w *= -1;
+		}
+		if (b.h < 0)
+		{
+			b.pos.y += b.h;
+			b.h *= -1;
+		}
+
 		b.pos += m_WorldPos;
 		m_Map->AddWall(b);
 	}

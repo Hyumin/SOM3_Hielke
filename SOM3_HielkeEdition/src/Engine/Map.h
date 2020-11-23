@@ -45,7 +45,7 @@ namespace Hielke
 		void LoadMap(const std::string& _filePath, ResourceManager* _res);
 		void LoadCollidersFromFile(const std::string& _filePath, const Object* _obj);
 		Object* GetBackground();
-		ConnectedMap& GetConnectedMap(Box& _playerCollider);
+		ConnectedMap& CheckPlayerCollisionWithConnectedMap(Box& _playerCollider);
 		HitResult CheckMapCollision(Box& _collider);
 
 		void SetBackGround(Object* _background);
@@ -65,6 +65,11 @@ namespace Hielke
 		}
 
 		bool m_DebugMode;
+
+		const std::vector<ConnectedMap>& GetConnectedMaps()
+		{
+			return m_ConnectedMaps;
+		}
 
 	private:
 		std::string m_MapName, m_VisalName, m_ColliderMapName;

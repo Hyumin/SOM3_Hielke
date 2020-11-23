@@ -83,6 +83,16 @@ void MapEditor::Render(SDLRenderer* _renderer)
 	if (m_CurrentMap != nullptr)
 	{
 		m_CurrentMap->RenderZoomed(_renderer, m_WorldPos,m_Zoom);
+		if (m_ShowConnectedMap)
+		{
+			//m_CurrentMap->GetConnectedMap();
+			for (unsigned int i = 0; i < m_ConnectedMaps.size(); ++i)
+			{
+				m_ConnectedMaps[i].map->RenderZoomed(_renderer, m_WorldPos+m_ConnectedMaps[i].offset, m_Zoom);
+				_renderer->AddLineZoomed(m_ConnectedMaps[i].startPosLine, m_WorldPos, m_Zoom, 1);
+			}
+
+		}
 	}
 }
 
@@ -197,7 +207,10 @@ void MapEditor::SaveMap()
 
 	std::string filepath = WindowOpener::GetFilePathSave("hmap");
 
-	m_CurrentMap->SaveMap(filepath);
+	if (filepath != "thisisnotasavelocation")
+	{
+		m_CurrentMap->SaveMap(filepath);
+	}
 
 }
 
@@ -208,7 +221,7 @@ void MapEditor::LoadMap()
 	std::string filepath = WindowOpener::GetFilepathOpen("hmap");
 
 	m_CurrentMap = new Map();
-	m_CurrentMap =m_ResourceManager->LoadMap(filepath);
+	m_CurrentMap = m_ResourceManager->LoadMap(filepath);
 	if (m_CurrentMap != nullptr)
 	{
 		//Reset world pos and zoom after loading 
@@ -216,13 +229,78 @@ void MapEditor::LoadMap()
 		m_ColliderWindow->m_WorldPos = m_WorldPos;
 		m_Zoom = 1.0f;
 		m_CurrentMap->m_DebugMode = true;//Enable debug mode to see the colliders.
+		
 		for (int i = 0; i < m_EditorWindows.size(); ++i)
 		{
 			m_EditorWindows[i]->SetMap(m_CurrentMap);
 		}
+		m_MapBox = Box{0,0, m_CurrentMap->GetBackground()->m_Size.x,m_CurrentMap->GetBackground()->m_Size.y};
+		const std::vector<Hielke::ConnectedMap>& conMaps = m_CurrentMap->GetConnectedMaps();
+		//Iterate through maps and place the map at their colliders
+		m_ConnectedMaps.clear();
+		for (unsigned int i = 0; i < conMaps.size(); ++i)
+		{
+			Hielke::Map* mappie = (m_ResourceManager->GetMap(conMaps[i].fileName));
+			if (mappie != nullptr)
+			{
+				mappie->m_DebugMode = true;
+				//Figure out where to place 
+				//if the start position is at the far end of the map in terms of X
+				// we can assume that the map is to the left of the current map
 
+				MapAndLine mapskie;
+
+				//if we substract the start position from the collider and we get a negative number
+				//we should then place the offset either left or upfrom the  original map.
+				mapskie.offset = conMaps[i].collider.pos;
+				mapskie.offset -= conMaps[i].startPos;
+
+				//normalize to get a direction vector
+				mapskie.offset.Normalize();
+				Vector2 dir = mapskie.offset;
+				//check absolute values and if x is bigger check whether we use
+				//negative one or positive one for determining where to place our stuff
+				Vector2 result = {};
+
+				if (abs(dir.x)> abs(dir.y))
+				{
+					if (dir.x <0)
+					{
+						result.x = mappie->GetBackground()->m_Size.x;
+					}
+					else
+					{
+						result.x = m_CurrentMap->GetBackground()->m_Size.x*-1;
+					}
+					//Since the world pos gets substracted, we need to inverse our result to get the right location
+					result.y = conMaps[i].collider.pos.y*-1;
+				}
+				else 
+				{
+					if (dir.y < 0)
+					{
+						result.y = mappie->GetBackground()->m_Size.y;
+					}
+					else
+					{
+						result.y = m_CurrentMap->GetBackground()->m_Size.y*-1;
+					}
+					result.x = conMaps[i].collider.pos.x*-1;
+				}
+
+
+				mapskie.offset = result;
+
+				mapskie.map = mappie;
+				mapskie.startPosLine.start = conMaps[i].collider.pos;
+				mapskie.startPosLine.end = conMaps[i].startPos;
+				mapskie.startPosLine.end -= mapskie.offset;
+				mapskie.startPosLine.colour = {0xff,0x00,0x00,0xff};
+				m_ConnectedMaps.push_back(mapskie);
+			}
+		}
+		
 	}
-	
 }
 
 void MapEditor::GiveTopBarBox(Box _topBarBox)
@@ -258,6 +336,7 @@ void MapEditor::Init()
 	m_Kup = false;
 	m_Kright = false;
 	m_Kshift = false;
+	m_ShowConnectedMap = true;
 
 	
 	std::string windowName = "Add Collider";
@@ -293,6 +372,8 @@ void MapEditor::CollidorWindowCallback()
 		//set can delete to false;
 		m_ColliderWindow->m_ReadyForDelete = false;
 		m_ColliderWindow->MouseMove((unsigned int)m_MousePos.x, (unsigned int)m_MousePos.y);
+
+		m_ColliderWindow->SetMap(m_CurrentMap);//Don't forget to set the map after we toggle it on again
 		m_EditorWindows.push_back(m_ColliderWindow);
 	}
 }

@@ -29,7 +29,7 @@ Game* g_Game = NULL;
 Editor* g_Editor = NULL;
 
 
-bool EDITORMODE = false;
+bool EDITORMODE = true;
 
 
 int main(int arg, char* args[])

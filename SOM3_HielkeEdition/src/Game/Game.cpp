@@ -211,7 +211,7 @@ void Game::Update(float _dt)
 	}
 
 	b = m_PlayerCharacter->m_Collider;
-	ConnectedMap& conMap = m_CurrentMap->GetConnectedMap(b);
+	ConnectedMap& conMap = m_CurrentMap->CheckPlayerCollisionWithConnectedMap(b);
 	//If its not our expected nothing happened string
 	if (conMap.mapName != "None")
 	{

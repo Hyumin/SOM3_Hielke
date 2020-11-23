@@ -6,6 +6,13 @@
 #include "AddMapColiderWindow.h"
 
 
+struct MapAndLine
+{
+	Hielke::Map* map;
+	Line startPosLine;
+	Vector2 offset;
+};
+
 class MapEditor
 {
 public:
@@ -54,6 +61,13 @@ private:
 	bool m_Kup, m_Kleft, m_Kright, m_Kdown, m_Kshift;//bools to control keys
 	float m_MoveSpeed;
 	float m_SprintMultiplier;
+
+
+	//Some prototype code
+	bool m_ShowConnectedMap;
+	std::vector<MapAndLine> m_ConnectedMaps;
+
+	Box m_MapBox;//basically the destrect of the map's background, but in box format so it can be used for collision
 
 };
 

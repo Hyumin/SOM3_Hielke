@@ -158,6 +158,7 @@ void Hielke::Map::SaveMap(const std::string& _filepath)
 		file << "StartPos \n";
 		file <<"x "<< m_ConnectedMaps[i].startPos.x << "\n";
 		file <<"y "<< m_ConnectedMaps[i].startPos.y << "\n";
+		file << "}\n";
 	}
 	if (m_Enemies.size() > 0)
 	{
@@ -273,7 +274,7 @@ void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
 			file >> word;
 			file >> b.h;
 			newMap.collider = b;
-			file >> word >>word>> newMap.startPos.x >>word>> newMap.startPos.y;
+			file >> word >>word>> newMap.startPos.x >>word>> newMap.startPos.y>>word;
 
 			m_ConnectedMaps.push_back(newMap);
 		}
@@ -497,7 +498,7 @@ Object* Hielke::Map::GetBackground()
 
 
 
-ConnectedMap& Hielke::Map::GetConnectedMap(Box& _playerCollider)
+ConnectedMap& Hielke::Map::CheckPlayerCollisionWithConnectedMap(Box& _playerCollider)
 {
 	for (uint32_t i = 0; i < m_ConnectedMaps.size(); ++i)
 	{

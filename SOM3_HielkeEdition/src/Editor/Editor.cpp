@@ -106,6 +106,19 @@ void Editor::MouseMove(int _x, int _y)
 	}
 }
 
+void Editor::MouseWheel(int _x, int _y)
+{
+	switch (m_EditorState)
+	{
+	case EditorState::AnimationClip:
+		m_AnimClipEditor->MouseWheel(_x,_y);
+		break;
+	case EditorState::Map:
+		m_MapEditor->MouseWheel(_x,_y);
+		break;
+	}
+}
+
 void Editor::Update(float _dt)
 {
 	switch (m_EditorState)

@@ -1,5 +1,6 @@
 #include "Button.h"
 #include <iostream>
+#include "RenderTarget.h"
 
 Button::Button()
 {
@@ -50,8 +51,16 @@ void Button::MouseUp(unsigned int _key)
 		if (m_Clicked) 
 		{
 			m_Clicked = false;
+			if (m_IntCallback != nullptr)
+			{
+				m_IntCallback(m_IntCallbackInput);
+			}
 			//Fire event
-			m_Callback();
+			if (m_Callback != nullptr)
+			{
+				m_Callback();
+			}
+			
 		}	
 	}
 }
@@ -103,6 +112,67 @@ void Button::Render(SDLRenderer* _renderer)
 			m_Object.m_RenderInterface = m_TexClicked;
 		}
 		m_Object.Render(_renderer, { 0,0 }, m_Layer);
+		break;
+	default:
+		printf("Unspecified button draw mode in button.cpp \n");
+		break;
+	}
+}
+
+void Button::RenderToTarget(SDLRenderer* _renderer, RenderTarget* _target,Vector2 _offset)
+{
+	SDL_Colour col;
+	//If we don't use texture drawing mode use colours to define how 
+	// the button will be rendered
+	if (m_DrawMode != TEXTURE)
+	{
+		col = m_ColNorm;
+		if (m_Hovered)
+		{
+			col = m_ColHov;
+		}
+		if (m_Clicked)
+		{
+			col = m_ColClicked;
+		}
+	}
+	//Draw based on whatever draw mode
+	switch (m_DrawMode)
+	{
+	case WIREFRAME:
+		_renderer->DrawBox(m_Collider, col, { 0,0 }, m_Layer);
+		if (m_TextField.GetText().size() > 0)
+		{
+			m_TextField.RenderToTarget(_renderer, _target,_offset);
+		}
+		break;
+	case FILLEDRECT:
+		FilledBox b;
+		b.box = {(int)m_Collider.pos.x,(int)m_Collider.pos.y,(int)m_Collider.w,(int)m_Collider.h};
+		b.col = col;
+		_target->AddFilledBox(b);
+		if (m_TextField.GetText().size() > 0)
+		{
+			m_TextField.RenderToTarget(_renderer,_target, _offset);
+		}
+		break;
+	case TEXTURE:
+		{
+			//Assign render interface to the object based on the current state of the button
+			m_Object.m_RenderInterface = m_TextureNorm;
+			if (m_Hovered)
+			{
+				m_Object.m_RenderInterface = m_TexHovered;
+			}
+			if (m_Clicked)
+			{
+				m_Object.m_RenderInterface = m_TexClicked;
+			}
+			RenderInterface itf = m_Object.m_RenderInterface;
+			itf.destRect.x -= _offset.x;
+			itf.destRect.y -= _offset.y;
+			_target->AddInterface(itf);
+		}
 		break;
 	default:
 		printf("Unspecified button draw mode in button.cpp \n");
@@ -196,6 +266,12 @@ void Button::SetCallbackFunction(std::function<void()> fnc)
 	m_Callback = fnc;
 }
 
+void Button::SetCallbackFunction(std::function<void(int)> fnc, int _int)
+{
+	m_IntCallback = fnc;
+	m_IntCallbackInput = _int;
+}
+
 void Button::SetFont(TTF_Font* _Font)
 {
 	m_Font = _Font;
@@ -221,6 +297,8 @@ void Button::Init()
 	m_Pos = Vector2{ 0,0 };
 	m_Collider = Box(0, 0, 100, 100);
 	m_Callback = NULL;
+	m_IntCallback = NULL;
+	m_IntCallbackInput = -1;
 	m_TextField = TextField{};
 	m_TextField.SetText("");//Set text to nothing so it won't render it 
 	SetFilledRectMode({ 125,125,125,255 }, { 255,255,255,255 }, { 0,0,0,255 });

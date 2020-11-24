@@ -1,20 +1,21 @@
 #include "MapEditorWindow.h"
 #include "..\Engine\Button.h"
 #include "..\Engine\InputTextField.h"
+#include "..\Game\Enemy.h"
+#include "..\Engine\RenderTarget.h"
 
-
-
-enum class MapColliderWindowMode
+enum class MapHierachyWindowMode
 {
-	ColliderDragging, ColiderSelecting,Default
+	WallSelect, ConnectedMapMode,Enemy,NPC
 };
 
-class AddMapColliderWindow : public virtual MapEditorWindow
+class MapHierachyWindow : public virtual MapEditorWindow
 {
+
 public :
-	AddMapColliderWindow(Vector2 _pos, std::string& _name, Texture* _IconsTexture);
-	AddMapColliderWindow();
-	virtual ~AddMapColliderWindow();
+	MapHierachyWindow(Vector2 _pos, std::string& _name, Texture* _IconsTexture);
+	MapHierachyWindow();
+	virtual ~MapHierachyWindow();
 	virtual void Update(float _dt);
 	virtual void MouseDown(unsigned int _key);
 	virtual void MouseUp(unsigned int _key);
@@ -23,35 +24,38 @@ public :
 	virtual void KeyUp(unsigned int _key);
 	virtual void SetFont(TTF_Font* _font);
 	virtual void SetMap(Hielke::Map* _map);
-
+	void MouseWheel(int _x, int _y);
 	virtual void Render(SDLRenderer* _renderer);
 
 
+
+	void SelectWall(int _index);
 protected:
 
 	virtual void Init(Texture* _IconsTexture);
 	virtual void ReScaleContent();
 	virtual void Reposition();
-	void CreateBox();
-	void SetDragMode();
-	void SetSelectMode();
 
-	void UpdateInputTextFields();//Will change the text of the input textfields according to current stats
-								 // of the selected box, OR change the box if input happened.
+	void ScrollButton(int _direction);
 	void RepositionButtons();
 	void RepositionInputTexts();
+	void GenerateHierachyWalls();
 
-	bool m_ColliderDragging,m_ColliderSelecting;
-	Vector2 m_ColliderStart;
-	Vector2 m_ColliderEnd;
-	Vector2 m_SelectOffset;
+	Vector2 m_TestOffset;
+	std::vector<Button*> m_WallButtons;
 
-	Button m_AddButton,m_SelectButton,m_DragButton;
-	InputTextField* m_XText,* m_YText,* m_WText,* m_HText;
+	Button m_ScrollUp, m_ScrollDown;
 
 	std::vector<Button*> m_Buttons;
 	std::vector<InputTextField*> m_InputTexts;
 
-	MapColliderWindowMode m_Mode;
+	Enemy* m_CurrentSelectedEnemy;
+	Box* m_CurrentSelectedWall;
+	MapHierachyWindowMode m_Mode;
 	Box m_CurrentSelectedBox;
+	Box m_PrevContentBox;
+	RenderTarget* m_Target;
+
+	TTF_Font* m_Font;
+
 };

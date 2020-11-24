@@ -1,5 +1,5 @@
 #include "TextField.h"
-
+#include "RenderTarget.h"
 TextField::TextField()
 {
 	m_Texture = NULL;
@@ -39,6 +39,29 @@ void TextField::Render(SDLRenderer* _renderer, Vector2 _worldpos,int _layer)
 		throw std::exception("No font assigned to text can't reasonably do shit now :( \n");
 	}
 }
+
+void TextField::RenderToTarget(SDLRenderer* _renderer,RenderTarget* _target, Vector2 _worldpos)
+{
+	//If we're dealing with text that has nothing in it  just return
+	if (m_Text.length() == 0)
+	{
+		return;
+	}
+
+	if (m_FontPointer != NULL)
+	{
+		UpdateInterface(_renderer);
+		m_Interface.destRect.x -= (int)_worldpos.x;
+		m_Interface.destRect.y -= (int)_worldpos.y;
+		_target->AddText(m_Interface);
+	}
+	else
+	{
+		throw std::exception("No font assigned to text can't reasonably do shit now :( \n");
+	}
+}
+
+
 
 void TextField::SetText(const std::string& _string)
 {

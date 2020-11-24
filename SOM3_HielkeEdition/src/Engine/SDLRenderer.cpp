@@ -1,6 +1,7 @@
 #include "SDLRenderer.h"
 
 #include "ResourceManager.h"
+#include "RenderTarget.h"
 #include "Layer.h"
 #include <iostream>
 
@@ -25,6 +26,11 @@ SDLRenderer::SDLRenderer(std::string _name, unsigned int _width, unsigned int _h
 SDLRenderer::~SDLRenderer()
 {
 	CleanUp();
+}
+
+void SDLRenderer::AddToRenderTarget(RenderInterface _interface, unsigned int _layer, unsigned int _target)
+{
+
 }
 
 void SDLRenderer::AddToRenderqueue(RenderInterface _interface, unsigned int _layer )
@@ -106,6 +112,7 @@ void SDLRenderer::Render()
 			for (int i = 0; i < renderInterfaces.size(); ++i)
 			{
 				RenderInterface inter = renderInterfaces[i];
+				//TODO replace string identief with the actual texture instead.
 				//Get texture based on string identifier within the _interface
 				//Then copy it to the renderer
 				Texture* tex = m_ResMan->GetTexture(inter.textureName);
@@ -125,6 +132,19 @@ void SDLRenderer::Render()
 				SDL_SetRenderDrawColor(m_Renderer, l.colour.r, l.colour.g, l.colour.b, l.colour.a);
 				SDL_RenderDrawLine(m_Renderer, (int)l.start.x, (int)l.start.y, (int)l.end.x, (int)l.end.y);
 			}
+			std::vector<WireFrameBox> wfBoxes = m_Layers[l].GetWireFrameBoxes();
+
+			for (int i = 0; i < wfBoxes.size(); ++i)
+			{
+				SDL_SetRenderDrawColor(m_Renderer, wfBoxes[i].col.r, wfBoxes[i].col.g, wfBoxes[i].col.b, wfBoxes[i].col.a);
+				SDL_Rect rect;
+				rect.x = wfBoxes[i].box.pos.x;
+				rect.y = wfBoxes[i].box.pos.y;
+				rect.w = wfBoxes[i].box.w;
+				rect.h = wfBoxes[i].box.h;
+				SDL_RenderDrawRect(m_Renderer, &rect);
+			}
+
 			std::vector<FilledBox> boxes = m_Layers[l].GetFilledBoxQueue();
 
 			for (int i = 0; i < boxes.size(); ++i)
@@ -146,6 +166,27 @@ void SDLRenderer::Render()
 					SDL_RenderCopyEx(m_Renderer, inter.texture, &inter.srcRect, &inter.destRect, 0, 0, flip);
 				}
 			}
+			std::vector<RenderTarget*> renderTargets = m_Layers[l].GetRenderTargets();
+			for (unsigned int i = 0; i < renderTargets.size(); ++i)
+			{
+				SDL_Texture* tex =  renderTargets[i]->GetTexture();
+				if (tex != nullptr)
+				{
+					//Change render target to be the texture of this class
+					SDL_SetRenderTarget(m_Renderer, renderTargets[i]->GetTexture());
+					renderTargets[i]->Render(m_ResMan);
+					SDL_SetRenderTarget(m_Renderer, NULL);
+					//The src rectangle is the dest rect without the position
+					SDL_Rect srcreect = renderTargets[i]->GetDestRect();
+					srcreect.x = 0;
+					srcreect.y = 0;
+					SDL_Rect destrect = renderTargets[i]->GetDestRect();
+					SDL_RenderCopyEx(m_Renderer, renderTargets[i]->GetTexture(), &srcreect, &destrect,0,nullptr,SDL_RendererFlip::SDL_FLIP_NONE);
+				}
+			}
+			//Put target back to default render target
+			SDL_SetRenderTarget(m_Renderer, NULL);
+
 
 			m_Layers[l].ClearQueues();
 
@@ -187,53 +228,23 @@ void SDLRenderer::SetResourceManager(ResourceManager* _resman)
 
 void SDLRenderer::DrawBox(Box _box, SDL_Color _color, Vector2 _worldPos, unsigned int _layer )
 {
-	//Draw pos x to x+w
-	Vector2 screenPos = _box.pos  ;
-	Vector2 endPoint= screenPos;
-	Vector2 startPoint = screenPos;
-	endPoint.x += _box.w;
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
-
-	//Draw x+w to y+h
-	startPoint = endPoint;
-	endPoint.y += _box.h;
-
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
-	
-	//Draw xy+wh to y+h
-	startPoint = endPoint;
-	endPoint.x = screenPos.x;
-	AddLine(startPoint, endPoint, _worldPos, _color,_layer);
-	//finally draw y+h to start point
-	startPoint = endPoint;
-	endPoint = screenPos;
-	AddLine(startPoint, endPoint, _worldPos,_color, _layer);
+	WireFrameBox b;
+	b.box = _box;
+	b.col = _color;
+	b.thickness = 1;
+	b.box.pos  -= _worldPos;
+	m_Layers[_layer].AddBox(b);
 
 }
 
 void SDLRenderer::DrawBox(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos, unsigned int _layer)
 {
-	//Draw pos x to x+w
-	Vector2 screenPos = Vector2((float)_x, (float)_y);
-	Vector2 endPoint = screenPos;
-	Vector2 startPoint = screenPos;
-	endPoint.x += _h;
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
-
-	//Draw x+w to y+h
-	startPoint = endPoint;
-	endPoint.y += _h;
-
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
-
-	//Draw xy+wh to y+h
-	startPoint = endPoint;
-	endPoint.x = screenPos.x;
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
-	//finally draw y+h to start point
-	startPoint = endPoint;
-	endPoint = screenPos;
-	AddLine(startPoint, endPoint, _worldPos, _color, _layer);
+	WireFrameBox b;
+	b.box = Box{(float)_x,(float)_y,(float)_w,(float)_h};
+	b.col = _color;
+	b.thickness = 1;
+	b.box.pos -= _worldPos;
+	m_Layers[_layer].AddBox(b);
 }
 
 void SDLRenderer::DrawFilledBox(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos, unsigned int _layer )
@@ -254,54 +265,28 @@ void SDLRenderer::DrawFilledBox(Box _box, SDL_Color _color, Vector2 _worldPos, u
 
 void SDLRenderer::DrawBoxZoomed(Box _box, SDL_Color _color, Vector2 _worldPos, float _zoom, unsigned int _layer)
 {
-	//Draw pos x to x+w
-	Vector2 screenPos = _box.pos*_zoom;
-	Vector2 endPoint = screenPos;
-	Vector2 startPoint = screenPos;
-	_box.w *= _zoom;
-	_box.h *= _zoom;
-	endPoint.x += _box.w;
-	AddLine(startPoint, endPoint, _worldPos*_zoom, _color, _layer);
-
-	//Draw x+w to y+h
-	startPoint = endPoint;
-	endPoint.y += _box.h;
-
-	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
-
-	//Draw xy+wh to y+h
-	startPoint = endPoint;
-	endPoint.x = screenPos.x;
-	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
-	//finally draw y+h to start point
-	startPoint = endPoint;
-	endPoint = screenPos;
-	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
+	WireFrameBox b;
+	b.box = _box;
+	b.col = _color;
+	b.thickness = 1;
+	b.box.pos *= _zoom;
+	b.box.pos -= _worldPos* _zoom;
+	b.box.w *= _zoom;
+	b.box.h *= _zoom;
+	m_Layers[_layer].AddBox(b);
 }
 
 void SDLRenderer::DrawBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos, float _zoom, unsigned int _layer)
 {
-	//Draw pos x to x+w
-	Vector2 screenPos = Vector2(_x, (float)_y)*_zoom;
-	Vector2 endPoint = screenPos;
-	Vector2 startPoint = screenPos;
-	endPoint.x += _h*_zoom;
-	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
-
-	//Draw x+w to y+h
-	startPoint = endPoint;
-	endPoint.y += _h * _zoom;
-
-	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
-
-	//Draw xy+wh to y+h
-	startPoint = endPoint;
-	endPoint.x = screenPos.x;
-	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
-	//finally draw y+h to start point
-	startPoint = endPoint;
-	endPoint = screenPos;
-	AddLine(startPoint, endPoint, _worldPos * _zoom, _color, _layer);
+	WireFrameBox b;
+	b.box = Box{ (float)_x,(float)_y,(float)_w,(float)_h };
+	b.col = _color;
+	b.thickness = 1;
+	b.box.pos *= _zoom;
+	b.box.pos -= _worldPos * _zoom;
+	b.box.w *= _zoom;
+	b.box.h *= _zoom;
+	m_Layers[_layer].AddBox(b);
 }
 
 void SDLRenderer::DrawFilledBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color _color, Vector2 _worldPos, float _zoom, unsigned int _layer)
@@ -323,6 +308,15 @@ void SDLRenderer::DrawFilledBoxZoomed(Box _box, SDL_Color _color, Vector2 _world
 	b.box.y = (int)(_zoom * b.box.y);
 	b.col = _color;
 	m_Layers[_layer].AddFilledBox(b);
+}
+
+RenderTarget* SDLRenderer::CreateRenderTarget(Box _box,unsigned int _layer)
+{
+	RenderTarget* t = new RenderTarget(m_Renderer);
+	t->CreateTexture(_box);
+
+	m_Layers[_layer].GetRenderTargets().push_back(t);
+	return t;
 }
 
 bool SDLRenderer::Init(std::string _name, unsigned int _width, unsigned int _height)

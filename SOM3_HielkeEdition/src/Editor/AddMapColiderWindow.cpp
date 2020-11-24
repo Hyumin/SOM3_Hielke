@@ -266,8 +266,10 @@ void AddMapColliderWindow::CreateBox()
 			b.pos.y += b.h;
 			b.h *= -1;
 		}
-
+		b.pos /= m_Zoom;
 		b.pos += m_WorldPos;
+		b.w /= m_Zoom;
+		b.h /= m_Zoom;
 		m_Map->AddWall(b);
 	}
 }

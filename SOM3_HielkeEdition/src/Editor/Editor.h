@@ -29,6 +29,7 @@ public:
 	void MouseDown(unsigned int _key);
 	void MouseUp(unsigned int _key);
 	void MouseMove( int _x,  int _y);
+	void MouseWheel(int _x, int _y);
 
 	void Update(float _dt);
 	void Render(SDLRenderer* _renderer);

@@ -1,4 +1,5 @@
 #include "FloatingText.h"
+#include "RenderTarget.h"
 
 FloatingText::FloatingText()
 {
@@ -59,6 +60,20 @@ void FloatingText::Render(SDLRenderer* _renderer, Vector2 _worldpos,int _layer)
 	m_Interface.destRect.x = (int)(m_pos.x - _worldpos.x);
 	m_Interface.destRect.y = (int)(m_pos.y - _worldpos.y);
 	_renderer->AddToRenderqueue(m_Interface,_layer);
+}
+
+void FloatingText::RenderToTarget(SDLRenderer* _renderer, RenderTarget* _target, Vector2 _worldpos)
+{
+	//If we're dealing with text that has nothing in it  just return
+	if (m_Text.length() == 0)
+	{
+		return;
+	}
+
+	UpdateInterface(_renderer);
+	m_Interface.destRect.x = (int)(m_pos.x - _worldpos.x);
+	m_Interface.destRect.y = (int)(m_pos.y - _worldpos.y);
+	_target->AddText(m_Interface);
 }
 
 void FloatingText::SetText(const std::string& _string)

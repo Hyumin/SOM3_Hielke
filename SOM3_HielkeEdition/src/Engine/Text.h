@@ -10,6 +10,7 @@ public:
 	~Text();
 	virtual void Update(float _dt) =0;
 	virtual void Render(SDLRenderer* _renderer,Vector2 _worldpos,int _layer) = 0;
+	virtual void RenderToTarget(SDLRenderer* _renderer,RenderTarget* _target,Vector2 _worldpos) = 0;
 	virtual void SetText(const std::string& _string) = 0;
 	virtual void SetText(const char* _text) = 0;
 	virtual std::string& GetText()=0;

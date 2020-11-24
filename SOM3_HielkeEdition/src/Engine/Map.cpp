@@ -99,7 +99,7 @@ void Hielke::Map::Render(SDLRenderer* _renderer,Vector2 _worldPos)
 void Hielke::Map::RenderZoomed(SDLRenderer* _renderer, Vector2 _worldPos, float _zoom)
 {
 	Vector2 zoomVec = { _zoom,_zoom };
-	m_BackGround->Render(_renderer, _worldPos,zoomVec);
+	m_BackGround->Render(_renderer, _worldPos,zoomVec,0);
 	SDL_Color col = { 0xff,0x00,0x00,0xff };
 	if (m_DebugMode)
 	{
@@ -134,11 +134,11 @@ void Hielke::Map::SaveMap(const std::string& _filepath)
 	file << "MapObject" << "\n {  \n";
 	file << "DestinationRect" << "\n";
 	//Using background's position instead of the dest rect since, world position
-	// changes dest rect position 
+	// changes dest rect position , ass wel as the scale 
 	file << "x " << m_BackGround->m_Pos.x << "\n";
 	file << "y " << m_BackGround->m_Pos.y<< "\n";
-	file << "w " << m_BackGround->m_RenderInterface.destRect.w << "\n";
-	file << "h " << m_BackGround->m_RenderInterface.destRect.h << "\n";
+	file << "w " << m_BackGround->m_Size.x << "\n";
+	file << "h " << m_BackGround->m_Size.y << "\n";
 
 	file << "SourceRect" << "\n";
 	file << "x " << m_BackGround->m_RenderInterface.srcRect.x << "\n";

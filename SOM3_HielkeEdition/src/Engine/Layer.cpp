@@ -21,6 +21,8 @@ void Layer::ClearQueues()
 	m_TextRenderQueue.clear();
 	m_LineQueue.clear();
 	m_FilledBoxes.clear();
+	m_WireFrameBoxes.clear();
+	//m_RenderTargets.clear();
 }
 
 void Layer::AddInterface(RenderInterface& _interface)
@@ -43,26 +45,38 @@ void Layer::AddFilledBox(FilledBox& _filledBox)
 	m_FilledBoxes.push_back(_filledBox);
 }
 
+void Layer::AddBox(WireFrameBox& _box)
+{
+	m_WireFrameBoxes.push_back(_box);
+}
+
 std::vector<RenderInterface>& Layer::GetRenderQueue()
 {
-	// TODO: insert return statement here
 	return m_RenderQueue;
 }
 
 std::vector<TextRenderInterface>& Layer::GetTextRenderQueue()
 {
-	// TODO: insert return statement here
 	return m_TextRenderQueue;
 }
 
 std::vector<Line>& Layer::GetLineQueue()
 {
-	// TODO: insert return statement here
 	return m_LineQueue;
 }
 
 std::vector<FilledBox>& Layer::GetFilledBoxQueue()
 {
-	// TODO: insert return statement here
 	return m_FilledBoxes;
+}
+
+std::vector<WireFrameBox>& Layer::GetWireFrameBoxes()
+{
+	// TODO: insert return statement here
+	return m_WireFrameBoxes;
+}
+
+std::vector<RenderTarget*>& Layer::GetRenderTargets()
+{
+	return m_RenderTargets;
 }

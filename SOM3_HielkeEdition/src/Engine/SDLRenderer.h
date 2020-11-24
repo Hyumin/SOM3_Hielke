@@ -35,9 +35,16 @@ struct FilledBox
 	SDL_Rect box;
 	SDL_Color col;
 };
+struct WireFrameBox
+{
+	Box box;
+	SDL_Color col;
+	int thickness;//want to add in future to define how wide the lines are
+};
 
 class Layer;
 class ResourceManager;
+class RenderTarget;
 class SDLRenderer
 {
 public:
@@ -45,6 +52,7 @@ public:
 	SDLRenderer(std::string _name, unsigned int _width, unsigned int _height);
 	~SDLRenderer();
 
+	void AddToRenderTarget(RenderInterface _interface, unsigned int _layer = 0,unsigned int _target =0);
 	void AddToRenderqueue(RenderInterface _interface, unsigned int _layer =0);
 	void AddToRenderqueue(TextRenderInterface _interface, unsigned int _layer = 0);
 	void AddLine(const Vector2& _a, const Vector2& _b,const Vector2& _worldPos, SDL_Color _color = {0xff,0xff,0xff,0xff}, unsigned int _layer = 0);
@@ -72,7 +80,7 @@ public:
 	void DrawBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, float _zoom = 1.0f, unsigned int _layer = 0);
 	void DrawFilledBoxZoomed(int _x, int _y, int _w, int _h, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f }, float _zoom = 1.0f, unsigned int _layer = 0);
 	void DrawFilledBoxZoomed(Box _box, SDL_Color _color = { 0xff,0xff,0xff,0xff }, Vector2 _worldPos = { 0.0f,0.0f },float _zoom = 1.0f, unsigned int _layer = 0);
-
+	RenderTarget* CreateRenderTarget(Box _box,unsigned int _layer);
 
 private:
 	bool Init(std::string _name, unsigned int _width, unsigned int _height);

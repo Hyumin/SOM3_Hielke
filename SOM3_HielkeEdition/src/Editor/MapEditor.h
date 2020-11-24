@@ -4,6 +4,7 @@
 #include "..\Engine\Button.h"
 #include "..\Engine\Map.h"
 #include "AddMapColiderWindow.h"
+#include "MapHierachyWindow.h"
 
 
 struct MapAndLine
@@ -26,6 +27,7 @@ public:
 	void MouseUp(unsigned int _key);
 	void MouseDown(unsigned int _key);
 	void MouseMove(int _x, int _y);
+	void MouseWheel(int _x, int _y);
 
 
 	void ZoomIn();
@@ -38,13 +40,17 @@ private:
 	MapEditor();
 	void Init();
 	void CollidorWindowCallback();
+	void HierachyWindowCallback();
 	void GetDefaultAssets();//This function will set the font and icons texture
+	void SearchAndActivateWindow(MapEditorWindow* _window);
+
 
 	Box m_TopBarBox;
-	Button m_AddColliderButton;
+	Button m_AddColliderButton,m_HierachyButton;
 
 	ResourceManager* m_ResourceManager;
 	AddMapColliderWindow* m_ColliderWindow;
+	MapHierachyWindow* m_HierachyWindow;
 	std::vector<MapEditorWindow*> m_EditorWindows;
 
 	Vector2 m_MousePos;

@@ -174,6 +174,10 @@ void AnimationClipEditor::MouseMove(int _x, int _y)
 
 }
 
+void AnimationClipEditor::MouseWheel(int _x, int _y)
+{
+}
+
 void AnimationClipEditor::GenerateNumberedBoxes()
 {
 	m_NumbrdBoxes.clear();

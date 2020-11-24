@@ -115,6 +115,14 @@ int main(int arg, char* args[])
 						g_Editor->MouseMove(x, y);
 					}
 				}
+				else if (e.type == SDL_MOUSEWHEEL)//https://wiki.libsdl.org/SDL_MouseWheelEvent
+				{
+					//pass on mousewheel events
+					if (g_Editor != nullptr)
+					{
+						g_Editor->MouseWheel(e.wheel.x, e.wheel.y);
+					}
+				}
 			}
 			// if sprite editor mode launch sprite editor
 			if (g_Editor!=nullptr)

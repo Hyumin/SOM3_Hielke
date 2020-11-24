@@ -28,6 +28,7 @@
     <ClCompile Include="src\Editor\EditorWindow.cpp" />
     <ClCompile Include="src\Editor\MapEditor.cpp" />
     <ClCompile Include="src\Editor\MapEditorWindow.cpp" />
+    <ClCompile Include="src\Editor\MapHierachyWindow.cpp" />
     <ClCompile Include="src\Engine\AnimationClip.cpp" />
     <ClCompile Include="src\Engine\Button.cpp" />
     <ClCompile Include="src\Engine\ButtonBuilder.cpp" />
@@ -37,6 +38,7 @@
     <ClCompile Include="src\Engine\Map.cpp" />
     <ClCompile Include="src\Engine\NumberedBox.cpp" />
     <ClCompile Include="src\Engine\Object.cpp" />
+    <ClCompile Include="src\Engine\RenderTarget.cpp" />
     <ClCompile Include="src\Engine\ResourceManager.cpp" />
     <ClCompile Include="src\Engine\SDLRenderer.cpp" />
     <ClCompile Include="src\Engine\Text.cpp" />
@@ -62,6 +64,7 @@
     <ClInclude Include="src\Editor\EditorWindow.h" />
     <ClInclude Include="src\Editor\MapEditor.h" />
     <ClInclude Include="src\Editor\MapEditorWindow.h" />
+    <ClInclude Include="src\Editor\MapHierachyWindow.h" />
     <ClInclude Include="src\Engine\AnimationClip.h" />
     <ClInclude Include="src\Engine\Button.h" />
     <ClInclude Include="src\Engine\ButtonBuilder.h" />
@@ -71,6 +74,7 @@
     <ClInclude Include="src\Engine\Map.h" />
     <ClInclude Include="src\Engine\NumberedBox.h" />
     <ClInclude Include="src\Engine\Object.h" />
+    <ClInclude Include="src\Engine\RenderTarget.h" />
     <ClInclude Include="src\Engine\ResourceManager.h" />
     <ClInclude Include="src\Engine\SDLRenderer.h" />
     <ClInclude Include="src\Engine\Text.h" />

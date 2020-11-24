@@ -1,3 +1,4 @@
+#pragma once
 #include "EditorWindow.h"
 #include "..\Engine\Map.h"
 
@@ -18,11 +19,15 @@ public:
 	virtual void SetMap(Hielke::Map* _map);
 
 	virtual void Render(SDLRenderer* _renderer);
+	void PassWorldPosAndZoom(Vector2 _pos, float _zoom);
+
 protected:
 
 	virtual void Init(Texture* _IconsTexture);
 	virtual void ReScaleContent();
 	virtual void Reposition();
 
+	Vector2 m_WorldPos;
+	float m_Zoom;
 	Hielke::Map* m_Map;
 };

@@ -53,6 +53,12 @@ void MapEditorWindow::Render(SDLRenderer* _renderer)
 	EditorWindow::Render(_renderer);
 }
 
+void MapEditorWindow::PassWorldPosAndZoom(Vector2 _pos, float _zoom)
+{
+	m_WorldPos = _pos;
+	m_Zoom = _zoom;
+}
+
 void MapEditorWindow::Init(Texture* _IconsTexture)
 {
 	EditorWindow::Init(_IconsTexture);

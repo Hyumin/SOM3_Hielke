@@ -48,12 +48,6 @@ void MapEditor::Update(float _dt)
 	vel *= m_MoveSpeed*m_Zoom;
 	m_WorldPos += vel * _dt;
 
-	//Update world pos in the editor window, if this re-occurs
-	//for all editor windows put it in the mapEditorwindow class
-	//and iterate it through
-	m_ColliderWindow->m_WorldPos = m_WorldPos;
-
-
 	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
 	{
 		m_Buttons[i]->Update(_dt);
@@ -72,14 +66,21 @@ void MapEditor::Update(float _dt)
 
 void MapEditor::Render(SDLRenderer* _renderer)
 {
+
 	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
 	{
 		m_Buttons[i]->Render(_renderer);
 	}
 	for (unsigned int i = 0; i < m_EditorWindows.size(); ++i)
 	{
+		//Since adding this to the render function would couse us to rewrite
+		// the super base class EditorWindow, I choose put it in the mapeditor window
+		//inside of a seperate function instead.
+		m_EditorWindows[i]->PassWorldPosAndZoom(m_WorldPos, m_Zoom);
 		m_EditorWindows[i]->Render(_renderer);
 	}
+
+
 	if (m_CurrentMap != nullptr)
 	{
 		m_CurrentMap->RenderZoomed(_renderer, m_WorldPos,m_Zoom);
@@ -187,6 +188,14 @@ void MapEditor::MouseMove(int _x, int _y)
 	m_MousePos.y = (float)_y;
 }
 
+void MapEditor::MouseWheel(int _x, int _y)
+{
+	if (m_HierachyWindow != nullptr)
+	{
+		m_HierachyWindow->MouseWheel(_x, _y);
+	}
+}
+
 void MapEditor::ZoomIn()
 {
 	m_Zoom += 0.1f;
@@ -226,7 +235,6 @@ void MapEditor::LoadMap()
 	{
 		//Reset world pos and zoom after loading 
 		m_WorldPos = Vector2{ 0,0 };
-		m_ColliderWindow->m_WorldPos = m_WorldPos;
 		m_Zoom = 1.0f;
 		m_CurrentMap->m_DebugMode = true;//Enable debug mode to see the colliders.
 		
@@ -341,26 +349,57 @@ void MapEditor::Init()
 	
 	std::string windowName = "Add Collider";
 	m_ColliderWindow = new AddMapColliderWindow(Vector2{ 600,300 }, windowName, m_IconsTexture);
+	windowName = "Hierachy";
+	m_HierachyWindow = new MapHierachyWindow(Vector2{800,200}, windowName, m_IconsTexture);
+
 
 	m_AddColliderButton = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 0,0 }, { 150,30 }, 1, std::bind(&MapEditor::CollidorWindowCallback, this),
 		"AddCollider", Button::DrawMode::FILLEDRECT, { 0,122,0,255 }, { 10,160,10,255 }, { 0,80,0,255 }, { 0,0,0,255 });
 
+	m_HierachyButton = ButtonBuilder::BuildButtonWireFrameOrFilledRect({ 0,0 }, { 150,30 }, 1, std::bind(&MapEditor::HierachyWindowCallback, this),
+		"Hierachy", Button::DrawMode::FILLEDRECT, { 0,122,0,255 }, { 10,160,10,255 }, { 0,80,0,255 }, { 0,0,0,255 });
+
 	if (m_Font != nullptr)
 	{
 		m_AddColliderButton.SetFont(m_Font);
+		m_HierachyButton.SetFont(m_Font);
 		m_ColliderWindow->SetFont(m_Font);
+		m_HierachyWindow->SetFont(m_Font);
 	}
 
 	m_Buttons.push_back(&m_AddColliderButton);
+	m_Buttons.push_back(&m_HierachyButton);
+	m_EditorWindows.push_back(m_HierachyWindow);//always start hierachy window open
 }
+
 void MapEditor::CollidorWindowCallback()
+{
+	SearchAndActivateWindow(static_cast<MapEditorWindow*>(m_ColliderWindow));
+}
+
+void MapEditor::HierachyWindowCallback()
+{
+	SearchAndActivateWindow(static_cast<MapEditorWindow*>(m_HierachyWindow));
+}
+
+void MapEditor::GetDefaultAssets()
+{
+	if (m_ResourceManager == nullptr)
+	{
+		throw std::exception("Can't get default assets if there is no resource manager defined \n");
+	}
+	m_IconsTexture = m_ResourceManager->LoadTexture("Assets//editor//sprite editor icons.png");
+	m_Font = m_ResourceManager->LoadFont("Assets//Fonts//LucidaBrightRegular.ttf", 16);
+}
+
+void MapEditor::SearchAndActivateWindow(MapEditorWindow* _window)
 {
 	bool found = false;
 
 	//If the add frame window is not within the 
 	for (unsigned int i = 0; i < m_EditorWindows.size(); ++i)
 	{
-		if (m_EditorWindows[i] == m_ColliderWindow)
+		if (m_EditorWindows[i] == _window)
 		{
 			found = true;
 			break;
@@ -370,19 +409,10 @@ void MapEditor::CollidorWindowCallback()
 	if (!found)
 	{
 		//set can delete to false;
-		m_ColliderWindow->m_ReadyForDelete = false;
-		m_ColliderWindow->MouseMove((unsigned int)m_MousePos.x, (unsigned int)m_MousePos.y);
+		_window->m_ReadyForDelete = false;
+		_window->MouseMove((unsigned int)m_MousePos.x, (unsigned int)m_MousePos.y);
 
-		m_ColliderWindow->SetMap(m_CurrentMap);//Don't forget to set the map after we toggle it on again
-		m_EditorWindows.push_back(m_ColliderWindow);
+		_window->SetMap(m_CurrentMap);//Don't forget to set the map after we toggle it on again
+		m_EditorWindows.push_back(_window);
 	}
-}
-void MapEditor::GetDefaultAssets()
-{
-	if (m_ResourceManager == nullptr)
-	{
-		throw std::exception("Can't get default assets if there is no resource manager defined \n");
-	}
-	m_IconsTexture = m_ResourceManager->LoadTexture("Assets//editor//sprite editor icons.png");
-	m_Font = m_ResourceManager->LoadFont("Assets//Fonts//LucidaBrightRegular.ttf", 16);
 }

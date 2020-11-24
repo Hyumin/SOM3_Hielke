@@ -73,6 +73,20 @@ public:
 		x -= rHand.x;
 		y -= rHand.y;
 	}
+	bool operator != (const Vector2& rHand)
+	{
+		if (rHand.x != x)
+		{
+			return false;
+		}
+		if (rHand.y != y)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
 	float Dot(Vector2& rHand)
 	{
 		return x * rHand.x + y * rHand.y;
@@ -106,7 +120,8 @@ private:
 
 };
 
-
+//Although rectangle is a much better way to describe it 
+//using box to differentiate from SDL_rect
 class Box
 {
 public:
@@ -130,6 +145,13 @@ public:
 		w = _w;
 		h = _h;
 	}
+	/*Box(int _x, int _y, int _w, int _h)
+	{
+		pos.x = (float)_x;
+		pos.y = (float)_y;
+		w = (float)_w;
+		h = (float)_h;
+	}*/
 	~Box(){}
 
 	static bool BoxCollision(const Box& _b1, const Box& _b2)

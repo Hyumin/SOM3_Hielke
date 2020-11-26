@@ -3,6 +3,7 @@
 #include "..\Engine\InputTextField.h"
 #include "..\Game\Enemy.h"
 #include "..\Engine\RenderTarget.h"
+#include "..\Engine\ScrollBar.h"
 
 enum class MapHierachyWindowMode
 {
@@ -36,12 +37,11 @@ protected:
 	virtual void ReScaleContent();
 	virtual void Reposition();
 
-	void ScrollButton(int _direction);
 	void RepositionButtons();
 	void RepositionInputTexts();
 	void GenerateHierachyWalls();
 
-	Vector2 m_TestOffset;
+	ScrollBar *m_ScrollBarObj;
 	std::vector<Button*> m_WallButtons;
 
 	Button m_ScrollUp, m_ScrollDown;

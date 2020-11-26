@@ -26,6 +26,7 @@ MapHierachyWindow::~MapHierachyWindow()
 	m_Map = nullptr;
 	m_InputTexts.clear();
 	m_Buttons.clear();
+	delete m_ScrollBarObj;
 	m_WallButtons.clear();
 }
 
@@ -43,6 +44,18 @@ void MapHierachyWindow::Update(float _dt)
 		for (unsigned int i = 0; i < m_WallButtons.size(); ++i)
 		{
 			m_WallButtons[i]->Update(_dt);
+
+			
+		}
+		if (m_ScrollBarObj->m_OffsetChanged)
+		{
+			for (unsigned int i = 0; i < m_WallButtons.size(); ++i)
+			{
+				Vector2 newPos = m_WallButtons[i]->GetPosition();
+				newPos.y = i * 35 - m_ScrollBarObj->GetOffset();
+				m_WallButtons[i]->SetPosition(newPos);
+			}
+			m_ScrollBarObj->m_OffsetChanged = false;
 		}
 	}
 	break;
@@ -59,6 +72,7 @@ void MapHierachyWindow::Update(float _dt)
 void MapHierachyWindow::MouseDown(unsigned int _key)
 {
 	MapEditorWindow::MouseDown(_key);
+	m_ScrollBarObj->MouseDown(_key);
 	for (unsigned int i = 0; i < m_InputTexts.size(); ++i)
 	{
 		m_InputTexts[i]->MouseDown(_key);
@@ -91,6 +105,7 @@ void MapHierachyWindow::MouseDown(unsigned int _key)
 void MapHierachyWindow::MouseUp(unsigned int _key)
 {
 	MapEditorWindow::MouseUp(_key);
+	m_ScrollBarObj->MouseUp(_key);
 	for (unsigned int i = 0; i < m_InputTexts.size(); ++i)
 	{
 		m_InputTexts[i]->MouseUp(_key);
@@ -138,7 +153,9 @@ void MapHierachyWindow::MouseUp(unsigned int _key)
 
 void MapHierachyWindow::MouseMove(unsigned int _x, unsigned int _y)
 {
+	Vector2 prev = m_MousePos;
 	MapEditorWindow::MouseMove(_x, _y);
+	m_ScrollBarObj->MouseMove(_x, _y);
 	for (unsigned int i = 0; i < m_InputTexts.size(); ++i)
 	{
 		m_InputTexts[i]->MouseMove(_x, _y);
@@ -207,14 +224,7 @@ void MapHierachyWindow::SetMap(Hielke::Map* _map)
 
 void MapHierachyWindow::MouseWheel(int _x, int _y)
 {
-	if (_y > 0)
-	{
-		ScrollButton(-1);
-	}
-	if (_y < 0)
-	{
-		ScrollButton(1);
-	}
+	m_ScrollBarObj->MouseScroll(_x, _y);
 }
 
 void MapHierachyWindow::Render(SDLRenderer* _renderer)
@@ -236,6 +246,8 @@ void MapHierachyWindow::Render(SDLRenderer* _renderer)
 		}
 		_renderer->DrawFilledBox(m_ContentBox, m_Color);
 
+
+		m_ScrollBarObj->Render(_renderer);
 		//Depending on the selection mode we want to visualize currently selected
 		// thing with a white box
 		SDL_Color selectedCol = { 0xff,0xff,0xff,0xff };
@@ -279,42 +291,20 @@ void MapHierachyWindow::Init(Texture* _IconsTexture)
 
 	m_Mode = MapHierachyWindowMode::WallSelect;
 
-	 m_CurrentSelectedEnemy = nullptr;
-	 m_CurrentSelectedWall= nullptr;
+	m_CurrentSelectedEnemy = nullptr;
+	m_CurrentSelectedWall = nullptr;
 
-
-	 std::function<void(int)> func = std::bind(&MapHierachyWindow::ScrollButton, this, std::placeholders::_1);
-
-	 m_ScrollUp = ButtonBuilder::BuildButton({ 0,0 }, { 16,16 }, 1, func, -1);
-	 m_ScrollDown = ButtonBuilder::BuildButton({ 0,0 }, { 16,16 }, 1, func, 1);
-
-
-	 if (m_IconTexture != nullptr)
-	 {
-		 SDL_Rect norm, clicked, hovered;
-		 norm = { 0,64,16,16 };
-		 clicked = { 32,64,16,16 };
-		 hovered = { 16,64,16,16 };
-
-
-		 m_ScrollUp.SetTextureDrawModeWithSheet(m_IconTexture->GetName(),norm,clicked,hovered);
-	
-		 norm = { 48,64,16,16 };
-		 clicked = { 80,64,16,16 };
-		 hovered = { 64,64,16,16 };
-		 m_ScrollDown.SetTextureDrawModeWithSheet(m_IconTexture->GetName(),norm,clicked,hovered);
-	 
-	 }
-
-	 m_Buttons.push_back(&m_ScrollUp);
-	 m_Buttons.push_back(&m_ScrollDown);
 	//Define the window's limits in terms of size
 	m_MaxWidth = 500;
 	m_MaxHeight = 800;
 	m_MinWidth = 260;
 
-	m_ContentBox.h = (float)m_MaxHeight/2;
+	m_ContentBox.h = (float)m_MaxHeight / 2;
 	m_PrevContentBox = m_ContentBox;
+
+	m_ScrollBarObj = new ScrollBar{ m_IconTexture };
+	m_ScrollBarObj->SetPosition(m_ContentBox.pos);
+	m_ScrollBarObj->SetSize({m_ContentBox.w, m_ContentBox.h});
 
 	m_Target = nullptr;
 	//Reserve a flipping thingy
@@ -336,31 +326,20 @@ void MapHierachyWindow::Reposition()
 	MapEditorWindow::Reposition();
 	RepositionInputTexts();
 	RepositionButtons();//Reposition buttons depnd on input texts therefor has to go second
-	if (m_PrevContentBox.pos != m_ContentBox.pos)
+	if (m_Target != nullptr)
 	{
 		m_Target->m_TargetBox.pos = m_ContentBox.pos;
 	}
+	float scrollBarWidth = m_ContentBox.w / 10;
+	m_ScrollBarObj->SetPosition(m_ContentBox.pos + Vector2{ m_ContentBox.w- scrollBarWidth,0 });
+	m_ScrollBarObj->SetSize(Vector2{ scrollBarWidth, m_ContentBox.h -m_ContentScaleObject.m_Size.y});
 }
 
-void MapHierachyWindow::ScrollButton(int _direction)
-{
-	m_TestOffset.y += _direction * 10;
-	Vector2 off = m_TestOffset;
-	off.y = _direction * 10;
-	for (unsigned int i = 0; i < m_WallButtons.size(); ++i)
-	{
-		m_WallButtons[i]->SetPosition(m_WallButtons[i]->GetPosition() - off);
-	}
-}
 
 void MapHierachyWindow::RepositionButtons()
 {
-	Vector2 newPos = m_ContentBox.pos;
-	newPos.x += m_ContentBox.w - m_ScrollUp.GetSize().x;
-	m_ScrollUp.SetPosition(newPos);
 	
-	newPos.y += m_ContentBox.h - (m_ScrollDown.GetSize().y+m_ContentScaleObject.m_Size.y);
-	m_ScrollDown.SetPosition(newPos);
+
 }
 
 
@@ -389,13 +368,12 @@ void MapHierachyWindow::GenerateHierachyWalls()
 	if (m_Map != nullptr)
 	{
 		std::vector<Box> walls = m_Map->GetColliders();
-		
 		Vector2 pos = {0,0};
 		Vector2 size = { 100,30 };
 		std::function<void(int)> func= std::bind(&MapHierachyWindow::SelectWall, this, std::placeholders::_1);
 		for (unsigned int i = 0; i < walls.size(); ++i)
 		{
-			pos.y = i * 35;
+			pos.y = i * 35;//hardcoded for now
 			std::string name = "Wall" + std::to_string(i);
 			
 			Button* b =new Button(ButtonBuilder::BuildButtonWireFrameOrFilledRect(pos, size, 1, std::bind(&MapHierachyWindow::SelectWall, this, std::placeholders::_1), (int)i,name, Button::DrawMode::FILLEDRECT,
@@ -405,5 +383,8 @@ void MapHierachyWindow::GenerateHierachyWalls()
 
 			m_WallButtons.push_back(b);
 		}
+		float m_MaxOffset = (walls.size() * 35)-m_ContentBox.h;
+		m_ScrollBarObj->SetMinimumAndMaximum(0, m_MaxOffset);
+		
 	}
 }

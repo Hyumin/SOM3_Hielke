@@ -5,6 +5,8 @@ MapEditorWindow::MapEditorWindow(Vector2 _pos, std::string& _name, Texture* _Ico
 	m_Pos = _pos;
 	m_Name = _name;
 	m_Map = nullptr;
+	m_MouseInGUI = false;
+	m_MouseInWindow = false;
 	Init(_IconsTexture);
 }
 
@@ -12,6 +14,8 @@ MapEditorWindow::MapEditorWindow()
 {
 	m_Zoom = 0.0f;
 	m_Map = nullptr;
+	m_MouseInGUI = false;
+	m_MouseInWindow = false;
 }
 
 MapEditorWindow::~MapEditorWindow()
@@ -37,7 +41,14 @@ void MapEditorWindow::MouseUp(unsigned int _key)
 
 void MapEditorWindow::MouseMove(unsigned int _x, unsigned int _y)
 {
+	Vector2 m_MouseOld = m_MousePos;
 	EditorWindow::MouseMove(_x, _y);
+	//If anything changed in mouse position we can do the check again whether we're inside the window
+	//we can then use this mouseinwindow variable to tell the editor mouse is in window
+	if (m_MousePos != m_MouseOld)
+	{
+		m_MouseInWindow = Box::BoxCollision(m_ContentBox, m_MousePos) || Box::BoxCollision(m_Bar, m_MousePos);
+	}
 }
 
 void MapEditorWindow::SetFont(TTF_Font* _font)

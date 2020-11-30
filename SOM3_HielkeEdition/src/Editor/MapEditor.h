@@ -43,7 +43,8 @@ private:
 	void HierachyWindowCallback();
 	void GetDefaultAssets();//This function will set the font and icons texture
 	void SearchAndActivateWindow(MapEditorWindow* _window);
-
+	void UpdateEditorWindowInGUI();
+	void CheckIfMouseInAnyWindow();
 
 	Box m_TopBarBox;
 	Button m_AddColliderButton,m_HierachyButton;
@@ -62,6 +63,7 @@ private:
 
 	std::vector<Button*> m_Buttons;
 	float m_Zoom;
+	bool m_InGUI;
 
 	//Variables to help navigate through the map
 	bool m_Kup, m_Kleft, m_Kright, m_Kdown, m_Kshift;//bools to control keys

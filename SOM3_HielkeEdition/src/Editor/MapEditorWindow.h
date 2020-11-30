@@ -21,6 +21,8 @@ public:
 	virtual void Render(SDLRenderer* _renderer);
 	void PassWorldPosAndZoom(Vector2 _pos, float _zoom);
 
+	bool m_MouseInGUI;//
+	bool m_MouseInWindow;
 protected:
 
 	virtual void Init(Texture* _IconsTexture);

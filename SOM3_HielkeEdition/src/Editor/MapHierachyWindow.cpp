@@ -91,10 +91,11 @@ void MapHierachyWindow::MouseDown(unsigned int _key)
 		for (unsigned int i = 0; i < m_WallButtons.size(); ++i)
 		{
 			m_WallButtons[i]->MouseDown(_key);
-			if (Box::BoxCollision(m_Map->GetColliders()[i], m_MousePos+m_WorldPos))
+			if (_key == 1 && !m_MouseInGUI)
 			{
-				if (_key == 1&&!m_MouseOverWindow)
+				if (Box::BoxCollision(m_Map->GetColliders()[i], m_MousePos + m_WorldPos) )
 				{
+
 					m_CurrentSelectedWall = &m_Map->GetColliders()[i];
 					m_SelectedIndex = i;
 				}
@@ -126,8 +127,6 @@ void MapHierachyWindow::MouseUp(unsigned int _key)
 {
 	MapEditorWindow::MouseUp(_key);
 	m_ScrollBarObj->MouseUp(_key);
-
-	m_MouseOverWindow = Box::BoxCollision(m_ContentBox, m_MousePos) || Box::BoxCollision(m_Bar, m_MousePos);
 
 	for (unsigned int i = 0; i < m_InputTexts.size(); ++i)
 	{
@@ -184,6 +183,8 @@ void MapHierachyWindow::MouseMove(unsigned int _x, unsigned int _y)
 	Vector2 prev = m_MousePos;
 	MapEditorWindow::MouseMove(_x, _y);
 	m_ScrollBarObj->MouseMove(_x, _y);
+
+
 	for (unsigned int i = 0; i < m_InputTexts.size(); ++i)
 	{
 		m_InputTexts[i]->MouseMove(_x, _y);
@@ -417,7 +418,7 @@ void MapHierachyWindow::Init(Texture* _IconsTexture)
 	m_SelectedIndex = -1;
 	Reposition();
 
-	SetConnectedMapMode();
+	SetWallMode();
 }
 
 void MapHierachyWindow::ReScaleContent()
@@ -540,8 +541,7 @@ void MapHierachyWindow::GenerateHierachyWalls()
 	{
 		std::vector<Box> walls = m_Map->GetColliders();
 		std::function<void(int)> func= std::bind(&MapHierachyWindow::SelectWall, this, std::placeholders::_1);
-		GenerateButtons((unsigned int)walls.size(), 35, "Wall", func, &m_WallButtons);
-		
+		GenerateButtons((unsigned int)walls.size(), 35, "Wall", func, &m_WallButtons);	
 	}
 }
 

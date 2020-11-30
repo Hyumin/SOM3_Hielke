@@ -176,16 +176,22 @@ void MapEditor::MouseDown(unsigned int _key)
 
 void MapEditor::MouseMove(int _x, int _y)
 {
+
+	m_MousePos.x = (float)_x;
+	m_MousePos.y = (float)_y;
 	for (unsigned int i = 0; i < m_Buttons.size(); ++i)
 	{
 		m_Buttons[i]->MouseMove(_x,_y);
+		
 	}
 	for (unsigned int i = 0; i < m_EditorWindows.size(); ++i)
 	{
 		m_EditorWindows[i]->MouseMove(_x, _y);
 	}
-	m_MousePos.x = (float)_x;
-	m_MousePos.y = (float)_y;
+	CheckIfMouseInAnyWindow();
+
+	UpdateEditorWindowInGUI();
+
 }
 
 void MapEditor::MouseWheel(int _x, int _y)
@@ -322,6 +328,7 @@ void MapEditor::GiveTopBarBox(Box _topBarBox)
 		m_Buttons[i]->SetSize({ m_Buttons[i]->GetSize().x, _topBarBox.h });
 		currentPos.x += m_Buttons[i]->GetSize().x;
 	}
+	m_TopBarBox = _topBarBox;
 }
 
 void MapEditor::Init()
@@ -414,5 +421,34 @@ void MapEditor::SearchAndActivateWindow(MapEditorWindow* _window)
 
 		_window->SetMap(m_CurrentMap);//Don't forget to set the map after we toggle it on again
 		m_EditorWindows.push_back(_window);
+		UpdateEditorWindowInGUI();
+	}
+}
+
+void MapEditor::UpdateEditorWindowInGUI()
+{
+	for (unsigned int i = 0; i < m_EditorWindows.size(); ++i)
+	{
+		m_EditorWindows[i]->m_MouseInGUI = m_InGUI;
+	}
+}
+
+void MapEditor::CheckIfMouseInAnyWindow()
+{
+	for (unsigned int i = 0; i < m_EditorWindows.size(); ++i)
+	{
+		if (m_EditorWindows[i]->m_MouseInWindow)
+		{
+			m_InGUI = true;
+			return;
+		}
+	}
+	if (Box::BoxCollision(m_TopBarBox, m_MousePos))
+	{
+		m_InGUI = true;
+	}
+	else
+	{
+		m_InGUI = false;
 	}
 }

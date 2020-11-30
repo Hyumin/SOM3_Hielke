@@ -23,6 +23,7 @@ void RenderTarget::ClearQueues()
 	m_TextRenderQueue.clear();
 	m_LineQueue.clear();
 	m_FilledBoxes.clear();
+	m_WireFrameBoxes.clear();
 }
 
 void RenderTarget::AddInterface(RenderInterface& _interface)
@@ -45,6 +46,11 @@ void RenderTarget::AddFilledBox(FilledBox& _filledBox)
 	m_FilledBoxes.push_back(_filledBox);
 }
 
+void RenderTarget::AddBox(WireFrameBox& _filledBox)
+{
+	m_WireFrameBoxes.push_back(_filledBox);
+}
+
 void RenderTarget::Render(ResourceManager* _resman)
 {
 	if (m_Tex != nullptr)
@@ -53,7 +59,7 @@ void RenderTarget::Render(ResourceManager* _resman)
 		SDL_SetRenderDrawColor(m_RendererRef, 0x00, 0xAB, 0xAB, 0x00);
 		SDL_RenderClear(m_RendererRef);
 		//Iterate through the render queue
-		for (int i = 0; i < m_RenderQueue.size(); ++i)
+		for (unsigned int i = 0; i < m_RenderQueue.size(); ++i)
 		{
 			RenderInterface inter = m_RenderQueue[i];
 			//Get texture based on string identifier within the _interface
@@ -67,7 +73,7 @@ void RenderTarget::Render(ResourceManager* _resman)
 		}
 
 
-		for (int i = 0; i < m_LineQueue.size(); ++i)
+		for (unsigned int i = 0; i < m_LineQueue.size(); ++i)
 		{
 			Line l = m_LineQueue[i];
 
@@ -76,13 +82,20 @@ void RenderTarget::Render(ResourceManager* _resman)
 		}
 		for (unsigned int i = 0; i < m_FilledBoxes.size(); ++i)
 		{
-			for (int i = 0; i < m_FilledBoxes.size(); ++i)
-			{
-				SDL_SetRenderDrawColor(m_RendererRef, m_FilledBoxes[i].col.r, m_FilledBoxes[i].col.g, m_FilledBoxes[i].col.b, m_FilledBoxes[i].col.a);
-				SDL_RenderFillRect(m_RendererRef, &m_FilledBoxes[i].box);
-			}
+			SDL_SetRenderDrawColor(m_RendererRef, m_FilledBoxes[i].col.r, m_FilledBoxes[i].col.g, m_FilledBoxes[i].col.b, m_FilledBoxes[i].col.a);
+			SDL_RenderFillRect(m_RendererRef, &m_FilledBoxes[i].box);
 		}
-		for (int i = 0; i < m_TextRenderQueue.size(); ++i)
+		for (unsigned int i = 0; i < m_WireFrameBoxes.size(); ++i)
+		{
+			SDL_SetRenderDrawColor(m_RendererRef, m_WireFrameBoxes[i].col.r, m_WireFrameBoxes[i].col.g, m_WireFrameBoxes[i].col.b, m_WireFrameBoxes[i].col.a);
+			SDL_Rect rect;
+			rect.x = m_WireFrameBoxes[i].box.pos.x;
+			rect.y = m_WireFrameBoxes[i].box.pos.y;
+			rect.w = m_WireFrameBoxes[i].box.w;
+			rect.h = m_WireFrameBoxes[i].box.h;
+			SDL_RenderDrawRect(m_RendererRef, &rect);
+		}
+		for (unsigned int i = 0; i < m_TextRenderQueue.size(); ++i)
 		{
 			TextRenderInterface inter = m_TextRenderQueue[i];
 			//Get texture based on string identifier within the _interface

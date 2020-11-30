@@ -22,6 +22,7 @@ public:
 	void AddText(TextRenderInterface& _textInterface);
 	void AddLine(Line& _line);
 	void AddFilledBox(FilledBox& _filledBox);
+	void AddBox(WireFrameBox& _filledBox);
 	void Render( ResourceManager* _resman);//Render the contents into the render target
 	SDL_Rect GetDestRect();
 	SDL_Texture* GetTexture();//Call this after rendering
@@ -40,4 +41,5 @@ private:
 	std::vector<TextRenderInterface> m_TextRenderQueue;
 	std::vector<Line> m_LineQueue;
 	std::vector< FilledBox> m_FilledBoxes;
+	std::vector<WireFrameBox> m_WireFrameBoxes;
 };

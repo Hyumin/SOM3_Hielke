@@ -10,6 +10,8 @@ MapEditorWindow::MapEditorWindow(Vector2 _pos, std::string& _name, Texture* _Ico
 
 MapEditorWindow::MapEditorWindow()
 {
+	m_Zoom = 0.0f;
+	m_Map = nullptr;
 }
 
 MapEditorWindow::~MapEditorWindow()

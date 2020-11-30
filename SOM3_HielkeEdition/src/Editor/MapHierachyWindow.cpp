@@ -37,31 +37,34 @@ void MapHierachyWindow::Update(float _dt)
 	{
 		m_InputTexts[i]->Update(_dt);
 	}
+	if (m_Map != nullptr)
+	{
+		if (m_Map->GetColliders().size() != m_WallButtons.size())
+		{
+			GenerateHierachyWalls();
+		}
+	}
+
+
 	switch (m_Mode)
 	{
 	case MapHierachyWindowMode::WallSelect:
-	{
-		for (unsigned int i = 0; i < m_WallButtons.size(); ++i)
-		{
-			m_WallButtons[i]->Update(_dt);
-
-			
-		}
 		if (m_ScrollBarObj->m_OffsetChanged)
 		{
-			for (unsigned int i = 0; i < m_WallButtons.size(); ++i)
-			{
-				Vector2 newPos = m_WallButtons[i]->GetPosition();
-				newPos.y = i * 35 - m_ScrollBarObj->GetOffset();
-				m_WallButtons[i]->SetPosition(newPos);
-			}
-			m_ScrollBarObj->m_OffsetChanged = false;
+			UpdateHierachyButtonArray(&m_WallButtons);
 		}
-	}
 	break;
 	case MapHierachyWindowMode::Enemy:
-
-
+		if (m_ScrollBarObj->m_OffsetChanged)
+		{
+			UpdateHierachyButtonArray(&m_EnemyButtons);
+		}
+		break;
+	case MapHierachyWindowMode::ConnectedMapMode:
+		if (m_ScrollBarObj->m_OffsetChanged)
+		{
+			UpdateHierachyButtonArray(&m_ConnectedMapButtons);
+		}
 		break;
 	default:
 		break;
@@ -88,12 +91,29 @@ void MapHierachyWindow::MouseDown(unsigned int _key)
 		for (unsigned int i = 0; i < m_WallButtons.size(); ++i)
 		{
 			m_WallButtons[i]->MouseDown(_key);
+			if (Box::BoxCollision(m_Map->GetColliders()[i], m_MousePos+m_WorldPos))
+			{
+				if (_key == 1&&!m_MouseOverWindow)
+				{
+					m_CurrentSelectedWall = &m_Map->GetColliders()[i];
+					m_SelectedIndex = i;
+				}
+			}
 		}
 	}
 	break;
 	case MapHierachyWindowMode::Enemy:
+		for (unsigned int i = 0; i < m_EnemyButtons.size(); ++i)
+		{
+			m_EnemyButtons[i]->MouseDown(_key);
+		}
 
-
+		break;
+	case MapHierachyWindowMode::ConnectedMapMode:
+		for (unsigned int i = 0; i < m_ConnectedMapButtons.size(); ++i)
+		{
+			m_ConnectedMapButtons[i]->MouseDown(_key);
+		}
 		break;
 	default:
 		break;
@@ -106,6 +126,9 @@ void MapHierachyWindow::MouseUp(unsigned int _key)
 {
 	MapEditorWindow::MouseUp(_key);
 	m_ScrollBarObj->MouseUp(_key);
+
+	m_MouseOverWindow = Box::BoxCollision(m_ContentBox, m_MousePos) || Box::BoxCollision(m_Bar, m_MousePos);
+
 	for (unsigned int i = 0; i < m_InputTexts.size(); ++i)
 	{
 		m_InputTexts[i]->MouseUp(_key);
@@ -125,29 +148,34 @@ void MapHierachyWindow::MouseUp(unsigned int _key)
 	}
 	break;
 	case MapHierachyWindowMode::Enemy:
-
+		for (unsigned int i = 0; i < m_EnemyButtons.size(); ++i)
+		{
+			m_EnemyButtons[i]->MouseUp(_key);
+		}
 		
+		break;
+	case MapHierachyWindowMode::ConnectedMapMode:
+		for (unsigned int i = 0; i < m_ConnectedMapButtons.size(); ++i)
+		{
+			m_ConnectedMapButtons[i]->MouseUp(_key);
+		}
 		break;
 	default:
 		break;
 	}
 
 	//Selecting thing ins the world
-	if (!Box::BoxCollision(m_ContentBox, m_MousePos) && !Box::BoxCollision(m_Bar, m_MousePos))
+	switch (m_Mode)
 	{
+	case MapHierachyWindowMode::WallSelect:
 
-		switch (m_Mode)
-		{
-		case MapHierachyWindowMode::WallSelect:
-
-			break;
-		case MapHierachyWindowMode::Enemy:
+		break;
+	case MapHierachyWindowMode::Enemy:
 
 
-			break;
-		default:
-			break;
-		}
+		break;
+	default:
+		break;
 	}
 }
 
@@ -164,12 +192,12 @@ void MapHierachyWindow::MouseMove(unsigned int _x, unsigned int _y)
 	{
 		m_Buttons[i]->MouseMove(_x, _y);
 	}
+	int relativeX = (int)m_Target->m_TargetBox.pos.x;
+	int relativey = (int)m_Target->m_TargetBox.pos.y;
 	switch (m_Mode)
 	{
 	case MapHierachyWindowMode::WallSelect:
 	{
-		 int relativeX = ( int )m_Target->m_TargetBox.pos.x;
-		 int relativey = ( int)m_Target->m_TargetBox.pos.y;
 		for (unsigned int i  =0; i<m_WallButtons.size(); ++i)
 		{
 			m_WallButtons[i]->MouseMove(_x-relativeX, _y-relativey);
@@ -177,8 +205,20 @@ void MapHierachyWindow::MouseMove(unsigned int _x, unsigned int _y)
 	}
 	break;
 	case MapHierachyWindowMode::Enemy:
-
-
+	{
+		for (unsigned int i = 0; i < m_EnemyButtons.size(); ++i)
+		{
+			m_EnemyButtons[i]->MouseMove(_x - relativeX, _y - relativey);
+		}
+	}
+		break;
+	case MapHierachyWindowMode::ConnectedMapMode:
+	{
+		for (unsigned int i = 0; i < m_ConnectedMapButtons.size(); ++i)
+		{
+			m_ConnectedMapButtons[i]->MouseMove(_x - relativeX, _y - relativey);
+		}
+	}
 		break;
 	default:
 		break;
@@ -219,7 +259,18 @@ void MapHierachyWindow::SetFont(TTF_Font* _font)
 void MapHierachyWindow::SetMap(Hielke::Map* _map)
 {
 	m_Map = _map;
-	GenerateHierachyWalls();
+	switch (m_Mode)
+	{
+	case MapHierachyWindowMode::WallSelect:
+		GenerateHierachyWalls();
+		break;
+	case MapHierachyWindowMode::Enemy:
+		GenerateEnemyButtons();
+		break;
+	case MapHierachyWindowMode::ConnectedMapMode:
+		GenerateConnectedMapButtons();
+		break;
+	}
 }
 
 void MapHierachyWindow::MouseWheel(int _x, int _y)
@@ -269,13 +320,70 @@ void MapHierachyWindow::Render(SDLRenderer* _renderer)
 				{
 					m_WallButtons[i]->RenderToTarget(_renderer, m_Target, { 0,0 });
 				}
+				if (m_SelectedIndex >= 0)
+				{
+					//Add wireframe renderino here
 
+					WireFrameBox tb;
+					tb.box = m_WallButtons[m_SelectedIndex]->GetCollider();
+					tb.col = {255,255,255,255};
+					tb.thickness = 1;
+					m_Target->AddBox(tb);
+				}
 			}
 		}
 		break;
 		case MapHierachyWindowMode::Enemy:
+			if (m_CurrentSelectedEnemy != nullptr)
+			{
+				Box b = m_CurrentSelectedEnemy->m_Collider;
+				b.pos = m_CurrentSelectedEnemy->m_Object.m_Pos;
+				_renderer->DrawBoxZoomed(b, selectedCol, m_WorldPos, m_Zoom, 1);
+			}
+			if (m_Target != nullptr)
+			{
+				//Render ze buttons
+				for (unsigned int i = 0; i < m_EnemyButtons.size(); ++i)
+				{
+					m_EnemyButtons[i]->RenderToTarget(_renderer, m_Target, { 0,0 });
+				}
+				if (m_SelectedIndex >= 0)
+				{
+					//Add wireframe renderino here
 
+					WireFrameBox tb;
+					tb.box = m_EnemyButtons[m_SelectedIndex]->GetCollider();
+					tb.col = { 255,255,255,255 };
+					tb.thickness = 1;
+					m_Target->AddBox(tb);
+				}
+			}
 
+			break;
+		case MapHierachyWindowMode::ConnectedMapMode:
+			
+			if (m_CurrentlySelectedConnectedMap != nullptr)
+			{
+				_renderer->DrawBoxZoomed(m_CurrentlySelectedConnectedMap->collider,selectedCol, m_WorldPos, m_Zoom, 1);
+			}
+			if (m_Target != nullptr)
+			{
+				//Render ze buttons
+				for (unsigned int i = 0; i < m_ConnectedMapButtons.size(); ++i)
+				{
+					m_ConnectedMapButtons[i]->RenderToTarget(_renderer, m_Target, { 0,0 });
+				}
+				if (m_SelectedIndex >= 0)
+				{
+					//Add wireframe renderino here
+
+					WireFrameBox tb;
+					tb.box = m_ConnectedMapButtons[m_SelectedIndex]->GetCollider();
+					tb.col = { 255,255,255,255 };
+					tb.thickness = 1;
+					m_Target->AddBox(tb);
+				}
+			}
 			break;
 		default:
 			break;
@@ -288,8 +396,6 @@ void MapHierachyWindow::Render(SDLRenderer* _renderer)
 void MapHierachyWindow::Init(Texture* _IconsTexture)
 {
 	MapEditorWindow::Init(_IconsTexture);
-
-	m_Mode = MapHierachyWindowMode::WallSelect;
 
 	m_CurrentSelectedEnemy = nullptr;
 	m_CurrentSelectedWall = nullptr;
@@ -307,8 +413,11 @@ void MapHierachyWindow::Init(Texture* _IconsTexture)
 	m_ScrollBarObj->SetSize({m_ContentBox.w, m_ContentBox.h});
 
 	m_Target = nullptr;
-	//Reserve a flipping thingy
+	m_MouseOverWindow = false;
+	m_SelectedIndex = -1;
 	Reposition();
+
+	SetConnectedMapMode();
 }
 
 void MapHierachyWindow::ReScaleContent()
@@ -350,41 +459,119 @@ void MapHierachyWindow::RepositionInputTexts()
 
 void MapHierachyWindow::SelectWall(int _index)
 {
-	printf(" Wow i pressed + %i \n", _index);
 	if (m_Map != nullptr)
 	{
 		m_CurrentSelectedWall = &m_Map->GetColliders()[_index];
+		m_SelectedIndex = _index;
 	}
+}
+
+void MapHierachyWindow::SelectEnemy(int _index)
+{
+	if (m_Map != nullptr)
+	{
+		m_CurrentSelectedEnemy = m_Map->GetEnemies()[_index];
+		m_SelectedIndex = _index;
+	}
+}
+
+void MapHierachyWindow::SelectConnectedMap(int _index)
+{
+	if(m_Map != nullptr)
+	{
+		m_CurrentlySelectedConnectedMap = &m_Map->GetConnectedMaps()[_index];
+		m_SelectedIndex = _index;
+	}
+}
+
+void MapHierachyWindow::SetEnemyMode()
+{
+	m_Mode = MapHierachyWindowMode::Enemy;
+	m_SelectedIndex = -1;
+
+	//Generate enemybuttons
+	GenerateEnemyButtons();
+
+}
+
+void MapHierachyWindow::SetWallMode()
+{
+	m_Mode = MapHierachyWindowMode::WallSelect;
+	m_SelectedIndex = -1;
+
+	//Generate enemybuttons
+	GenerateHierachyWalls();
+}
+
+void MapHierachyWindow::SetConnectedMapMode()
+{
+	m_Mode = MapHierachyWindowMode::ConnectedMapMode;
+	m_SelectedIndex = -1;
+
+	//Generate enemybuttons
+	GenerateConnectedMapButtons();
+}
+
+void MapHierachyWindow::GenerateButtons(unsigned int _num, int _size, std::string _name, std::function<void(int)> _func,std::vector<Button*>* _outputVector)
+{
+	_outputVector->clear();
+	Vector2 pos = { 0,0 };
+	Vector2 size = {100,(float)_size };
+	for (unsigned int i = 0; i < _num; ++i)
+	{
+		pos.y = i * _size;//hardcoded for now
+		std::string name = _name + std::to_string(i);
+
+		Button* b = new Button(ButtonBuilder::BuildButtonWireFrameOrFilledRect(pos, size, 1, _func, (int)i, name, Button::DrawMode::FILLEDRECT,
+			m_Color, m_LightColor, m_DarkColor, SDL_Color{ 0xff,0xff,0xff,0xff }));
+
+		b->SetFont(m_Font);
+
+		_outputVector->push_back(b);
+	}
+	float m_MaxOffset = (_num * _size) - m_ContentBox.h;
+	m_ScrollBarObj->SetMinimumAndMaximum(0, m_MaxOffset);
 }
 
 void MapHierachyWindow::GenerateHierachyWalls()
 {
-	//Here's where we ask ourselves are we going to regenerate a bunch of 
-	// textfields every time the array size of the textfield, and the walls
-	// is not equal, or are we gonna do it just once and then every time
-	// we add a wall or remove it we want to change it directly in this class
-	//but how ?
-	m_WallButtons.clear();
+	
 	if (m_Map != nullptr)
 	{
 		std::vector<Box> walls = m_Map->GetColliders();
-		Vector2 pos = {0,0};
-		Vector2 size = { 100,30 };
 		std::function<void(int)> func= std::bind(&MapHierachyWindow::SelectWall, this, std::placeholders::_1);
-		for (unsigned int i = 0; i < walls.size(); ++i)
-		{
-			pos.y = i * 35;//hardcoded for now
-			std::string name = "Wall" + std::to_string(i);
-			
-			Button* b =new Button(ButtonBuilder::BuildButtonWireFrameOrFilledRect(pos, size, 1, std::bind(&MapHierachyWindow::SelectWall, this, std::placeholders::_1), (int)i,name, Button::DrawMode::FILLEDRECT,
-				m_Color, m_LightColor, m_DarkColor, SDL_Color{ 0xff,0xff,0xff,0xff }));
-
-			b->SetFont(m_Font);
-
-			m_WallButtons.push_back(b);
-		}
-		float m_MaxOffset = (walls.size() * 35)-m_ContentBox.h;
-		m_ScrollBarObj->SetMinimumAndMaximum(0, m_MaxOffset);
+		GenerateButtons((unsigned int)walls.size(), 35, "Wall", func, &m_WallButtons);
 		
 	}
+}
+
+void MapHierachyWindow::GenerateEnemyButtons()
+{
+	if (m_Map != nullptr)
+	{
+		std::vector<Enemy*> enemies = m_Map->GetEnemies();
+		std::function<void(int)> func = std::bind(&MapHierachyWindow::SelectEnemy, this, std::placeholders::_1);
+		GenerateButtons((unsigned int)enemies.size(), 35, "Enemy", func, &m_EnemyButtons);
+	}
+}
+
+void MapHierachyWindow::GenerateConnectedMapButtons()
+{
+	if (m_Map != nullptr)
+	{
+		std::vector<Hielke::ConnectedMap> maps = m_Map->GetConnectedMaps();
+		std::function<void(int)> func = std::bind(&MapHierachyWindow::SelectConnectedMap, this, std::placeholders::_1);
+		GenerateButtons((unsigned int)maps.size(), 35, "ConMap", func, &m_ConnectedMapButtons);
+	}
+}
+
+void MapHierachyWindow::UpdateHierachyButtonArray(std::vector<Button*>* _array)
+{
+	for (unsigned int i = 0; i < _array->size(); ++i)
+	{
+		Vector2 newPos = _array[0][i]->GetPosition();
+		newPos.y = i * _array[0][i]->GetSize().y - m_ScrollBarObj->GetOffset();
+		_array[0][i]->SetPosition(newPos);
+	}
+	m_ScrollBarObj->m_OffsetChanged = false;
 }

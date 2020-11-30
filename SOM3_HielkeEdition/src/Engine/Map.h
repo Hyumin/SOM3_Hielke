@@ -66,9 +66,13 @@ namespace Hielke
 
 		bool m_DebugMode;
 
-		const std::vector<ConnectedMap>& GetConnectedMaps()
+		std::vector<ConnectedMap>& GetConnectedMaps()
 		{
 			return m_ConnectedMaps;
+		}
+		const std::vector<Enemy*>& GetEnemies()
+		{
+			return m_Enemies;
 		}
 
 	private:

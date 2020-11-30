@@ -31,6 +31,13 @@ public :
 
 
 	void SelectWall(int _index);
+	void SelectEnemy(int _index);
+	void SelectConnectedMap(int _index);
+
+	void SetEnemyMode();
+	void SetWallMode();
+	void SetConnectedMapMode();
+
 protected:
 
 	virtual void Init(Texture* _IconsTexture);
@@ -39,10 +46,18 @@ protected:
 
 	void RepositionButtons();
 	void RepositionInputTexts();
+
+	void GenerateButtons(unsigned int  _num, int _size,  std::string _name, std::function<void(int)> _func, std::vector<Button*>* _outputVector);
 	void GenerateHierachyWalls();
+	void GenerateEnemyButtons();
+	void GenerateConnectedMapButtons();
+
+	void UpdateHierachyButtonArray(std::vector<Button*>* _array);
 
 	ScrollBar *m_ScrollBarObj;
 	std::vector<Button*> m_WallButtons;
+	std::vector<Button*> m_EnemyButtons;
+	std::vector<Button*> m_ConnectedMapButtons;
 
 	Button m_ScrollUp, m_ScrollDown;
 
@@ -51,11 +66,15 @@ protected:
 
 	Enemy* m_CurrentSelectedEnemy;
 	Box* m_CurrentSelectedWall;
+	Hielke::ConnectedMap* m_CurrentlySelectedConnectedMap;
 	MapHierachyWindowMode m_Mode;
 	Box m_CurrentSelectedBox;
 	Box m_PrevContentBox;
 	RenderTarget* m_Target;
 
 	TTF_Font* m_Font;
+
+	bool m_MouseOverWindow;
+	int m_SelectedIndex;
 
 };

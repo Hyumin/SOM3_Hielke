@@ -5,7 +5,7 @@ Object::Object()
 	m_Pos = Vector2(0, 0);
 	m_Size = Vector2{64,64};
 	m_RenderInterface.srcRect = { 0,0,64,64 };
-	m_RenderInterface.textureName = "Assets\\DefaultImage.png";
+	m_RenderInterface.texture = NULL;
 	m_RenderInterface.renderFlip = SDL_RendererFlip::SDL_FLIP_NONE;
 }
 
@@ -14,7 +14,7 @@ Object::Object(Vector2 _pos, Vector2 _size)
 	m_Pos = _pos;
 	m_Size = _size;
 	m_RenderInterface.srcRect = {0,0,64,64};
-	m_RenderInterface.textureName = "Assets\\DefaultImage.png";
+	m_RenderInterface.texture = NULL;
 	m_RenderInterface.renderFlip = SDL_RendererFlip::SDL_FLIP_NONE;
 }
 
@@ -26,12 +26,12 @@ Object::Object(Vector2 _pos, Vector2 _size, RenderInterface _visual)
 	m_RenderInterface = _visual;
 }
 
-Object::Object(Vector2 _pos, Vector2 _size, SDL_Rect _srcRect, SDL_RendererFlip _flip,std::string _texName)
+Object::Object(Vector2 _pos, Vector2 _size, SDL_Rect _srcRect, SDL_RendererFlip _flip,Texture* _tex)
 {
 	m_Pos = _pos;
 	m_Size = _size;
 	m_RenderInterface.srcRect = _srcRect;
-	m_RenderInterface.textureName = _texName;
+	m_RenderInterface.texture = _tex;
 	m_RenderInterface.renderFlip = _flip;
 }
 

@@ -137,12 +137,12 @@ void ScrollBar::Init(Texture* _iconsTexture)
 		hovered = { 16,64,16,16 };
 
 
-		m_ScrollNegativeBtn.SetTextureDrawModeWithSheet(_iconsTexture->GetName(), norm, clicked, hovered);
+		m_ScrollNegativeBtn.SetTextureDrawModeWithSheet(_iconsTexture, norm, clicked, hovered);
 
 		norm = { 48,64,16,16 };
 		clicked = { 80,64,16,16 };
 		hovered = { 64,64,16,16 };
-		m_ScrollPositiveBtn.SetTextureDrawModeWithSheet(_iconsTexture->GetName(), norm, clicked, hovered);
+		m_ScrollPositiveBtn.SetTextureDrawModeWithSheet(_iconsTexture, norm, clicked, hovered);
 
 	}
 	m_ScrollBox.w = m_ScrollNegativeBtn.GetSize().x;

@@ -277,8 +277,8 @@ void AnimationWindow::SetClip(AnimationClip* _clip)
 	
 
 	//Set textures for the objects
-	m_Obj.m_RenderInterface.textureName = m_CurrentClip->m_SourceTexture->GetName();
-	m_InGame.m_RenderInterface.textureName = m_Obj.m_RenderInterface.textureName;
+	m_Obj.m_RenderInterface.texture = m_CurrentClip->m_SourceTexture;
+	m_InGame.m_RenderInterface.texture = m_Obj.m_RenderInterface.texture;
 	
 	//Update edit textfields
 	m_IntervalInputField->SetText(std::to_string(m_CurrentClip->m_AnimInterval));
@@ -376,34 +376,34 @@ void AnimationWindow::Init(Texture* _IconsTexture)
 		SDL_Rect norm= { 0,0,16,16 };
 		SDL_Rect hovered = { 64,0,16,16 };
 		SDL_Rect clicked = {112,0,16,16};
-		m_PlayButton.SetTextureDrawModeWithSheet(_IconsTexture->GetName(), norm, clicked, hovered);
+		m_PlayButton.SetTextureDrawModeWithSheet(_IconsTexture, norm, clicked, hovered);
 		
 		norm= { 32,16,16,16 };
 		hovered = { 96,0,16,16 };
 		clicked= { 144,0,16,16 };
-		m_LoopButton.SetTextureDrawModeWithSheet(_IconsTexture->GetName(), norm, clicked, hovered);
+		m_LoopButton.SetTextureDrawModeWithSheet(_IconsTexture, norm, clicked, hovered);
 
 		norm = { 16,0,16,16 };
 		hovered = { 80,0,16,16 };
 		clicked= { 128,0,16,16 };
-		m_PauseButton.SetTextureDrawModeWithSheet(_IconsTexture->GetName(), norm, clicked, hovered);
+		m_PauseButton.SetTextureDrawModeWithSheet(_IconsTexture, norm, clicked, hovered);
 
 		norm = { 0,32,16,16 };
 		hovered = { 16,32,16,16 };
 		clicked = { 32,32,16,16 };
-		m_NextFrame.SetTextureDrawModeWithSheet(_IconsTexture->GetName(), norm, clicked, hovered);
-		m_PrevFrame.SetTextureDrawModeWithSheet(_IconsTexture->GetName(), norm, clicked, hovered,SDL_RendererFlip::SDL_FLIP_HORIZONTAL);
+		m_NextFrame.SetTextureDrawModeWithSheet(_IconsTexture, norm, clicked, hovered);
+		m_PrevFrame.SetTextureDrawModeWithSheet(_IconsTexture, norm, clicked, hovered,SDL_RendererFlip::SDL_FLIP_HORIZONTAL);
 
 		norm = { 48,32,16,16 };
 		hovered = { 64,32,16,16 };
 		clicked = { 80,32,16,16 };
-		m_FastForward.SetTextureDrawModeWithSheet(_IconsTexture->GetName(), norm, clicked, hovered);
-		m_SlowDown.SetTextureDrawModeWithSheet(_IconsTexture->GetName(), norm, clicked, hovered, SDL_RendererFlip::SDL_FLIP_HORIZONTAL);
+		m_FastForward.SetTextureDrawModeWithSheet(_IconsTexture, norm, clicked, hovered);
+		m_SlowDown.SetTextureDrawModeWithSheet(_IconsTexture, norm, clicked, hovered, SDL_RendererFlip::SDL_FLIP_HORIZONTAL);
 
 		norm = { 160,0,16,16 };
 		hovered = { 176,0,16,16 };
 		clicked = { 192,0,16,16 };
-		m_DeleteButton.SetTextureDrawModeWithSheet(m_IconTexture->GetName(), norm, clicked, hovered);
+		m_DeleteButton.SetTextureDrawModeWithSheet(_IconsTexture, norm, clicked, hovered);
 
 	}
 	m_Playing = false;

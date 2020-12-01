@@ -8,11 +8,13 @@
 #include <vector>
 #include "..\HielkMath.h"
 
+class Texture;
+
 struct RenderInterface
 {
 	SDL_Rect srcRect;
 	SDL_Rect destRect;
-	std::string textureName;
+	Texture* texture;
 	SDL_RendererFlip renderFlip;
 	SDL_Point point;
 };

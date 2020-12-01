@@ -206,20 +206,20 @@ void Editor::Init(ResourceManager* _resman)
 		SDL_Rect clicked = { 128,16,16,16 };
 		SDL_Rect hover = { 112,16,16,16 };
 
-		m_SaveButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
+		m_SaveButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture, norm, clicked, hover);
 		norm = { 96,32,16,16 };
 		clicked = { 128,32,16,16 };
 		hover = { 112,32,16,16 };
-		m_LoadButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
+		m_LoadButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture, norm, clicked, hover);
 
 		norm = { 48,48,16,16 };
 		clicked = { 80,48,16,16 };
 		hover = { 64,48,16,16 };
-		m_ZoomInButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
+		m_ZoomInButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture, norm, clicked, hover);
 		norm = { 96,48,16,16 };
 		clicked = { 128,48,16,16 };
 		hover = { 112,48,16,16 };
-		m_ZoomOutButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture->GetName(), norm, clicked, hover);
+		m_ZoomOutButton.SetTextureDrawModeWithSheet(m_EditorIconsTexture, norm, clicked, hover);
 
 		m_Buttons.push_back(&m_ZoomInButton);
 		m_Buttons.push_back(&m_ZoomOutButton);

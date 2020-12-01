@@ -57,13 +57,13 @@ void EditorWindow::Init(Texture* _IconsTexture)
 
 	if (m_IconTexture != nullptr)
 	{
-		m_ContentScaleObject.m_RenderInterface.textureName = _IconsTexture->GetName();
+		m_ContentScaleObject.m_RenderInterface.texture = _IconsTexture;
 	}
 	m_ExitButton = Button{};
 	if (m_IconTexture != nullptr)
 	{
 		RenderInterface norm, clicked, hovered;
-		norm.textureName = _IconsTexture->GetName();
+		norm.texture = _IconsTexture;
 		norm.srcRect = { 48,16,16,16 };
 		norm.renderFlip = SDL_RendererFlip::SDL_FLIP_NONE;
 		clicked = norm;

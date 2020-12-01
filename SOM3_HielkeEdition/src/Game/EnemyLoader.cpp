@@ -77,10 +77,12 @@ Enemy* EnemyLoader::LoadRabite(std::ifstream& _fs, ResourceManager* _res)
 		{
 			Object obj = Object();
 			_fs >> word>>word;
-			_fs>>obj.m_RenderInterface.textureName;
+			std::string texname;
+			_fs>> texname;
 			_fs >> word;
 			_fs>>obj.m_Size.x>>word>>obj.m_Size.y;
 
+			obj.m_RenderInterface.texture = _res->LoadTexture(texname);
 			rab->m_Object = obj;
 		}
 		if (word == "Animations")

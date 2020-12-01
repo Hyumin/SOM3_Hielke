@@ -291,7 +291,7 @@ void AnimationClipEditor::LoadDefaultAssets()
 
 		m_EditorIconsTexture = m_ResMan->LoadTexture("Assets//editor//sprite editor icons.png");
 		
-		m_SpriteSheet.m_RenderInterface.textureName = "Assets//SpriteSheets//Duran//seikendensetsu3_duran_sheet.png";
+		m_SpriteSheet.m_RenderInterface.texture = m_CurrentTexture;
 		m_SpriteSheet.m_Size = Vector2{ (float)m_CurrentTexture->GetWidth(),(float)m_CurrentTexture->GetHeight() };
 		m_SpriteSheet.m_RenderInterface.srcRect.w = m_CurrentTexture->GetWidth();
 		m_SpriteSheet.m_RenderInterface.srcRect.h = m_CurrentTexture->GetHeight();
@@ -358,7 +358,7 @@ void AnimationClipEditor::LoadClip()
 		m_CurrentClip.LoadClipFromFile(path, m_ResMan);
 
 		//m_CurrentClip.m_Looping = true;
-		m_SpriteSheet.m_RenderInterface.textureName = m_CurrentClip.m_SourceTexture->GetName();
+		m_SpriteSheet.m_RenderInterface.texture = m_CurrentClip.m_SourceTexture;
 		m_SpriteSheet.m_Size = Vector2{ (float)m_CurrentClip.m_SourceTexture->GetWidth(),(float)m_CurrentClip.m_SourceTexture->GetHeight() };
 		m_SpriteSheet.m_RenderInterface.srcRect.w = (int)m_SpriteSheet.m_Size.x;
 		m_SpriteSheet.m_RenderInterface.srcRect.h = (int)m_SpriteSheet.m_Size.y;
@@ -420,7 +420,7 @@ void AnimationClipEditor::CreateNewFile()
 		m_CurrentClip = AnimationClip();// 
 		m_CurrentClip.m_SourceTexture = m_ResMan->LoadTexture(path);
 
-		m_SpriteSheet.m_RenderInterface.textureName = m_CurrentClip.m_SourceTexture->GetName();
+		m_SpriteSheet.m_RenderInterface.texture = m_CurrentClip.m_SourceTexture;
 		m_SpriteSheet.m_Size = Vector2{ (float)m_CurrentClip.m_SourceTexture->GetWidth(),(float)m_CurrentClip.m_SourceTexture->GetHeight() };
 		m_SpriteSheet.m_RenderInterface.srcRect.w = (int)m_SpriteSheet.m_Size.x;
 		m_SpriteSheet.m_RenderInterface.srcRect.h = (int)m_SpriteSheet.m_Size.y;

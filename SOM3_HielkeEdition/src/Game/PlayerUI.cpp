@@ -32,7 +32,6 @@ void PlayerUI::SetPlayer(Hielke::PlayerCharacter* _pc)
 	m_Character = _pc;
 
 	m_PlayerIcon.m_RenderInterface =_pc->m_Object->m_RenderInterface;
-	m_PlayerIcon.m_RenderInterface.textureName = "Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png";
 	m_PlayerIcon.m_RenderInterface.srcRect = {9,307,16,16};
 }
 

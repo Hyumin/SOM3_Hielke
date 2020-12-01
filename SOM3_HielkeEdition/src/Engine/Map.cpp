@@ -389,7 +389,7 @@ void Hielke::Map::LoadMap(const std::string& _filePath, ResourceManager* _res)
 	//did we find an image construct an object out of it.
 	if (m_VisalName.size() > 0)
 	{
-		m_BackGround->m_RenderInterface.textureName = m_VisalName;
+		m_BackGround->m_RenderInterface.texture = _res->LoadTexture(m_VisalName);
 	}
 
 	//Did we find a string thats bigger than size 0? do stuff with it

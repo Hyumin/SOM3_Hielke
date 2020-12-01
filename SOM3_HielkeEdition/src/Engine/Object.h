@@ -11,7 +11,7 @@ public :
 	Object();
 	Object(Vector2 _pos, Vector2 _size);
 	Object(Vector2 _pos, Vector2 _size, RenderInterface _visual);
-	Object(Vector2 _pos, Vector2 _size, SDL_Rect _srcRect, SDL_RendererFlip _flip,std::string _texName);
+	Object(Vector2 _pos, Vector2 _size, SDL_Rect _srcRect, SDL_RendererFlip _flip,Texture* _tex);
 	~Object();
 
 	void Update(float _dt);

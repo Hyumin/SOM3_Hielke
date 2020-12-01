@@ -31,14 +31,14 @@ void Game::Init()
 	//init the player render interface
 	m_Duran.srcRect = { 203,155,35,35 };
 	m_Duran.renderFlip = SDL_RendererFlip::SDL_FLIP_NONE;
-	m_Duran.textureName = "Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png";
-
+	
 	m_WindowSize = { 0,0 };
 	m_WorldPos = { 0,0 };
 
 	//TODO convert all the animations into a single character file
 	if (m_ResMan != nullptr)
 	{
+		m_Duran.texture = m_ResMan->LoadTexture("Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png");
 
 		AnimationClip nAnim, hAnim, sAnim;
 
@@ -146,22 +146,24 @@ void Game::Init()
 		sAnim.LoadClipFromFile("Assets\\AnimationClips\\Duran\\classstrike_down_duran.hanimclip", m_ResMan);
 
 		m_PlayerCharacter->SetClassStrikeAnim(nAnim, sAnim, hAnim, hAnim);
+		//Pretty hardcoded way of getting the playericon for the ui
+		Object playerIcon = Object(Vector2(0, 0), Vector2(40, 40));
+		playerIcon.m_RenderInterface.srcRect = { 9,307,16,16 };
+		playerIcon.m_RenderInterface.texture = m_ResMan->LoadTexture("Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png");
+		
+		m_DuranUI = new PlayerUI(m_PlayerCharacter);
+		m_DuranUI->SetFont(m_ResMan->GetFont(("Assets//Fonts//LucidaBrightRegular.ttf")));
 
+		m_DuranUI->SetObject(playerIcon);
+		m_DuranUI->m_Pos = Vector2(500, 600);
 	}
 	m_CurrentMap = m_ResMan->LoadMap("Assets\\Maps\\Free_City_of_maia.hmap");
 	m_CurrentMap->SetDefaultFont(m_ResMan->GetFont(("Assets//Fonts//arial.ttf")));
 	m_PlayerCharacter->SetMap(m_CurrentMap);
 
-	m_DuranUI = new PlayerUI(m_PlayerCharacter);
-	m_DuranUI->SetFont(m_ResMan->GetFont(("Assets//Fonts//LucidaBrightRegular.ttf")));
 
-	//Pretty hardcoded way of getting the playericon for the ui
-	Object playerIcon= Object(Vector2(0,0),Vector2(40,40));
-	playerIcon.m_RenderInterface.srcRect = { 9,307,16,16 };
-	playerIcon.m_RenderInterface.textureName = "Assets\\SpriteSheets\\Duran\\seikendensetsu3_duran_sheet.png";
+	
 
-	m_DuranUI->SetObject(playerIcon);
-	m_DuranUI->m_Pos = Vector2(500,600);
 }
 
 

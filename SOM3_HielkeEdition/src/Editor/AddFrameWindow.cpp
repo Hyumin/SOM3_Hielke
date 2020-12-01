@@ -38,8 +38,8 @@ void AddFrameWindow::Init(Texture* _IconsTexture)
 
 	if (m_IconTexture != nullptr)
 	{
-		m_PrevFrameButton.SetTextureDrawModeWithSheet(m_IconTexture->GetName(), {32,48,16,16}, {16,48,16,16}, {0,48,16,16});
-		m_NextFrameButton.SetTextureDrawModeWithSheet(m_IconTexture->GetName(), { 0,32,16,16 }, { 16,32,16,16 }, { 32,32,16,16 });
+		m_PrevFrameButton.SetTextureDrawModeWithSheet(m_IconTexture, {32,48,16,16}, {16,48,16,16}, {0,48,16,16});
+		m_NextFrameButton.SetTextureDrawModeWithSheet(m_IconTexture, { 0,32,16,16 }, { 16,32,16,16 }, { 32,32,16,16 });
 	}
 
 	//Init input fields
@@ -461,5 +461,5 @@ void AddFrameWindow::SetClip(AnimationClip* _clip)
 
 	m_CurrentIndex = 0;
 
-	m_Preview.m_RenderInterface.textureName = _clip->m_SourceTexture->GetName();
+	m_Preview.m_RenderInterface.texture = _clip->m_SourceTexture;
 }

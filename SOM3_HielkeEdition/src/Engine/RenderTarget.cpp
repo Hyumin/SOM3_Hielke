@@ -64,7 +64,7 @@ void RenderTarget::Render(ResourceManager* _resman)
 			RenderInterface inter = m_RenderQueue[i];
 			//Get texture based on string identifier within the _interface
 			//Then copy it to the renderer
-			Texture* tex = _resman->GetTexture(inter.textureName);
+			Texture* tex = inter.texture;
 			if (tex != nullptr)
 			{
 				//SDL_point is only used for SDL_rotate

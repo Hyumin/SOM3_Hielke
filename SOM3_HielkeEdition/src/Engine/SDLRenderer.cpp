@@ -107,23 +107,14 @@ void SDLRenderer::Render()
 		SDL_RenderClear(m_Renderer);
 		for (unsigned int l = 0; l < m_Layers.size(); ++l)
 		{
-			std::vector<RenderInterface> renderInterfaces = m_Layers[l].GetRenderQueue();
-			//Iterate through the render queue
-			for (int i = 0; i < renderInterfaces.size(); ++i)
+			std::vector<FilledBox>& boxes = m_Layers[l].GetFilledBoxQueue();
+
+			for (int i = 0; i < boxes.size(); ++i)
 			{
-				RenderInterface inter = renderInterfaces[i];
-				//TODO replace string identief with the actual texture instead.
-				//Get texture based on string identifier within the _interface
-				//Then copy it to the renderer
-				Texture* tex = inter.texture;
-				if (tex != nullptr)
-				{
-					//SDL_point is only used for SDL_rotate
-					SDL_RenderCopyEx(m_Renderer, tex->GetTexture(), &inter.srcRect, &inter.destRect, 0, 0, inter.renderFlip);
-				}
+				SDL_SetRenderDrawColor(m_Renderer, boxes[i].col.r, boxes[i].col.g, boxes[i].col.b, boxes[i].col.a);
+				SDL_RenderFillRect(m_Renderer, &boxes[i].box);
 			}
-		
-			std::vector<Line> lines = m_Layers[l].GetLineQueue();
+			std::vector<Line>& lines = m_Layers[l].GetLineQueue();
 
 			for (int i = 0; i < lines.size(); ++i)
 			{
@@ -132,7 +123,7 @@ void SDLRenderer::Render()
 				SDL_SetRenderDrawColor(m_Renderer, l.colour.r, l.colour.g, l.colour.b, l.colour.a);
 				SDL_RenderDrawLine(m_Renderer, (int)l.start.x, (int)l.start.y, (int)l.end.x, (int)l.end.y);
 			}
-			std::vector<WireFrameBox> wfBoxes = m_Layers[l].GetWireFrameBoxes();
+			std::vector<WireFrameBox>& wfBoxes = m_Layers[l].GetWireFrameBoxes();
 
 			for (int i = 0; i < wfBoxes.size(); ++i)
 			{
@@ -145,28 +136,33 @@ void SDLRenderer::Render()
 				SDL_RenderDrawRect(m_Renderer, &rect);
 			}
 
-			std::vector<FilledBox> boxes = m_Layers[l].GetFilledBoxQueue();
-
-			for (int i = 0; i < boxes.size(); ++i)
-			{
-				SDL_SetRenderDrawColor(m_Renderer, boxes[i].col.r, boxes[i].col.g, boxes[i].col.b, boxes[i].col.a);
-				SDL_RenderFillRect(m_Renderer, &boxes[i].box);
-			}
-			std::vector<TextRenderInterface> textInterfaces = m_Layers[l].GetTextRenderQueue();
+			
+			std::vector<TextRenderInterface>& textInterfaces = m_Layers[l].GetTextRenderQueue();
 
 			//Iterate through text renderer
 			for (int i = 0; i < textInterfaces.size(); ++i)
 			{
 				TextRenderInterface inter = textInterfaces[i];
-				//Get texture based on string identifier within the _interface
-				//Then copy it to the renderer
 				const SDL_RendererFlip flip = inter.renderFlip;
 				if (inter.texture != nullptr)
 				{
 					SDL_RenderCopyEx(m_Renderer, inter.texture, &inter.srcRect, &inter.destRect, 0, 0, flip);
 				}
 			}
-			std::vector<RenderTarget*> renderTargets = m_Layers[l].GetRenderTargets();
+			std::vector<RenderInterface>& renderInterfaces = m_Layers[l].GetRenderQueue();
+			//Iterate through the render queue
+			for (int i = 0; i < renderInterfaces.size(); ++i)
+			{
+				RenderInterface inter = renderInterfaces[i];
+				Texture* tex = inter.texture;
+				if (tex != nullptr)
+				{
+					//SDL_point is only used for SDL_rotate
+					SDL_RenderCopyEx(m_Renderer, tex->GetTexture(), &inter.srcRect, &inter.destRect, 0, 0, inter.renderFlip);
+				}
+			}
+
+			std::vector<RenderTarget*>& renderTargets = m_Layers[l].GetRenderTargets();
 			for (unsigned int i = 0; i < renderTargets.size(); ++i)
 			{
 				SDL_Texture* tex =  renderTargets[i]->GetTexture();
@@ -389,6 +385,10 @@ bool SDLRenderer::Init(std::string _name, unsigned int _width, unsigned int _hei
 			m_Layers.push_back(Layer("Default"));
 			m_Layers.push_back(Layer("Background"));
 			m_Layers.push_back(Layer("UI"));
+			m_Layers.push_back(Layer("Editor_1"));
+			m_Layers.push_back(Layer("Editor_2"));
+			m_Layers.push_back(Layer("Editor_3"));
+			m_Layers.push_back(Layer("DEBUG"));
 		}
 	}
 

@@ -34,6 +34,9 @@ public:
 	void Render(SDLRenderer* _renderer);
 	
 private:
+
+	void ToggleDebugMode();
+
 	ResourceManager* m_ResMan;
 	RenderInterface m_Duran;
 
@@ -46,11 +49,15 @@ private:
 	bool m_kup, m_kdwn, m_klft, m_krght;
 	Vector2 m_WorldPos;
 	Vector2 m_WindowSize;
+
 	float m_Speed = 100.0f;
 	float m_AnimTimer = 0.0f;
 	float m_AnimTimeLimit = 0.3f;
 
-	Box b;
+	bool m_DebugMode = false;// set this to true if you want see things like colliders etc.
+
+	SDL_Keycode m_debug_mode_key = SDLK_1;
+
 
 };
 

@@ -148,7 +148,7 @@ void Editor::Render(SDLRenderer* _renderer)
 	{
 		m_Buttons[i]->Render(_renderer);
 	}
-	_renderer->DrawFilledBox(m_TopBar,m_BarColour);
+	_renderer->DrawFilledBox(m_TopBar, m_BarColour, { 0,0 },1);
 }
 
 void Editor::OnWindowResize(unsigned int _width, unsigned int _height)

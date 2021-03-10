@@ -32,6 +32,7 @@
     <ClCompile Include="src\Engine\AnimationClip.cpp" />
     <ClCompile Include="src\Engine\Button.cpp" />
     <ClCompile Include="src\Engine\ButtonBuilder.cpp" />
+    <ClCompile Include="src\Engine\DropDownWidget.cpp" />
     <ClCompile Include="src\Engine\FloatingText.cpp" />
     <ClCompile Include="src\Engine\InputTextField.cpp" />
     <ClCompile Include="src\Engine\Layer.cpp" />
@@ -69,6 +70,7 @@
     <ClInclude Include="src\Engine\AnimationClip.h" />
     <ClInclude Include="src\Engine\Button.h" />
     <ClInclude Include="src\Engine\ButtonBuilder.h" />
+    <ClInclude Include="src\Engine\DropDownWidget.h" />
     <ClInclude Include="src\Engine\FloatingText.h" />
     <ClInclude Include="src\Engine\InputTextField.h" />
     <ClInclude Include="src\Engine\Layer.h" />

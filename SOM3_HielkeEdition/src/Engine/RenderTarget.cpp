@@ -58,19 +58,7 @@ void RenderTarget::Render(ResourceManager* _resman)
 		//SDL_SetRenderDrawBlendMode(m_RendererRef, SDL_BLENDMODE_BLEND);
 		SDL_SetRenderDrawColor(m_RendererRef, 0x00, 0xAB, 0xAB, 0x00);
 		SDL_RenderClear(m_RendererRef);
-		//Iterate through the render queue
-		for (unsigned int i = 0; i < m_RenderQueue.size(); ++i)
-		{
-			RenderInterface inter = m_RenderQueue[i];
-			//Get texture based on string identifier within the _interface
-			//Then copy it to the renderer
-			Texture* tex = inter.texture;
-			if (tex != nullptr)
-			{
-				//SDL_point is only used for SDL_rotate
-				SDL_RenderCopyEx(m_RendererRef, tex->GetTexture(), &inter.srcRect, &inter.destRect, 0, 0, inter.renderFlip);
-			}
-		}
+	
 
 
 		for (unsigned int i = 0; i < m_LineQueue.size(); ++i)
@@ -94,6 +82,19 @@ void RenderTarget::Render(ResourceManager* _resman)
 			rect.w = m_WireFrameBoxes[i].box.w;
 			rect.h = m_WireFrameBoxes[i].box.h;
 			SDL_RenderDrawRect(m_RendererRef, &rect);
+		}
+		//Iterate through the render queue
+		for (unsigned int i = 0; i < m_RenderQueue.size(); ++i)
+		{
+			RenderInterface inter = m_RenderQueue[i];
+			//Get texture based on string identifier within the _interface
+			//Then copy it to the renderer
+			Texture* tex = inter.texture;
+			if (tex != nullptr)
+			{
+				//SDL_point is only used for SDL_rotate
+				SDL_RenderCopyEx(m_RendererRef, tex->GetTexture(), &inter.srcRect, &inter.destRect, 0, 0, inter.renderFlip);
+			}
 		}
 		for (unsigned int i = 0; i < m_TextRenderQueue.size(); ++i)
 		{

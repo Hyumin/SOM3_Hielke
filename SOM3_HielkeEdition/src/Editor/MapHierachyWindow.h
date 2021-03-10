@@ -4,6 +4,7 @@
 #include "..\Game\Enemy.h"
 #include "..\Engine\RenderTarget.h"
 #include "..\Engine\ScrollBar.h"
+#include "..\Engine\DropDownWidget.h"
 
 enum class MapHierachyWindowMode
 {
@@ -67,6 +68,8 @@ protected:
 	Enemy* m_CurrentSelectedEnemy;
 	Box* m_CurrentSelectedWall;
 	Hielke::ConnectedMap* m_CurrentlySelectedConnectedMap;
+	DropDownWidget* m_DropDownWidget;
+
 	MapHierachyWindowMode m_Mode;
 	Box m_CurrentSelectedBox;
 	Box m_PrevContentBox;

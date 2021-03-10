@@ -78,12 +78,12 @@ void Hielke::Map::Render(SDLRenderer* _renderer,Vector2 _worldPos)
 	{
 		for (uint32_t i = 0; i < m_ConnectedMaps.size(); ++i)
 		{
-			_renderer->DrawBox(m_ConnectedMaps[i].collider, col, _worldPos);
+			_renderer->DrawBox(m_ConnectedMaps[i].collider, col, _worldPos, HDEFAULTEBUGLAYER);
 		}
 		col = { 0x00,0x00,0xff,0xff };
 		for (uint32_t i = 0; i < m_Walls.size(); ++i)
 		{
-			_renderer->DrawBox(m_Walls[i], col, _worldPos);
+			_renderer->DrawBox(m_Walls[i], col, _worldPos, HDEFAULTEBUGLAYER);
 		}
 	}
 	for (uint32_t i = 0; i < m_FloatingTexts.size(); ++i)
@@ -105,12 +105,12 @@ void Hielke::Map::RenderZoomed(SDLRenderer* _renderer, Vector2 _worldPos, float 
 	{
 		for (uint32_t i = 0; i < m_ConnectedMaps.size(); ++i)
 		{
-			_renderer->DrawBoxZoomed(m_ConnectedMaps[i].collider, col, _worldPos, _zoom);
+			_renderer->DrawBoxZoomed(m_ConnectedMaps[i].collider, col, _worldPos, _zoom, HDEFAULTEBUGLAYER);
 		}
 		col = {0x00,0x00,0xff,0xff};
 		for (uint32_t i = 0; i < m_Walls.size(); ++i)
 		{
-			_renderer->DrawBoxZoomed(m_Walls[i], col, _worldPos, _zoom);
+			_renderer->DrawBoxZoomed(m_Walls[i], col, _worldPos, _zoom, HDEFAULTEBUGLAYER);
 		}
 	}
 	for (uint32_t i = 0; i < m_FloatingTexts.size(); ++i)

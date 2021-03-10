@@ -44,6 +44,8 @@ struct WireFrameBox
 	int thickness;//want to add in future to define how wide the lines are
 };
 
+#define HDEFAULTEBUGLAYER  6
+
 class Layer;
 class ResourceManager;
 class RenderTarget;

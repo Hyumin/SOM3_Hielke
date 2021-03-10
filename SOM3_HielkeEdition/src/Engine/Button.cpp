@@ -140,10 +140,16 @@ void Button::RenderToTarget(SDLRenderer* _renderer, RenderTarget* _target,Vector
 	switch (m_DrawMode)
 	{
 	case WIREFRAME:
-		_renderer->DrawBox(m_Collider, col, { 0,0 }, m_Layer);
-		if (m_TextField.GetText().size() > 0)
 		{
-			m_TextField.RenderToTarget(_renderer, _target,_offset);
+			WireFrameBox wb;
+			wb.thickness = 1;
+			wb.box = m_Collider;
+			wb.col = col;
+			_target->AddBox(wb);
+			if (m_TextField.GetText().size() > 0)
+			{
+				m_TextField.RenderToTarget(_renderer, _target, _offset);
+			}
 		}
 		break;
 	case FILLEDRECT:

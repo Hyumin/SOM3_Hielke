@@ -59,6 +59,7 @@ class Button
 		void SetFont(TTF_Font* _Font);
 		void SetTextColor(SDL_Color _col);
 
+		const std::string& GetText() { return m_TextField.GetText(); }
 
 	private:
 		void Init();

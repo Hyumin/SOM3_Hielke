@@ -157,12 +157,10 @@ void Game::Init()
 		m_DuranUI->SetObject(playerIcon);
 		m_DuranUI->m_Pos = Vector2(500, 600);
 	}
+
 	m_CurrentMap = m_ResMan->LoadMap("Assets\\Maps\\Free_City_of_maia.hmap");
 	m_CurrentMap->SetDefaultFont(m_ResMan->GetFont(("Assets//Fonts//arial.ttf")));
 	m_PlayerCharacter->SetMap(m_CurrentMap);
-
-
-	
 
 }
 
@@ -212,13 +210,13 @@ void Game::Update(float _dt)
 		m_WorldPos.y = m_CurrentMap->GetBackground()->m_Size.y- m_WindowSize.y;
 	}
 
-	b = m_PlayerCharacter->m_Collider;
-	ConnectedMap& conMap = m_CurrentMap->CheckPlayerCollisionWithConnectedMap(b);
+	ConnectedMap& conMap = m_CurrentMap->CheckPlayerCollisionWithConnectedMap(m_PlayerCharacter->m_Collider);
 	//If its not our expected nothing happened string
 	if (conMap.mapName != "None")
 	{
 		//load a new map
 		m_CurrentMap = m_ResMan->LoadMap(conMap.fileName);
+		m_CurrentMap->m_DebugMode = m_DebugMode;
 		m_CurrentMap->SetDefaultFont(m_ResMan->GetFont(("Assets//Fonts//arial.ttf")));
 		m_PlayerCharacter->m_Pos = conMap.startPos;
 		m_PlayerCharacter->SetMap(m_CurrentMap);
@@ -231,9 +229,33 @@ void Game::KeyDown(unsigned int _key)
 	m_PlayerCharacter->KeyDown(_key);
 }
 
+void Game::ToggleDebugMode()
+{
+	m_DebugMode = m_DebugMode ? false : true;
+
+	if (m_DebugMode)
+	{
+		//enable debug parameters in other things like level,map resourcemanager etc.
+		if (m_CurrentMap!=nullptr)
+			m_CurrentMap->m_DebugMode = true;
+	}
+	else
+	{
+		if (m_CurrentMap != nullptr)
+			m_CurrentMap->m_DebugMode = false;
+	}
+
+}
+
 void Game::KeyUp(unsigned int _key)
 {
 	m_PlayerCharacter->KeyUp(_key);
+
+	//toggles debugmode
+	if (_key == m_debug_mode_key)
+	{
+		ToggleDebugMode();
+	}
 }
 
 void Game::Render(SDLRenderer* _renderer)
@@ -248,20 +270,12 @@ void Game::Render(SDLRenderer* _renderer)
 
 	std::vector<Box>& mapColliders = m_CurrentMap->GetColliders();
 	SDL_Color col = { 0x00,0x00,0xff,0xff };
-	for (uint32_t i = 0; i < mapColliders.size(); ++i)
-	{
-		SDL_Color col2 = { 0xff,0x00,0xff,0xff };
-		if (b.BoxCollision(mapColliders[i], b))
-		{
-
-			col2.r = 0xff;
-			col2.g = 0xff;
-			col2.b = 0xff;
-		}
-		_renderer->DrawBox(mapColliders[i], col2, m_WorldPos);
-	}
+	
 	m_DuranUI->Render(_renderer);
-	_renderer->DrawBox(b, { 0x00,0xff,0x00,0xff },m_WorldPos);
+	if (m_DebugMode)
+	{
+		_renderer->DrawBox(m_PlayerCharacter->m_Collider, { 0x00,0xff,0x00,0xff }, m_WorldPos,HDEFAULTEBUGLAYER);
+	}
 	m_WindowSize.x = (float)_renderer->GetWindowWidth();
 	m_WindowSize.y = (float)_renderer->GetWindowHeight();
 }

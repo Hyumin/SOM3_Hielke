@@ -28,6 +28,7 @@ MapHierachyWindow::~MapHierachyWindow()
 	m_Buttons.clear();
 	delete m_ScrollBarObj;
 	m_WallButtons.clear();
+	delete m_DropDownWidget;
 }
 
 void MapHierachyWindow::Update(float _dt)
@@ -76,6 +77,7 @@ void MapHierachyWindow::MouseDown(unsigned int _key)
 {
 	MapEditorWindow::MouseDown(_key);
 	m_ScrollBarObj->MouseDown(_key);
+	m_DropDownWidget->MouseDown(_key);
 	for (unsigned int i = 0; i < m_InputTexts.size(); ++i)
 	{
 		m_InputTexts[i]->MouseDown(_key);
@@ -127,6 +129,7 @@ void MapHierachyWindow::MouseUp(unsigned int _key)
 {
 	MapEditorWindow::MouseUp(_key);
 	m_ScrollBarObj->MouseUp(_key);
+	m_DropDownWidget->MouseUp(_key);
 
 	for (unsigned int i = 0; i < m_InputTexts.size(); ++i)
 	{
@@ -193,6 +196,7 @@ void MapHierachyWindow::MouseMove(unsigned int _x, unsigned int _y)
 	{
 		m_Buttons[i]->MouseMove(_x, _y);
 	}
+	m_DropDownWidget->MouseMove(_x, _y);
 	int relativeX = (int)m_Target->m_TargetBox.pos.x;
 	int relativey = (int)m_Target->m_TargetBox.pos.y;
 	switch (m_Mode)
@@ -247,6 +251,7 @@ void MapHierachyWindow::SetFont(TTF_Font* _font)
 {
 	MapEditorWindow::SetFont(_font);
 	m_Font = _font;
+	m_DropDownWidget->SetFont(_font);
 	for (unsigned int i = 0; i < m_InputTexts.size(); ++i)
 	{
 		m_InputTexts[i]->SetFont(_font);
@@ -277,6 +282,7 @@ void MapHierachyWindow::SetMap(Hielke::Map* _map)
 void MapHierachyWindow::MouseWheel(int _x, int _y)
 {
 	m_ScrollBarObj->MouseScroll(_x, _y);
+	m_DropDownWidget->MouseScroll(_x, _y);
 }
 
 void MapHierachyWindow::Render(SDLRenderer* _renderer)
@@ -285,7 +291,7 @@ void MapHierachyWindow::Render(SDLRenderer* _renderer)
 
 		if (m_Target == nullptr)
 		{
-			m_Target = _renderer->CreateRenderTarget(m_ContentBox, 2);
+			m_Target = _renderer->CreateRenderTarget(m_ContentBox, m_Layer+1);
 		}
 
 		for (unsigned int i = 0; i < m_InputTexts.size(); ++i)
@@ -296,8 +302,8 @@ void MapHierachyWindow::Render(SDLRenderer* _renderer)
 		{
 			m_Buttons[i]->Render(_renderer);
 		}
-		_renderer->DrawFilledBox(m_ContentBox, m_Color);
-
+		_renderer->DrawFilledBox(m_ContentBox, m_Color, { 0,0 },m_Layer);
+		m_DropDownWidget->Render(_renderer);
 
 		m_ScrollBarObj->Render(_renderer);
 		//Depending on the selection mode we want to visualize currently selected
@@ -312,7 +318,7 @@ void MapHierachyWindow::Render(SDLRenderer* _renderer)
 			if (m_CurrentSelectedWall != nullptr)
 			{
 				Box b = *m_CurrentSelectedWall;
-				_renderer->DrawBoxZoomed(b, selectedCol, m_WorldPos, m_Zoom, 1);
+				_renderer->DrawBoxZoomed(b, selectedCol, m_WorldPos, m_Zoom, m_Layer);
 			}
 			if (m_Target != nullptr)
 			{
@@ -339,7 +345,7 @@ void MapHierachyWindow::Render(SDLRenderer* _renderer)
 			{
 				Box b = m_CurrentSelectedEnemy->m_Collider;
 				b.pos = m_CurrentSelectedEnemy->m_Object.m_Pos;
-				_renderer->DrawBoxZoomed(b, selectedCol, m_WorldPos, m_Zoom, 1);
+				_renderer->DrawBoxZoomed(b, selectedCol, m_WorldPos, m_Zoom,m_Layer);
 			}
 			if (m_Target != nullptr)
 			{
@@ -365,7 +371,7 @@ void MapHierachyWindow::Render(SDLRenderer* _renderer)
 			
 			if (m_CurrentlySelectedConnectedMap != nullptr)
 			{
-				_renderer->DrawBoxZoomed(m_CurrentlySelectedConnectedMap->collider,selectedCol, m_WorldPos, m_Zoom, 1);
+				_renderer->DrawBoxZoomed(m_CurrentlySelectedConnectedMap->collider,selectedCol, m_WorldPos, m_Zoom, m_Layer);
 			}
 			if (m_Target != nullptr)
 			{
@@ -416,17 +422,32 @@ void MapHierachyWindow::Init(Texture* _IconsTexture)
 	m_Target = nullptr;
 	m_MouseOverWindow = false;
 	m_SelectedIndex = -1;
+	m_DropDownWidget = new DropDownWidget(m_ContentBox.pos, Vector2{ m_ContentBox.w,40 }, _IconsTexture);
+	std::vector<std::string> strings = { "ConncetedMapMode","WallSelect","NPC","Enemy" };
+	std::vector<int> enumValues = { (int)MapHierachyWindowMode::ConnectedMapMode,(int)MapHierachyWindowMode::WallSelect,(int)MapHierachyWindowMode::NPC,(int)MapHierachyWindowMode::Enemy };
+
+	m_DropDownWidget->SetStates(strings, enumValues);
+
 	Reposition();
 
 	SetWallMode();
+
+	m_DropDownWidget->SetSize({ m_ContentBox.w,50 });
+	
+
+
+
 }
 
 void MapHierachyWindow::ReScaleContent()
 {
 	MapEditorWindow::ReScaleContent();
+	m_DropDownWidget->SetSize({ m_ContentBox.w,30 });
 	if (m_Target != nullptr)
 	{
-		m_Target->CreateTexture(m_ContentBox);//Every tune we rescale we recreate the texture
+		Box berhx = m_ContentBox;
+		berhx.h -= m_DropDownWidget->GetSize().y;
+		m_Target->CreateTexture(berhx);//Every tune we rescale we recreate the texture
 	}
 }
 
@@ -438,11 +459,13 @@ void MapHierachyWindow::Reposition()
 	RepositionButtons();//Reposition buttons depnd on input texts therefor has to go second
 	if (m_Target != nullptr)
 	{
-		m_Target->m_TargetBox.pos = m_ContentBox.pos;
+		m_Target->m_TargetBox.pos = m_ContentBox.pos + Vector2{0,-m_DropDownWidget->GetSize().y};
 	}
 	float scrollBarWidth = m_ContentBox.w / 10;
 	m_ScrollBarObj->SetPosition(m_ContentBox.pos + Vector2{ m_ContentBox.w- scrollBarWidth,0 });
 	m_ScrollBarObj->SetSize(Vector2{ scrollBarWidth, m_ContentBox.h -m_ContentScaleObject.m_Size.y});
+
+	m_DropDownWidget->SetPosition(m_ContentBox.pos);
 }
 
 
@@ -523,7 +546,7 @@ void MapHierachyWindow::GenerateButtons(unsigned int _num, int _size, std::strin
 		pos.y = i * _size;//hardcoded for now
 		std::string name = _name + std::to_string(i);
 
-		Button* b = new Button(ButtonBuilder::BuildButtonWireFrameOrFilledRect(pos, size, 1, _func, (int)i, name, Button::DrawMode::FILLEDRECT,
+		Button* b = new Button(ButtonBuilder::BuildButtonWireFrameOrFilledRect(pos, size, 2, _func, (int)i, name, Button::DrawMode::FILLEDRECT,
 			m_Color, m_LightColor, m_DarkColor, SDL_Color{ 0xff,0xff,0xff,0xff }));
 
 		b->SetFont(m_Font);

@@ -4,6 +4,7 @@
 #include "..\Engine\SDLRenderer.h"
 #include "..\Engine\Map.h"
 #include "Enemy.h"
+#include <string>
 
 using namespace Hielke;
 
@@ -22,8 +23,8 @@ Hielke::PlayerCharacter::PlayerCharacter()
 	m_Attack = false;
 	UnBlockAllDirections();
 	m_AttackCollider.pos = Vector2{ 0,0 };
-	m_AttackCollider.w = 80;
-	m_AttackCollider.h = 80;
+	m_AttackCollider.w = 30;
+	m_AttackCollider.h = 30;
 
 	m_Stats.damage = 10;
 	m_Stats.moveSpeed = 100.0f;
@@ -749,3 +750,5 @@ void Hielke::PlayerCharacter::ApplyClassStrikeDamage()
 
 	}
 }
+
+

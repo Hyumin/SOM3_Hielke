@@ -49,6 +49,8 @@ void ResourceManager::LoadDefaultMedia()
 	LoadTexture(DefaultTextureName);
 	LoadFont("Assets//Fonts//Jupiter.ttf",32);
 	LoadFont("Assets//Fonts//arial.ttf",32);
+	LoadFont("Assets//Fonts//LEELAWDB.TTF",12);
+
 	LoadEnemy("Assets\\EnemyFiles\\Rabite.Henemy");
 
 }

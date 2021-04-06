@@ -156,6 +156,10 @@ void Game::Init()
 
 		m_DuranUI->SetObject(playerIcon);
 		m_DuranUI->m_Pos = Vector2(500, 600);
+
+		m_DebugInfo = new PlayerDebugInfo();
+		m_DebugInfo->SetPlayerCharacter(m_PlayerCharacter);
+		m_DebugInfo->InitTextFields(m_ResMan->GetFont(("Assets//Fonts//LEELAWDB.TTF")));
 	}
 
 	m_CurrentMap = m_ResMan->LoadMap("Assets\\Maps\\Free_City_of_maia.hmap");
@@ -209,6 +213,7 @@ void Game::Update(float _dt)
 	{
 		m_WorldPos.y = m_CurrentMap->GetBackground()->m_Size.y- m_WindowSize.y;
 	}
+	m_DebugInfo->Update(_dt);
 
 	ConnectedMap& conMap = m_CurrentMap->CheckPlayerCollisionWithConnectedMap(m_PlayerCharacter->m_Collider);
 	//If its not our expected nothing happened string
@@ -233,11 +238,13 @@ void Game::ToggleDebugMode()
 {
 	m_DebugMode = m_DebugMode ? false : true;
 
+	m_DebugInfo->Toggle();
 	if (m_DebugMode)
 	{
 		//enable debug parameters in other things like level,map resourcemanager etc.
 		if (m_CurrentMap!=nullptr)
 			m_CurrentMap->m_DebugMode = true;
+
 	}
 	else
 	{
@@ -260,6 +267,7 @@ void Game::KeyUp(unsigned int _key)
 
 void Game::Render(SDLRenderer* _renderer)
 {
+	m_DebugInfo->Render(_renderer);
 	m_CurrentMap->Render(_renderer, m_WorldPos);
 	m_PlayerCharacter->Render(_renderer, m_WorldPos);
 

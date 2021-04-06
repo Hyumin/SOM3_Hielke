@@ -2,6 +2,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 #include "..\HielkMath.h"
 
 class AnimationClip;
@@ -26,17 +27,16 @@ namespace Hielke
 		float attackCooldown;
 
 	};
-
-
+	enum PlayerState
+	{
+		IDLE, MOVING, IDLE_COMBAT, MOVING_COMBAT, ATTACKING, SPRINTING, ENTER_COMBAT, CLASS_STRIKE
+	};
 
 	class PlayerCharacter
 	{
 	public:
 
-		enum PlayerState
-		{
-			IDLE, MOVING, IDLE_COMBAT, MOVING_COMBAT, ATTACKING, SPRINTING, ENTER_COMBAT, CLASS_STRIKE
-		};
+	
 		enum Direction
 		{
 			NORTH, SOUTH, EAST, WEST
@@ -96,6 +96,7 @@ namespace Hielke
 		Box m_AttackCollider;
 		PlayerStats m_Stats;
 		Map* m_CurrentMap;
+		AnimationClip* m_CurrentAnimationClip;
 
 	private:
 		void ApplyClassStrikeDamage();
@@ -108,7 +109,6 @@ namespace Hielke
 		bool m_IsCoolingdown = false;
 
 
-		AnimationClip* m_CurrentAnimationClip;
 		std::vector<std::map<Direction, AnimationClip>> m_AttackAnim;
 		std::map<Direction, AnimationClip> m_MoveAnim;
 		std::map<Direction, AnimationClip> m_IdleAnim;
@@ -120,4 +120,37 @@ namespace Hielke
 		std::map<Direction, AnimationClip> m_ClassStrikeAnim;
 	};
 
+	static std::string ReturnPlayerStateString(PlayerState _state)
+	{
+		switch (_state)
+		{
+		case IDLE:
+			return "IDLE";
+			break;
+		case MOVING:
+			return "MOVING";
+			break;
+		case IDLE_COMBAT:
+			return "IDLE_COMBAT";
+			break;
+		case MOVING_COMBAT:
+			return "MOVING_COMBAT";
+			break;
+		case ATTACKING:
+			return "ATTACKING";
+			break;
+		case SPRINTING:
+			return "SPRINTING";
+			break;
+		case ENTER_COMBAT:
+			return "ENTER_COMBAT";
+			break;
+		case CLASS_STRIKE:
+			return "CLASS_STRIKE";
+			break;
+		default:
+			return " ";
+			break;
+		}
+	}
 };

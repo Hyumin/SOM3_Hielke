@@ -10,6 +10,7 @@
 #include "Enemy.h"
 #include "Rabite.h"
 #include "PlayerUI.h"
+#include "..\Debug\PlayerDebugInfo.h"
 
 struct Vec2
 {
@@ -39,6 +40,7 @@ private:
 
 	ResourceManager* m_ResMan;
 	RenderInterface m_Duran;
+	Hielke::PlayerDebugInfo* m_DebugInfo;
 
 	Hielke::PlayerCharacter* m_PlayerCharacter;
 

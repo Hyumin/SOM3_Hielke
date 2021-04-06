@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Debug\PlayerDebugInfo.cpp" />
     <ClCompile Include="src\Editor\AddFrameWindow.cpp" />
     <ClCompile Include="src\Editor\AddMapColiderWindow.cpp" />
     <ClCompile Include="src\Editor\AnimationWindow.cpp" />
@@ -57,6 +58,7 @@
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Debug\PlayerDebugInfo.h" />
     <ClInclude Include="src\Editor\AddFrameWindow.h" />
     <ClInclude Include="src\Editor\AddMapColiderWindow.h" />
     <ClInclude Include="src\Editor\AnimationWindow.h" />
